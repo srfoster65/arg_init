@@ -1,0 +1,49 @@
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[project]
+name = "arg_init"
+authors = [
+    {name = "Steve Foster", email = "srfoster1@gmail.com"},
+    {name = "srfoster65", email = "135555068+srfoster65@users.noreply.github.com"},
+]
+description = "Set object attributes from arg, env or default values"
+keywords = ["argparse", "init", "environment"]
+readme = "README.md"
+requires-python =">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "pyyaml",
+    "jinja2",
+    # "mkdocs>=1.5.2",
+    # "mkdocs-material>=9.2.8",
+    # "pymdown-extensions>=10.3",
+    "pytest>=7.4.2",
+]
+license = {text = "MIT"}
+dynamic = ["version"]
+
+[tool.pdm.version]
+source = "file"
+path = "src/arg_init/version.py"
+
+[tool.pdm.dev-dependencies]
+lint = [
+    "black"
+]
+# test = ["pytest", "pytest-cov"]
+doc = ["mkdocs", "mkdocs-material", "pymdown-extensions"]
+
+[tool.pylint.basic]
+good-names = [
+    "go",
+]
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint."massages-control"]
+disable = []

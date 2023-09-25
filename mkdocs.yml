@@ -1,0 +1,44 @@
+site_name: "Param Init"
+site_description: "Package to simplify parameter initialisation."
+repo_url: "https://github.com/srfoster65/param_init"
+repo_name: "srfoster65/param_init"
+site_dir: "site"
+watch: [readme.md, docs/overview.md, docs/usage.md, docs/license.md, docs/changelog.md]
+
+theme:
+  name: material
+  features:
+  - content.code.annotate
+  - navigation.tabs
+  - navigation.tabs.sticky
+  - navigation.top
+  palette:
+    primary: blue
+
+nav:
+    - Overview: overview.md
+    - Usage: usage.md
+    - Changelog: changelog.md
+    - License: license.md
+
+# extra_css:
+#   - css/style.css
+#   - css/material.css
+#   - css/mkdocstrings.css
+
+markdown_extensions:
+# - admonition
+# - pymdownx.details
+# - pymdownx.emoji
+# - pymdownx.magiclink
+- pymdownx.snippets:
+#     check_paths: true
+# - pymdownx.superfences
+# - pymdownx.tabbed:
+#     alternate_style: true
+# - pymdownx.tasklist
+
+plugins:
+# - section-index
+- search
+# - markdown-exec
