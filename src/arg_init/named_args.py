@@ -22,8 +22,9 @@ def named_arguments(frame=None, include_kwargs=False):
     arginfo = getargvalues(frame)
     logger.debug(arginfo)
     args = {arg: arginfo.locals.get(arg) for arg in arginfo.args if arg != "self"}
-    if include_kwargs:
+    if include_kwargs and arginfo.keywords:
         keywords = arginfo.keywords
+        logger.debug("Adding kwargs: %s", arginfo.locals[keywords])
         args.update(dict(arginfo.locals[keywords].items()) if keywords else {})
     logger.debug("Named arguments: %s", args)
     return args

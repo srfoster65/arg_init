@@ -3,7 +3,7 @@ Class to process arguments, environment variables and return a set of
 processed attribute values.
 """
 
-from __future__ import annotations
+# from __future__ import annotations
 
 from inspect import stack
 from os import environ
@@ -31,22 +31,27 @@ class ArgInit:
         env_prefix: str = "",
         attr_prefix: str = "",
         priority: str = DEFAULT_PRIORITY_SYSTEM,
+        use_kw_args: bool = False,
+        args: None | list = None
     ):
         self._env_prefix = env_prefix
         self._attr_prefix = attr_prefix
         self._priority = priority
+        self._use_kw_args = use_kw_args
         self._args = {}
+        print("args=", args)
+        self._go(args)
 
     @property
     def args(self):
         """Return the processed arguments"""
         return self._args
 
-    def go(self, args: None | list = None) -> ArgInit:
+    def _go(self, args: None | list = None):
         """
         Process args and env and return a dictionary of attribute values
         """
-        named_args = named_arguments(frame=stack()[1][0], include_kwargs=True)
+        named_args = named_arguments(frame=stack()[2][0], include_kwargs=self._use_kw_args)
         for name, value in named_args.items():
             logger.debug("Processing: %s", name)
             arg = self._find_arg(name, args)
@@ -55,7 +60,6 @@ class ArgInit:
             else:
                 self._env_priority(arg, value)
         logger.debug("Finished processing arguments")
-        return self
 
     def set(self, obj):
         """Set attributes as defined in "args" for the specified object."""
@@ -64,6 +68,7 @@ class ArgInit:
 
     @staticmethod
     def _find_arg(name: str, args: None | list) -> str:
+        print("args=",args)
         if args:
             logger.debug("Searching for arg=%s", name)
             for arg in args:

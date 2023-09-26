@@ -1,6 +1,6 @@
 #  pylint: disable=missing-module-docstring
 
-from .args import ArgInit
+from .arg_init import ArgInit
 from .arg  import Arg
 
 
