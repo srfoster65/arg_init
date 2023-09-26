@@ -29,17 +29,14 @@ class ArgInit:
     def __init__(
         self,
         env_prefix: str = "",
-        attr_prefix: str = "",
         priority: str = DEFAULT_PRIORITY_SYSTEM,
         use_kw_args: bool = False,
         args: None | list = None
     ):
         self._env_prefix = env_prefix
-        self._attr_prefix = attr_prefix
         self._priority = priority
         self._use_kw_args = use_kw_args
         self._args = {}
-        print("args=", args)
         self._go(args)
 
     @property
