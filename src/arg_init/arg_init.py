@@ -46,7 +46,7 @@ class ArgInit:
 
     def _go(self, args: None | list = None):
         """
-        Process args and env and return a dictionary of attribute values
+        Process args and envs, storing results in self._args
         """
         named_args = named_arguments(frame=stack()[2][0], include_kwargs=self._use_kw_args)
         for name, value in named_args.items():
