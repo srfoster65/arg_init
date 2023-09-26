@@ -1,5 +1,5 @@
 """
-Data Classes used with Param Init
+Data Class used to customise ArgInit behaviour
 """
 
 from dataclasses import dataclass
