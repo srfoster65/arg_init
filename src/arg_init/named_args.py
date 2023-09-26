@@ -6,9 +6,6 @@ from inspect import getargvalues, stack
 import logging
 
 
-FRAME_INDEX = 0
-STACK_LEVEL_OFFSET = 1
-
 logger = logging.getLogger(__name__)
 
 def named_arguments(frame=None, include_kwargs=False):
@@ -18,7 +15,8 @@ def named_arguments(frame=None, include_kwargs=False):
     associated with the specified frame, or the calling function.
     """
     # Select frame of calling function if not set.
-    frame = frame or stack()[STACK_LEVEL_OFFSET][FRAME_INDEX]
+    STACK_LEVEL_OFFSET = 1
+    frame = frame or stack()[STACK_LEVEL_OFFSET].frame
     arginfo = getargvalues(frame)
     logger.debug(arginfo)
     args = {arg: arginfo.locals.get(arg) for arg in arginfo.args if arg != "self"}
