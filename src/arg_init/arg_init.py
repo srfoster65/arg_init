@@ -9,6 +9,7 @@ from inspect import stack
 from os import environ
 import logging
 
+from .exceptions import AttributeExistsError
 from .named_args import named_arguments
 from .arg import Arg
 
@@ -62,6 +63,8 @@ class ArgInit:
     def set(self, obj):
         """Set attributes as defined in "args" for the specified object."""
         for arg, value in self.args.items():
+            if hasattr(obj, arg):
+                raise AttributeExistsError(arg)
             setattr(obj, arg, value)
 
     @staticmethod
