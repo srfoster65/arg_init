@@ -7,12 +7,8 @@ import logging
 
 import pytest
 
-from arg_init import Arg
 from arg_init import ArgInit
 from arg_init.exceptions import AttributeExistsError
-
-
-from .environ import modified_environ
 
 
 logger = logging.getLogger(__name__)

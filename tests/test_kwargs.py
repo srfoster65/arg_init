@@ -5,12 +5,7 @@ Test ArgInit processes kwargs.
 from collections import namedtuple
 import logging
 
-import pytest
-
-from arg_init import Arg
 from arg_init import ArgInit
-
-from .environ import modified_environ
 
 
 logger = logging.getLogger(__name__)
