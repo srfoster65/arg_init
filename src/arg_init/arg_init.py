@@ -9,6 +9,8 @@ from inspect import stack
 from os import environ
 import logging
 
+from box import Box
+
 from .exceptions import AttributeExistsError
 from .named_args import named_arguments
 from .arg import Arg
@@ -37,7 +39,7 @@ class ArgInit:
         self._env_prefix = env_prefix
         self._priority = priority
         self._use_kwargs = use_kwargs
-        self._args = {}
+        self._args = Box()
         self._go(args)
 
     @property

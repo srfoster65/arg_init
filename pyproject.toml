@@ -22,6 +22,7 @@ dependencies = [
     # "mkdocs-material>=9.2.8",
     # "pymdown-extensions>=10.3",
     "pytest>=7.4.2",
+    "python-box>=7.0.1",
 ]
 license = {text = "MIT"}
 dynamic = ["version"]
