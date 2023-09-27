@@ -39,7 +39,7 @@ class TestDefaultConfig:
 
     def test_attribute_exists_not_set(self):
         """
-        Test ArgInit.set sets attributes of class
+        Test exception raised if attempting to set an attribute that already exists
         """
         class Test:
             def __init__(self, arg1):
