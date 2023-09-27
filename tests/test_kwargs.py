@@ -44,7 +44,7 @@ class TestDefaultConfig:
         Test kwargs are processed if enabled
         """
         def _test(arg1, **kwargs):
-            return ArgInit(use_kw_args=True).args
+            return ArgInit(use_kwargs=True).args
 
         arg1 = "arg1"
         arg1_value = "arg1_value"

@@ -30,12 +30,12 @@ class ArgInit:
         self,
         env_prefix: str = "",
         priority: str = DEFAULT_PRIORITY_SYSTEM,
-        use_kw_args: bool = False,
+        use_kwargs: bool = False,
         args: None | list = None
     ):
         self._env_prefix = env_prefix
         self._priority = priority
-        self._use_kw_args = use_kw_args
+        self._use_kwargs = use_kwargs
         self._args = {}
         self._go(args)
 
@@ -48,7 +48,8 @@ class ArgInit:
         """
         Process args and envs, storing results in self._args
         """
-        named_args = named_arguments(frame=stack()[2][0], include_kwargs=self._use_kw_args)
+        STACK_LEVEL_OFFSET = 2  # 0=ArgInit.__init__, 1 = This function, 2=calling function
+        named_args = named_arguments(frame=stack()[STACK_LEVEL_OFFSET].frame, include_kwargs=self._use_kwargs)
         for name, value in named_args.items():
             logger.debug("Processing: %s", name)
             arg = self._find_arg(name, args)
