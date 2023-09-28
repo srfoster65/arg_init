@@ -27,7 +27,7 @@ class ArgInit:
 
     ARG_PRIORITY = "arg_priority"
     ENV_PRIORITY = "env_priority"
-    DEFAULT_PRIORITY_SYSTEM = ARG_PRIORITY
+    DEFAULT_PRIORITY_SYSTEM = ENV_PRIORITY
 
     def __init__(
         self,
