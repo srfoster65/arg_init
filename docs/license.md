@@ -1,3 +1,3 @@
 ```
---8<-- "license"
+--8<-- "license.txt"
 ```
