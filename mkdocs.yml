@@ -1,9 +1,9 @@
-site_name: "Param Init"
-site_description: "Package to simplify parameter initialisation."
-repo_url: "https://github.com/srfoster65/param_init"
-repo_name: "srfoster65/param_init"
+site_name: "Arg Init"
+site_description: "Package to simplify Argument initialisation."
+repo_url: "https://github.com/srfoster65/arg_init"
+repo_name: "srfoster65/arg_init"
 site_dir: "site"
-watch: [readme.md, docs/overview.md, docs/usage.md, docs/license.md, docs/changelog.md]
+watch: [readme.md, docs/overview.md, docs/usage.md, docs/license.md, docs/changelog.md, docs/reference.md]
 
 theme:
   name: material
@@ -16,8 +16,10 @@ theme:
     primary: blue
 
 nav:
-    - Overview: overview.md
-    - Usage: usage.md
+    - Documentation:
+      - Overview: overview.md
+      - Usage: usage.md
+      - Reference: reference.md
     - Changelog: changelog.md
     - License: license.md
 
@@ -41,4 +43,3 @@ markdown_extensions:
 plugins:
 # - section-index
 - search
-# - markdown-exec
