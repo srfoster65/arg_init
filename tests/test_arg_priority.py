@@ -47,6 +47,7 @@ class TestDefaultConfig:
 
             # Use default
             (None, Arg("arg1", None, "default", None, False, False, True, False), None, {}, Expected("arg1", "default")),
+            (None, Arg("arg1", None, "default", None, False, False, True, False), None, {"ARG1": ""}, Expected("arg1", "default")),
             (None, Arg("arg1", None, "default", None, False, False, True, True), None, {"ARG1": "env_value"}, Expected("arg1", "default")),
         ],
     )
@@ -75,7 +76,8 @@ class TestDefaultConfig:
         
         Default is used
         1. Default is set in param
-        2. Env is set, but disable_env = True
+        2. Env is "" and is not used.
+        3. Env is set, but disable_env = True
         """
         def _test(arg1=None):
             args = [arg] if arg else []

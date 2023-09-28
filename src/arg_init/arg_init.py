@@ -79,6 +79,8 @@ class ArgInit:
                     logger.debug("Arg found")
                     return arg
             logger.debug("Arg not found")
+        else:
+            logger.debug("No Args defined")
         logger.debug("Creating arg(name=%s)", name)
         return Arg(name)
 
