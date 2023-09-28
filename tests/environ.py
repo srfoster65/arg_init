@@ -7,40 +7,40 @@ import os
 from functools import wraps
 
 
-def patch_environ(new_environ=None, clear_orig=False):
-    """
-    Decorator to patch an environment variable.
+# def patch_environ(new_environ=None, clear_orig=False):
+#     """
+#     Decorator to patch an environment variable.
 
-    Usage:
-    @patch_environ({"new_env": "test value"})
-    def test()
-        assert os.environ["new_env"] == "test_value"
+#     Usage:
+#     @patch_environ({"new_env": "test value"})
+#     def test()
+#         assert os.environ["new_env"] == "test_value"
 
-    """
-    if not new_environ:
-        new_environ = dict()
+#     """
+#     if not new_environ:
+#         new_environ = dict()
 
-    def wrapper_patch_environ(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            original_env = dict(os.environ)
+#     def wrapper_patch_environ(func):
+#         @wraps(func)
+#         def wrapper(*args, **kwargs):
+#             original_env = dict(os.environ)
 
-            if clear_orig:
-                os.environ.clear()
+#             if clear_orig:
+#                 os.environ.clear()
 
-            os.environ.update(new_environ)
-            try:
-                result = func(*args, **kwargs)
-            # except:
-            #     raise
-            finally:  # restore even if Exception was raised
-                os.environ = original_env
+#             os.environ.update(new_environ)
+#             try:
+#                 result = func(*args, **kwargs)
+#             # except:
+#             #     raise
+#             finally:  # restore even if Exception was raised
+#                 os.environ = original_env
 
-            return result
+#             return result
 
-        return wrapper
+#         return wrapper
 
-    return wrapper_patch_environ
+#     return wrapper_patch_environ
 
 
 @contextlib.contextmanager
