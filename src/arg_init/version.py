@@ -1,5 +1,5 @@
 """
-param_init package version
+arg_init package version
 """
 
 __version__ = "0.1.0"
