@@ -81,7 +81,7 @@ class TestDefaultConfig:
         """
         def _test(arg1=None):
             args = [arg] if arg else []
-            return ArgInit(env_prefix=prefix, args=args).args
+            return ArgInit(env_prefix=prefix, priority=ArgInit.ARG_PRIORITY, args=args).args
 
         # envs = envs if envs else {}
         with modified_environ(**envs):
