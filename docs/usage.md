@@ -24,7 +24,7 @@ my_func(101)
 
 ```
 
-Running the above program with a clean environment would result in:
+Running the above program would result in:
 
 1. With a clean environment:
         args.arg1 = 101
@@ -50,7 +50,7 @@ In this instance, no default is supplied for arg1 in the function definition as 
 
 ## Use with a Class
 
-When used with a class ArgInit is expected to be called from the \_\_init\_\_() method. It also expects teh first parameter to be a class instance "self" and so ignores this argument. All other arguments are processed.
+When used with a class ArgInit is expected to be called from the \_\_init\_\_() method. It also expects the first parameter to be a class instance "self" and so ignores this argument. All other arguments are processed.
 
 ```python
 from arg_init import ArgInit
@@ -63,6 +63,8 @@ class MyApp:
 ```
 
 The call to set() passing in the argument "self", will set attributes with the same name as the arguments on the MyApp class instance.
+
+The negative to this implemntation is that linters will not recognise class attributes as being valid. e.g. Any references to self.arg1 in MyApp will be highlighted as invalid.
 
 ### Modifying Class Attributes Names
 
@@ -100,3 +102,43 @@ fn = my_func({"test": "hello"})
 Running the above program would result in fn.args.test being assigned the value "hello"
 
 As before, environment variables will also be processed. If an envirnment variable MYAPP_TEST were assigned the value of "world", this would result in fn.args.test being assigned the value "world".
+
+## Priority Modes
+
+By default, enviroment variables have priority over argument values. This can be changed at initialisation to give arguments prioirty.
+
+Notice that the function arg1 default value is None, but the Arg default argument is set to "1".
+
+```python
+from arg_init import ArgInit, Arg
+
+def my_func(arg1=None):
+    arg_1 = Arg("arg1", default=1)
+    args = ArgInit(env_prefix="MYAPP", priority=ArgInit.ARG_PRIORITY, args=[arg_1]).args
+    return args
+
+print(my_func(10).arg1)
+
+```
+
+The example above will display the value "10" when run.
+
+If the environment variable "MYAPP_ARG!" is set to "hello world" and the program is run again, it will still display "10", as arguments have priority over environment variables.
+
+If the program is modified to not pass any parameters into the call to my_func() as shown below:
+
+```python
+from arg_init import ArgInit, Arg
+
+def my_func(arg1=None):
+    arg_1 = Arg("arg1", default=1)
+    args = ArgInit(env_prefix="MYAPP", priority=ArgInit.ARG_PRIORITY, args=[arg_1]).args
+    return args
+
+print(my_func().arg1)
+
+```
+
+Assuming the environment variable "MYAPP_ARG!" is set to "hello world", the program will print out "hello world" when run.
+
+If the environment variable is unset, and the program run a second time, it will print out "1"; The default value assigned to the Arg object associated with arg1.
