@@ -16,12 +16,12 @@ theme:
     primary: blue
 
 nav:
-    - Documentation:
-      - Overview: overview.md
-      - Usage: usage.md
-      - Reference: reference.md
-    - Changelog: changelog.md
-    - License: license.md
+  - Documentation:
+    - index.md
+    - Usage: usage.md
+    - Reference: reference.md
+  - Changelog: changelog.md
+  - License: license.md
 
 # extra_css:
 #   - css/style.css
