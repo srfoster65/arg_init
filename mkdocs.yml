@@ -3,7 +3,7 @@ site_description: "Package to simplify Argument initialisation."
 repo_url: "https://github.com/srfoster65/arg_init"
 repo_name: "srfoster65/arg_init"
 site_dir: "site"
-watch: [readme.md, docs/overview.md, docs/usage.md, docs/license.md, docs/changelog.md, docs/reference.md]
+watch: [readme.md, docs/index.md, docs/usage.md, docs/license.md, docs/changelog.md, docs/reference.md]
 
 theme:
   name: material
