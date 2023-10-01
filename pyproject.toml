@@ -9,7 +9,7 @@ authors = [
 ]
 description = "Resolve argument values from arg, env or default values"
 keywords = ["argparse", "init", "environment"]
-readme = "README.md"
+readme = "readme.md"
 requires-python =">=3.11"
 classifiers = [
     "Programming Language :: Python :: 3",
