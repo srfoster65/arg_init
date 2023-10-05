@@ -19,7 +19,7 @@ jobs:
     # You are now able to use PDM in your workflow
 
     - name: Install dependencies
-      run: pdm install
+      run: pdm install -G:all
 
     
 
