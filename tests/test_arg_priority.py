@@ -39,7 +39,7 @@ class TestDefaultConfig:
             # Use env
             (None, Arg("arg1", None, None, None, False, False, True, False), None, {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
             (None, Arg("arg1", "arg1", None, None, False, False, True, False), None, {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            (None, Arg("arg1", "foo", None, None, False, False, True, False), None, {"foo": "env1_value"}, Expected("arg1", "env1_value")),
+            (None, Arg("arg1", "foo", None, None, False, False, True, False), None, {"FOO": "env1_value"}, Expected("arg1", "env1_value")),
             ("prefix", Arg("arg1", None, None, None, False, False, True, False), None, {"PREFIX_ARG1": "env1_value"}, Expected("arg1", "env1_value")),
             ("prefix", Arg("arg1", "arg1", None, None, False, False, True, False), None, {"PREFIX_ARG1": "env1_value"}, Expected("arg1", "env1_value")),
             ("prefix", Arg("arg1", "foo", None, None, False, False, True, False), None, {"PREFIX_FOO": "env1_value"}, Expected("arg1", "env1_value")),

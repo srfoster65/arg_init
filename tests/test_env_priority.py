@@ -39,7 +39,7 @@ class TestDefaultConfig:
             # Use env
             (None, Arg("arg1", None, None, None, False, False, True, False), None, {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
             (None, Arg("arg1", "arg1", None, None, False, False, True, False), "arg1_value", {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            (None, Arg("arg1", "foo", None, None, False, False, True, False), "arg1_value", {"foo": "env1_value"}, Expected("arg1", "env1_value")),
+            (None, Arg("arg1", "foo", None, None, False, False, True, False), "arg1_value", {"FOO": "env1_value"}, Expected("arg1", "env1_value")),
             ("prefix", Arg("arg1", None, None, None, False, False, True, False), "arg1_value", {"PREFIX_ARG1": "env1_value"}, Expected("arg1", "env1_value")),
             ("prefix", Arg("arg1", "arg1", None, None, False, False, True, False), "arg1_value", {"PREFIX_ARG1": "env1_value"}, Expected("arg1", "env1_value")),
             ("prefix", Arg("arg1", "foo", None, None, False, False, True, False), "arg1_value", {"PREFIX_FOO": "env1_value"}, Expected("arg1", "env1_value")),

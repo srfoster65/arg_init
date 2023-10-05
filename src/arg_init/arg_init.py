@@ -154,4 +154,4 @@ class ArgInit:
         """
         env = arg.env if arg.env else arg.name
         env_parts = [item for item in (prefix, env) if item]
-        return "_".join(env_parts)
+        return "_".join(env_parts).uuper()
