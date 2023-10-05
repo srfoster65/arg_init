@@ -15,7 +15,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 dependencies = [
-    "pyyaml>=6.0.1",
+    # "pyyaml>=6.0.1",
     "python-box>=7.0.1",
 ]
 license = {text = "MIT"}
@@ -27,10 +27,17 @@ path = "src/arg_init/version.py"
 
 [tool.pdm.dev-dependencies]
 lint = [
-    "black"
+    "black>=23.9.1",
 ]
-test = ["pytest", "pytest-cov"]
-doc = ["mkdocs", "mkdocs-material", "pymdown-extensions"]
+test = [
+    "pytest>=7.4.2",
+    "pytest-cov>=4.1.0",
+]
+docs = [
+    "mkdocs>=1.5.3",
+    "mkdocs-material>=9.4.3",
+    "pymdown-extensions>=10.3",
+]
 
 [tool.pylint.basic]
 good-names = [
