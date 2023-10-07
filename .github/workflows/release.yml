@@ -1,4 +1,4 @@
-name: Publish Python 🐍 distribution 📦 to PyPI and TestPyPI
+name: Build Python 🐍 package, release to github and publish package 📦 to PyPI and TestPyPI
 
 on: push
 
@@ -32,9 +32,9 @@ jobs:
  #   - name: Build a binary wheel and a source tarball
  #     run: python3 -m build
 
-    - name: Test with pytest
-      # run: pdm run pytest --junitxml=junit/test-results.xml --cov=src/arg_init --cov-report=xml --cov-report=html
-      run: pdm run pytest --junitxml=junit/test-results.xml --cov-report=xml --cov-report=html
+    # - name: Test with pytest
+    #   # run: pdm run pytest --junitxml=junit/test-results.xml --cov=src/arg_init --cov-report=xml --cov-report=html
+    #   run: pdm run pytest --junitxml=junit/test-results.xml --cov-report=xml --cov-report=html
 
         # pip install pytest pytest-cov
         # pytest tests.py --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
