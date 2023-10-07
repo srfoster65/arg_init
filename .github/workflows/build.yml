@@ -1,0 +1,36 @@
+name: Build and Run Unittests
+
+on: push
+
+jobs:
+  build:
+    name: Build distribution
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.x"
+
+    - name: Setup PDM
+      uses: pdm-project/setup-pdm@v3
+      with:
+        python-version: 3.11
+        cache: true
+
+    - name: Install dependencies
+      run: pdm install -G test
+
+    - name: Test with pytest
+      run: pdm run pytest --junitxml=junit/test-results.xml --cov-report=xml --cov-report=html
+
+    - name: Build a binary wheel and a source tarball
+      run: pdm build
+
+    - name: Store the distribution packages
+      uses: actions/upload-artifact@v3
+      with:
+        name: python-package-distributions
+        path: dist/
