@@ -1,6 +1,8 @@
 name: Build and Run Unittests
 
-on: push
+on:
+- push
+- workflow-call
 
 jobs:
   build:
