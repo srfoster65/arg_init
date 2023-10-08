@@ -2,7 +2,7 @@ name: Build and Run Unittests
 
 on:
 - push
-- workflow-call
+- workflow_call
 
 jobs:
   build:
