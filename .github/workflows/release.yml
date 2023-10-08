@@ -1,7 +1,7 @@
 name: Release to PYPI
 
-on: workflow_dispatch
-
+# on: workflow_dispatch
+on: push
 
 jobs:
 
@@ -10,8 +10,6 @@ jobs:
     # if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
 
     uses: ./.github/workflows/build.yml
-
-
 
 
   publish-to-pypi:
@@ -35,6 +33,7 @@ jobs:
         path: dist/
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
+
 
   github-release:
     name: >-
