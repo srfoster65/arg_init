@@ -9,8 +9,7 @@ jobs:
     name: Build and test the release
     # if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
 
-    call-build-workflow:
-      uses ./.github/workflows/build.yml
+    uses: ./.github/workflows/build.yml
 
 
 
