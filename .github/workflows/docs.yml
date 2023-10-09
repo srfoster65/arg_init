@@ -1,4 +1,4 @@
-name: build_docs
+name: Build Documentation
 on:
   push:
     branches:
@@ -9,16 +9,34 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
-        with:
-          python-version: 3.x
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
-      - uses: actions/cache@v3
-        with:
-          key: mkdocs-material-${{ env.cache_id }}
-          path: .cache
-          restore-keys: |
-            mkdocs-material-
-      - run: pip install mkdocs-material 
-      - run: mkdocs gh-deploy --force
+
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.x"
+
+    - name: Setup PDM
+      uses: pdm-project/setup-pdm@v3
+      with:
+        python-version: 3.11
+        cache: true
+
+    - name: Install dependencies
+      run: pdm install -G docs
+
+
+      # - uses: actions/checkout@v4
+      # - uses: actions/setup-python@v4
+      #   with:
+      #     python-version: 3.x
+      # - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
+      # - uses: actions/cache@v3
+      #   with:
+      #     key: mkdocs-material-${{ env.cache_id }}
+      #     path: .cache
+      #     restore-keys: |
+      #       mkdocs-material-
+      # - run: pip install mkdocs-material 
+      - name: Deploy mkdocs to gh-pages      
+        run: pdm run mkdocs gh-deploy --force
