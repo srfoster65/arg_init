@@ -61,8 +61,3 @@ addopts = "--cov=src"
 testpaths = [
     "tests",
 ]
-
-[tool.coverage.run]
-omit = [
-    "_version.py",
-]
