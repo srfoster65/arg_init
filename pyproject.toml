@@ -64,5 +64,5 @@ testpaths = [
 
 [tool.coverage.run]
 omit = [
-    "version.py",
+    "_version.py",
 ]
