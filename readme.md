@@ -1,11 +1,9 @@
+# Overview
+
 [![Build and Run Unittests](https://github.com/srfoster65/arg_init/actions/workflows/build.yml/badge.svg)](https://github.com/srfoster65/arg_init/actions/workflows/build.yml)
-[![build_docs](https://github.com/srfoster65/arg_init/actions/workflows/docs.yml/badge.svg)](https://github.com/
+[![build_docs](https://github.com/srfoster65/arg_init/actions/workflows/docs.yml/badge.svg)](https://github.com/srfoster65/arg_init/actions/workflows/docs.yml)
 [![codecov](https://codecov.io/gh/srfoster65/arg_init/graph/badge.svg?token=FFNWSCS4BB)](https://codecov.io/gh/srfoster65/arg_init)
 [![PyPI](https://img.shields.io/pypi/v/arg-init?logo=python&logoColor=%23cccccc)](https://pypi.org/project/arg-init)
-
-
-
-# Overview
 
 When running code there is often a need to initialise arguments either directly from a passed in value, indirectly via an environment variable or a via default value. Argparse provides this functionality (or can be easily augmented to) already but has one major drawback; It does not work when the code is invoked as a library.
 
