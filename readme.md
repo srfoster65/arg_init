@@ -7,7 +7,7 @@
 
 When running code there is often a need to initialise arguments either directly from a passed in value, indirectly via an environment variable or a via default value. Argparse provides this functionality (or can be easily augmented to) already but has one major drawback; It does not work when the code is invoked as a library.
 
-The intention of arg_init is to provide a means, in application code, to initialise function arguments from either a parameter, environment variable of default value using a well defined priority system. Because it is implemented in the  application, it will work for both use cases.
+The intention of arg_init is to provide a means, in application code, to initialise function arguments from either a argument, environment variable of default value using a well defined priority system. Because it is implemented in the  application, it will work for both use cases.
 
 If ArgumentParser is used to create a CLI for an application then default values should **not** be assigned in add_argument(). This is to prevent different behaviours between launching as a CLI and an imported library.
 
@@ -27,7 +27,7 @@ Passed in arguments have prioirty over environment variables.
 2. Env
 3. Default
 
-But if we use a non **None** default argument value in our function e.g. f(a=1), then the param value will always be used to set the value, never allowing an env value to take effect.
+But if we use a non **None** default argument value in our function e.g. f(a=1), then the argument value will always be used to set the value, never allowing an env value to take effect.
 
 There are two obvious solutions to this:
 

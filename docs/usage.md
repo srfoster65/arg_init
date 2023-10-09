@@ -50,7 +50,7 @@ In this instance, no default is supplied for arg1 in the function definition as 
 
 ## Use with a Class
 
-When used with a class ArgInit is expected to be called from the \_\_init\_\_() method. It also expects the first parameter to be a class instance "self" and so ignores this argument. All other arguments are processed.
+When used with a class ArgInit is expected to be called from the \_\_init\_\_() method. It also expects the first argument to be a class instance "self" and so ignores this argument. All other arguments are processed.
 
 ```python
 from arg_init import ArgInit
@@ -125,7 +125,7 @@ The example above will display the value "10" when run.
 
 If the environment variable "MYAPP_ARG!" is set to "hello world" and the program is run again, it will still display "10", as arguments have priority over environment variables.
 
-If the program is modified to not pass any parameters into the call to my_func() as shown below:
+If the program is modified to not pass any arguments into the call to my_func() as shown below:
 
 ```python
 from arg_init import ArgInit, Arg
