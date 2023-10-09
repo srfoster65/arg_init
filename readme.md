@@ -1,8 +1,7 @@
 [![Build and Run Unittests](https://github.com/srfoster65/arg_init/actions/workflows/build.yml/badge.svg)](https://github.com/srfoster65/arg_init/actions/workflows/build.yml)
-[![build_docs](https://github.com/srfoster65/arg_init/actions/workflows/docs.yml/badge.svg)](https://github.com/srfoster65/arg_init/actions/workflows/docs.yml)
+[![build_docs](https://github.com/srfoster65/arg_init/actions/workflows/docs.yml/badge.svg)](https://github.com/
+[![codecov](https://codecov.io/gh/srfoster65/arg_init/graph/badge.svg?token=FFNWSCS4BB)](https://codecov.io/gh/srfoster65/arg_init)
 [![PyPI](https://img.shields.io/pypi/v/arg-init?logo=python&logoColor=%23cccccc)](https://pypi.org/project/arg-init)
-
-![PyPI](https://img.shields.io/pypi/wheel/:arg-init)
 
 
 
