@@ -7,11 +7,11 @@
 
 When running code there is often a need to initialise arguments either directly from a passed in value, indirectly via an environment variable or a via default value. Argparse provides this functionality (or can be easily augmented to) already but has one major drawback; It does not work when the code is invoked as a library.
 
-The intention of arg_init is to provide a means, in application code, to initialise function arguments from either a argument, environment variable of default value using a well defined priority system. Because it is implemented in the  application, it will work for both use cases.
+The intention of arg_init is to provide a means, in application code, to initialise function arguments from either an argument, an environment variable or a default value using a well defined priority system. Because it is implemented in the application, it will work if called via a CLI script or as a library by another python program.
 
 If ArgumentParser is used to create a CLI for an application then default values should **not** be assigned in add_argument(). This is to prevent different behaviours between launching as a CLI and an imported library.
 
-**InitArgs** iterates over all arguments to a function, creating a dictionary, containing key/value pairs of argument name, with values assigned according to the priority system selected.
+**ArgInit** iterates over all arguments to a function, creating a dictionary, containing key/value pairs of argument name, with values assigned according to the priority system selected.
 
 ## Priority
 
