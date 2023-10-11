@@ -85,6 +85,7 @@ class TestDefaultConfig:
         # envs = envs if envs else {}
         with modified_environ(**envs):
             args = _test(arg1=arg_value)
+            print(args)
             assert args[expected.key] == expected.value
 
 
