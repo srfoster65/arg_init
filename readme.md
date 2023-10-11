@@ -11,13 +11,20 @@ The intention of arg_init is to provide a means, in application code, to initial
 
 If ArgumentParser is used to create a CLI for an application then default values should **not** be assigned in add_argument(). This is to prevent different behaviours between launching as a CLI and an imported library.
 
-**ArgInit** iterates over all arguments to a function, creating a dictionary, containing key/value pairs of argument name, with values assigned according to the priority system selected.
+
+**ArgInit** iterates over all arguments of a function, creating a dictionary, containing key/value pairs of argument name, with values assigned according to the priority system selected.
+
+## Notes
+
+arg_init uses introspection (via the [inspect](https://docs.python.org/3/library/inspect.html) module) to determine function arguments and values. Its use is minimal and is only executed once at startup so performance should not be an issue.
+
+Rather than attempt to dynamically determine if the function to be processed is a bound function (a class method, with a class reference (self) as the first parameter) or an unbound function (a simple function), the current implementation requires this be specified at initialisation using the argument **is_class**.
 
 ## Priority
 
 The argument value is set when a non **None** value is found.
 
-What priority should be used to set an attribute?
+What priority should be used to set an argument?
 
 ### Argument Priority Order
 
@@ -32,7 +39,7 @@ But if we use a non **None** default argument value in our function e.g. f(a=1),
 There are two obvious solutions to this:
 
 1. Change the priority order.
-2. Provide an alternate means to specify a default value. If a default value is required in the function signature, to allow ommission of a argument when calling, ensure it is set to None.
+2. Provide an alternate means to specify a default value. If a default value is required in the function signature, to allow ommission of an argument when calling, ensure it is set to None.
 
 ### Env Priority Order
 
@@ -58,7 +65,7 @@ from arg_init import ArgInit
 
 class MyApp:
     def __init__(self, arg1=None):
-        ArgInit().set(self)
+        ArgInit(is_class=True)
         ...
 
 ```
@@ -113,7 +120,7 @@ from arg_init import ArgInit
 
 class MyApp:
     def __init__(self, arg1=None):
-        ArgInit(env_prefix="myapp").set(self)
+        ArgInit(env_prefix="myapp", is_class=True)
         ...
 
 ```

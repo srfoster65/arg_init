@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Arg:
-    """Class to represent a parameter."""
+    """Class to represent argument attrubutes."""
 
     name: str  # name of the argument
     env: str = None  # envirnment variable name that contains value.

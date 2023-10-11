@@ -50,21 +50,22 @@ In this instance, no default is supplied for arg1 in the function definition as 
 
 ## Use with a Class
 
-When used with a class ArgInit is expected to be called from the \_\_init\_\_() method. It also expects the first argument to be a class instance "self" and so ignores this argument. All other arguments are processed.
+When used with a class ArgInit should be initialised with the argument is_class=True. This notifies ArgInit that the first argument is a class reference and should not be processed. 
+Note: When used with classes, ArgInit is expected to be called from the \_\_init\_\_() method (But this is not a requirement).
 
 ```python
 from arg_init import ArgInit
 
 class MyApp:
     def __init__(self, arg1=None):
-        ArgInit(env_prefix="myapp").set(self)
+        ArgInit(is_class=True, env_prefix="myapp")
         ...
 
 ```
 
-The call to set() passing in the argument "self", will set attributes with the same name as the arguments on the MyApp class instance.
+By default, ArgInit will set all arguments as class attributes of the MyApp instance. The negative to this implemntation is that linters will not recognise class attributes as being valid. e.g. Any references to self.arg1 in MyApp will be highlighted as invalid.
 
-The negative to this implemntation is that linters will not recognise class attributes as being valid. e.g. Any references to self.arg1 in MyApp will be highlighted as invalid.
+If this behaviour is not required set the argument set_attrs=False when initialising ArgInit.
 
 ### Modifying Class Attributes Names
 
@@ -75,8 +76,8 @@ from arg_init import ArgInit, Arg
 
 class MyApp:
     def __init__(self, arg1=None):
-        arg_1 = Arg("arg1", attr="_arg1")
-        ArgInit(env_prefix="myapp", args=[arg_1]).set(self)
+        args = [Arg("arg1", attr="_arg1")]
+        ArgInit(is_class=True, env_prefix="myapp", args=args)
         ...
 
 ```
