@@ -3,7 +3,7 @@
 ## ArgInit
 
 ```python
-ArgInit(env_prefix="", priority=ARG_PRIORITY, use_kwargs=False, args=None)
+ArgInit(env_prefix="", priority=ARG_PRIORITY, use_kwargs=False, is_class=False, set_attrs=True, args=None)
 ```
 
 Initialise arguments using the function that calls ArgInit as the reference. Process each argument, setting the value of the class dictionary, args, with either the value provided by the argument, an associated environment variable or a default value. If the value of the arg or env is None then try the next item in the selected priority system
@@ -14,14 +14,11 @@ priority: By default arguments will be set based on the prioty env, arg, default
 
 use_kwargs: When initialising arguments, only named arguments will be initialised by default. If use_kwargs=True, then any keyword arguments will also be initialised
 
+is_class: Set to True if the function being processed is a class method i.e. the first argument is "self"
+
+set_attrs: If the function being processed is a class method (a bound function), set the arguments as class attributes. Default is true. Set to false to disable. This attribute has no effect if is_class=False.
+
 args: A list of Arg objects that allow overriding the processing behaviour of individual arguments.
-
-### Methods
-
-set(object)
-
-Set the attributes of **object** using the args dictionary. The key is used as the attribute name and the value is assigned assigned to the attribute.
-If there is a namespace clash in object (i.e. An attribute with the same name as an argument already exists) an AttributeExistsError will be raised
 
 ### Attributes
 
@@ -29,7 +26,7 @@ args
 
 An object representing the processed arguments. Arguments are exposed as attributes or key/value pairs.
 
-Note: The returned object is a python-box Box class.
+Note: The returned object is a [python-box](https://github.com/cdgriffith/Box) Box class.
 
 ## Arg
 
@@ -58,5 +55,5 @@ A dataclass that is used to customise the processing of arguments.
 Raised if attempting to set an attribute of an object, and an attribute with the same name already exists.
 
 ```python
-AttributeExistsError(arg)
+AttributeExistsError(Exception)
 ```
