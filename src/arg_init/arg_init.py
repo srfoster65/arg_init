@@ -101,15 +101,13 @@ class ArgInit:
     @staticmethod
     def _find_arg(name: str, args: None | list) -> str:
         if args:
-            logger.debug("Searching for arg=%s", name)
+            logger.debug("Searching for Arg(name=%s)", name)
             for arg in args:
                 if arg.name == name:
-                    logger.debug("Arg found")
+                    logger.debug("Arg(%s) found", name)
                     return arg
-            logger.debug("Arg not found")
-        else:
-            logger.debug("No Args defined")
-        logger.debug("Creating arg(name=%s)", name)
+        logger.debug("Arg(name=%s) not found. Creating default.", name)
+        # logger.debug("No Arg class provided. Creating Arg(name=%s)", name)
         return Arg(name)
 
     def _arg_priority(self, arg: Arg, value: any) -> None:
@@ -130,12 +128,12 @@ class ArgInit:
         """
         Try and set value from arg
         """
-        logger.debug("Checking for an arg")
+        logger.debug("Checking for arg: %s", arg.name)
         if arg.force_arg or value is not None:
-            logger.debug("Arg value found: %s", value)
+            logger.debug("Arg found: %s=%s", arg.name, value)
             self._args[self._get_attr_name(arg)] = value
             return True
-        logger.debug("Arg value is None and force_arg=False")
+        logger.debug("Arg value is None and force_arg=False. Ignoring.")
         return False
 
     def _try_env(self, arg: Arg) -> bool:
@@ -143,17 +141,16 @@ class ArgInit:
         Try and set value from env
         """
         env_name = self._get_env_name(arg, self._env_prefix)
+        logger.debug("Checking for env: %s", env_name)
         if env_name and env_name in environ and not arg.disable_env:
-            logger.debug("Checking for env = '%s'", env_name)
-            logger.debug("Found env: %s", env_name)
             value = environ[env_name]
+            logger.debug("Env found: %s=%s", env_name, value)
             if arg.force_env or value:
-                logger.debug("Env value found: %s", value)
                 self._args[self._get_attr_name(arg)] = value
                 return True
-            logger.debug("env value is None and force_env=False. Checking default")
+            logger.debug("Env value is None and force_env=False. Ignoring")
         else:
-            logger.debug("env not found or checking disabled")
+            logger.debug("Env not found or checking disabled")
         return False
 
     def _try_default(self, arg: Arg) -> None:
@@ -162,7 +159,7 @@ class ArgInit:
         """
         logger.debug("Checking for a default value")
         if arg.force_default or arg.default:
-            logger.debug("Setting default: %s", arg.default)
+            logger.debug("Setting default: %s=%s", arg.name, arg.default)
             self._args[self._get_attr_name(arg)] = arg.default
         else:
             logger.debug(
@@ -191,6 +188,7 @@ class ArgInit:
             for arg, value in self.args.items():
                 if hasattr(class_ref, arg):
                     raise AttributeExistsError(arg)
+                logger.debug("  %s = %s", arg, value)
                 setattr(class_ref, arg, value)
 
     def _get_first_arg(self, frame):
