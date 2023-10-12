@@ -1,14 +1,15 @@
 name: Release to PYPI
 
-on: push
-  branches:
-  - main
+on:
+  push:
+    branches:
+      - main
 
 jobs:
 
   build:
     name: Build and test the release
-    if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
+    if: startsWith(github.re  f, 'refs/tags/')  # only publish to PyPI on tag pushes
     uses: ./.github/workflows/build.yml
  #  need to restrict this job to main branch only
 
