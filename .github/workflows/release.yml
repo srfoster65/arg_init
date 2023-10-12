@@ -1,20 +1,21 @@
 name: Release to PYPI
 
-# on: workflow_dispatch
-on: push
+on:
+  push:
+    branches:
+      - main
 
 jobs:
 
   build:
     name: Build and test the release
-    if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
+    if: startsWith(github.re  f, 'refs/tags/')  # only publish to PyPI on tag pushes
     uses: ./.github/workflows/build.yml
  #  need to restrict this job to main branch only
 
   publish-to-pypi:
     name: >-
       Publish Python 🐍 distribution 📦 to PyPI
-    # if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
     needs:
     - build
     runs-on: ubuntu-latest
@@ -69,3 +70,8 @@ jobs:
         '${{ github.ref_name }}' dist/**
         --repo '${{ github.repository }}'
         --generate-notes
+
+  build_docs:
+    name: Build Docs after publishing new release
+    uses: ./.github/workflows/build.yml
+    needs: github-release
