@@ -1,16 +1,16 @@
 # Overview
 
-[![Build and Run Unittests](https://github.com/srfoster65/arg_init/actions/workflows/build.yml/badge.svg)](https://github.com/srfoster65/arg_init/actions/workflows/build.yml)
-[![build_docs](https://github.com/srfoster65/arg_init/actions/workflows/docs.yml/badge.svg)](https://srfoster65.github.io/arg_init/)
+[![Tests](https://github.com/srfoster65/arg_init/actions/workflows/build.yml/badge.svg)](https://github.com/srfoster65/arg_init/actions/workflows/build.yml)
+[![Docs](https://github.com/srfoster65/arg_init/actions/workflows/docs.yml/badge.svg)](https://srfoster65.github.io/arg_init/)
 [![codecov](https://codecov.io/gh/srfoster65/arg_init/graph/badge.svg?token=FFNWSCS4BB)](https://codecov.io/gh/srfoster65/arg_init)
 [![PyPI](https://img.shields.io/pypi/v/arg-init?logo=python&logoColor=%23cccccc)](https://pypi.org/project/arg-init)
+[![PyPI - License](https://img.shields.io/pypi/l/arg-init)](https://srfoster65.github.io/arg_init/license/)
 
 When running code there is often a need to initialise arguments either directly from a passed in value, indirectly via an environment variable or a via default value. Argparse provides this functionality (or can be easily augmented to) already but has one major drawback; It does not work when the code is invoked as a library.
 
 The intention of arg_init is to provide a means, in application code, to initialise function arguments from either an argument, an environment variable or a default value using a well defined priority system. Because it is implemented in the application, it will work if called via a CLI script or as a library by another python program.
 
 If ArgumentParser is used to create a CLI for an application then default values should **not** be assigned in add_argument(). This is to prevent different behaviours between launching as a CLI and an imported library.
-
 
 **ArgInit** iterates over all arguments of a function, creating a dictionary, containing key/value pairs of argument name, with values assigned according to the priority system selected.
 
