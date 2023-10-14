@@ -50,7 +50,7 @@ In this instance, no default is supplied for arg1 in the function definition as 
 
 ## Use with a Class
 
-When used with a class ArgInit should be initialised with the argument is_class=True. This notifies ArgInit that the first argument is a class reference and should not be processed. 
+When used with a class ArgInit should be initialised with the argument func_is_bound=True. This notifies ArgInit that the first argument is a class reference and should not be processed. 
 Note: When used with classes, ArgInit is expected to be called from the \_\_init\_\_() method (But this is not a requirement).
 
 ```python
@@ -58,7 +58,7 @@ from arg_init import ArgInit
 
 class MyApp:
     def __init__(self, arg1=None):
-        ArgInit(is_class=True, env_prefix="myapp")
+        ArgInit(func_is_bound=True, env_prefix="myapp")
         ...
 
 ```
@@ -77,7 +77,7 @@ from arg_init import ArgInit, Arg
 class MyApp:
     def __init__(self, arg1=None):
         args = [Arg("arg1", attr="_arg1")]
-        ArgInit(is_class=True, env_prefix="myapp", args=args)
+        ArgInit(func_is_bound=True, env_prefix="myapp", args=args)
         ...
 
 ```
