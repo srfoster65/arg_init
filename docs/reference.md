@@ -16,9 +16,7 @@ Initialise arguments using the function that calls ArgInit as the reference. Pro
 
 + **use_kwargs**: When initialising arguments, only named arguments will be initialised by default. If use_kwargs=True, then any keyword arguments will also be initialised
 
-+ **func_is_bound**: Set to True if the function being processed is a class method i.e. the first argument is "self"
-
-+ **set_attrs**: If the function being processed is a class method (a bound function), set the arguments as class attributes. Default is true. Set to false to disable. This attribute has no effect if func_is_bound=False.
++ **is_class**: Set to True if the function being processed is a class method i.e. the first argument is "self"
 
 + **set_attrs**: If the function being processed is a class method (a bound function), set the arguments as class attributes. Default is true. Set to false to disable. This attribute has no effect if is_class=False.
 
