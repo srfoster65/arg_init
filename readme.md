@@ -18,7 +18,7 @@ If ArgumentParser is used to create a CLI for an application then default values
 
 arg_init uses introspection (via the [inspect](https://docs.python.org/3/library/inspect.html) module) to determine function arguments and values. Its use is minimal and is only executed once at startup so performance should not be an issue.
 
-Rather than attempt to dynamically determine if the function to be processed is a bound function (a class method, with a class reference (self) as the first parameter) or an unbound function (a simple function), the current implementation requires this be specified at initialisation using the argument **is_class**.
+Rather than attempt to dynamically determine if the function to be processed is a bound function (a class method, with a class reference (self) as the first parameter) or an unbound function (a simple function), the current implementation requires this be specified at initialisation using the argument **func_is_bound**.
 
 ## Priority
 
@@ -65,7 +65,7 @@ from arg_init import ArgInit
 
 class MyApp:
     def __init__(self, arg1=None):
-        ArgInit(is_class=True)
+        ArgInit(func_is_bound=True)
         ...
 
 ```
@@ -120,7 +120,7 @@ from arg_init import ArgInit
 
 class MyApp:
     def __init__(self, arg1=None):
-        ArgInit(env_prefix="myapp", is_class=True)
+        ArgInit(env_prefix="myapp", func_is_bound=True)
         ...
 
 ```

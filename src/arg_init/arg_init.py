@@ -31,14 +31,14 @@ class ArgInit:
         env_prefix: str = "",
         priority: str = DEFAULT_PRIORITY_SYSTEM,
         use_kwargs: bool = False,
-        is_class: bool = False,
-        set_attrs: bool = True,  # Only applicable if is_class=True
+        func_is_bound: bool = False,
+        set_attrs: bool = True,  # Only applicable if func_is_bound=True
         args: None | list = None,
     ):
         self._env_prefix = env_prefix
         self._priority = priority
         self._use_kwargs = use_kwargs
-        self._is_class = is_class
+        self._func_is_bound = func_is_bound
         self._set_attrs = set_attrs
         self._args = Box()
         self._go(args)
@@ -69,7 +69,6 @@ class ArgInit:
             else:
                 self._env_priority(arg, value)
 
-
     def _named_arguments(self, frame):
         """
         Returns a dictionary containing key value pairs of all
@@ -80,7 +79,7 @@ class ArgInit:
         args = {
             arg: arginfo.locals.get(arg)
             for count, arg in enumerate(arginfo.args)
-            if not self._is_class_arg(count)
+            if not self._func_is_bound_arg(count)
         }
         if self._use_kwargs and arginfo.keywords:
             keywords = arginfo.keywords
@@ -89,14 +88,12 @@ class ArgInit:
         logger.debug("Named arguments: %s", args)
         return args
 
-
-    def _is_class_arg(self, count: int = 0) -> bool:
-        """Return True if the count is 0 and is_class is True"""
-        if self._is_class and count == 0:
+    def _func_is_bound_arg(self, count: int = 0) -> bool:
+        """Return True if the count is 0 and func_is_bound is True"""
+        if self._func_is_bound and count == 0:
             logger.debug("Ignoring 1st argument as function is from a class")
             return True
         return False
-
 
     @staticmethod
     def _find_arg(name: str, args: None | list) -> str:
@@ -182,7 +179,7 @@ class ArgInit:
 
     def _set_class_attrs(self, frame):
         """Set attributes as defined in "args" for the class object."""
-        if self._is_class and self._set_attrs:
+        if self._func_is_bound and self._set_attrs:
             logger.debug("Setting class attributes")
             class_ref = self._get_first_arg(frame)
             for arg, value in self.args.items():

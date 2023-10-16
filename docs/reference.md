@@ -3,7 +3,7 @@
 ## ArgInit
 
 ```python
-ArgInit(env_prefix="", priority=ARG_PRIORITY, use_kwargs=False, is_class=False, set_attrs=True, args=None)
+ArgInit(env_prefix="", priority=ARG_PRIORITY, use_kwargs=False, func_is_bound=False, set_attrs=True, args=None)
 ```
 
 Initialise arguments using the function that calls ArgInit as the reference. Process each argument, setting the value of the class dictionary, args, with either the value provided by the argument, an associated environment variable or a default value. If the value of the arg or env is None then try the next item in the selected priority system
@@ -16,7 +16,9 @@ Initialise arguments using the function that calls ArgInit as the reference. Pro
 
 + **use_kwargs**: When initialising arguments, only named arguments will be initialised by default. If use_kwargs=True, then any keyword arguments will also be initialised
 
-+ **is_class**: Set to True if the function being processed is a class method i.e. the first argument is "self"
++ **func_is_bound**: Set to True if the function being processed is a class method i.e. the first argument is "self"
+
++ **set_attrs**: If the function being processed is a class method (a bound function), set the arguments as class attributes. Default is true. Set to false to disable. This attribute has no effect if func_is_bound=False.
 
 + **set_attrs**: If the function being processed is a class method (a bound function), set the arguments as class attributes. Default is true. Set to false to disable. This attribute has no effect if is_class=False.
 
