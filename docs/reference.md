@@ -8,21 +8,25 @@ ArgInit(env_prefix="", priority=ARG_PRIORITY, use_kwargs=False, func_is_bound=Fa
 
 Initialise arguments using the function that calls ArgInit as the reference. Process each argument, setting the value of the class dictionary, args, with either the value provided by the argument, an associated environment variable or a default value. If the value of the arg or env is None then try the next item in the selected priority system
 
-env_prefix: env_prefix is used to avoid namespace clashes with environment variables. If set, all environment variables must have include this prefix followed by an "_" character and the name of the argument.
+### Arguments
 
-priority: By default arguments will be set based on the prioty env, arg, default. An alternate priority of arg, env, default is available by setting priority=ARG_PRIORITY.
++ **env_prefix**: env_prefix is used to avoid namespace clashes with environment variables. If set, all environment variables must have include this prefix followed by an "_" character and the name of the argument.
 
-use_kwargs: When initialising arguments, only named arguments will be initialised by default. If use_kwargs=True, then any keyword arguments will also be initialised
++ **priority**: By default arguments will be set based on the prioty env, arg, default. An alternate priority of arg, env, default is available by setting priority=ARG_PRIORITY.
 
-func_is_bound: Set to True if the function being processed is a class method i.e. the first argument is "self"
++ **use_kwargs**: When initialising arguments, only named arguments will be initialised by default. If use_kwargs=True, then any keyword arguments will also be initialised
 
-set_attrs: If the function being processed is a class method (a bound function), set the arguments as class attributes. Default is true. Set to false to disable. This attribute has no effect if func_is_bound=False.
++ **func_is_bound**: Set to True if the function being processed is a class method i.e. the first argument is "self"
 
-args: A list of Arg objects that allow overriding the processing behaviour of individual arguments.
++ **set_attrs**: If the function being processed is a class method (a bound function), set the arguments as class attributes. Default is true. Set to false to disable. This attribute has no effect if func_is_bound=False.
+
++ **set_attrs**: If the function being processed is a class method (a bound function), set the arguments as class attributes. Default is true. Set to false to disable. This attribute has no effect if is_class=False.
+
++ **args**: A list of Arg objects that allow overriding the processing behaviour of individual arguments.
 
 ### Attributes
 
-args
+#### args
 
 An object representing the processed arguments. Arguments are exposed as attributes or key/value pairs.
 
@@ -35,6 +39,8 @@ Arg(name, env=None, default=None, attr=None, force_arg=False, force_env=True, fo
 ```
 
 A dataclass that is used to customise the processing of arguments.
+
+### Arguments
 
 + **name**: (required) The name of the argument.
 
@@ -52,7 +58,7 @@ A dataclass that is used to customise the processing of arguments.
 
 ## AttributeExistsError
 
-Raised if attempting to set an attribute of an object, and an attribute with the same name already exists.
+Raised if attempting to set an attribute of an object and an attribute with the same name already exists.
 
 ```python
 AttributeExistsError(Exception)
