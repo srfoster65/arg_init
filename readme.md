@@ -22,7 +22,7 @@ Rather than attempt to dynamically determine if the function to be processed is 
 
 ## Priority
 
-The argument value is set when a non **None** value is found.
+The argument value is set when a non **None** value is found, or all options are exhausted. At this point the argument is set to None (unless force default==False).
 
 What priority should be used to set an argument?
 
