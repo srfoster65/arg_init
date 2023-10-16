@@ -1,8 +1,8 @@
 # Overview
 
 [![Tests](https://github.com/srfoster65/arg_init/actions/workflows/build.yml/badge.svg)](https://github.com/srfoster65/arg_init/actions/workflows/build.yml)
-[![Docs](https://github.com/srfoster65/arg_init/actions/workflows/docs.yml/badge.svg)](https://srfoster65.github.io/arg_init/)
 [![codecov](https://codecov.io/gh/srfoster65/arg_init/graph/badge.svg?token=FFNWSCS4BB)](https://codecov.io/gh/srfoster65/arg_init)
+[![Docs](https://github.com/srfoster65/arg_init/actions/workflows/docs.yml/badge.svg)](https://srfoster65.github.io/arg_init/)
 [![PyPI](https://img.shields.io/pypi/v/arg-init?logo=python&logoColor=%23cccccc)](https://pypi.org/project/arg-init)
 [![PyPI - License](https://img.shields.io/pypi/l/arg-init)](https://srfoster65.github.io/arg_init/license/)
 
