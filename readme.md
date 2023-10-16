@@ -1,8 +1,8 @@
 # Overview
 
 [![Tests](https://github.com/srfoster65/arg_init/actions/workflows/build.yml/badge.svg)](https://github.com/srfoster65/arg_init/actions/workflows/build.yml)
-[![Docs](https://github.com/srfoster65/arg_init/actions/workflows/docs.yml/badge.svg)](https://srfoster65.github.io/arg_init/)
 [![codecov](https://codecov.io/gh/srfoster65/arg_init/graph/badge.svg?token=FFNWSCS4BB)](https://codecov.io/gh/srfoster65/arg_init)
+[![Docs](https://github.com/srfoster65/arg_init/actions/workflows/docs.yml/badge.svg)](https://srfoster65.github.io/arg_init/)
 [![PyPI](https://img.shields.io/pypi/v/arg-init?logo=python&logoColor=%23cccccc)](https://pypi.org/project/arg-init)
 [![PyPI - License](https://img.shields.io/pypi/l/arg-init)](https://srfoster65.github.io/arg_init/license/)
 
@@ -18,11 +18,11 @@ If ArgumentParser is used to create a CLI for an application then default values
 
 arg_init uses introspection (via the [inspect](https://docs.python.org/3/library/inspect.html) module) to determine function arguments and values. Its use is minimal and is only executed once at startup so performance should not be an issue.
 
-Rather than attempt to dynamically determine if the function to be processed is a bound function (a class method, with a class reference (self) as the first parameter) or an unbound function (a simple function), the current implementation requires this be specified at initialisation using the argument **is_class**.
+Rather than attempt to dynamically determine if the function to be processed is a bound function (a class method, with a class reference (self) as the first parameter) or an unbound function (a simple function), the current implementation requires this be specified at initialisation using the argument **func_is_bound**.
 
 ## Priority
 
-The argument value is set when a non **None** value is found.
+The argument value is set when a non **None** value is found, or all options are exhausted. At this point the argument is set to None (unless force default==False).
 
 What priority should be used to set an argument?
 
@@ -65,7 +65,7 @@ from arg_init import ArgInit
 
 class MyApp:
     def __init__(self, arg1=None):
-        ArgInit(is_class=True)
+        ArgInit(func_is_bound=True)
         ...
 
 ```
@@ -120,7 +120,7 @@ from arg_init import ArgInit
 
 class MyApp:
     def __init__(self, arg1=None):
-        ArgInit(env_prefix="myapp", is_class=True)
+        ArgInit(env_prefix="myapp", func_is_bound=True)
         ...
 
 ```
