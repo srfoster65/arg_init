@@ -1,4 +1,4 @@
-name: Build and Run Unittests
+name: CI
 
 on:
 - push
@@ -11,10 +11,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    # - name: Set up Python
-    #   uses: actions/setup-python@v4
-    #   with:
-    #     python-version: "3.11"
 
     - name: Setup PDM
       uses: pdm-project/setup-pdm@v3
