@@ -1,0 +1,14 @@
+coverage:
+  status:
+    project: off
+
+flag_management:
+  individual_flags:
+    - name: build
+      paths:
+        - src/
+      statuses:
+        - type: project
+          # target: 100%
+          target: auto
+          threshold: 1%
