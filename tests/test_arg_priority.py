@@ -89,7 +89,7 @@ class TestDefaultConfig:
             assert args[expected.key] == expected.value
 
 
-    def test_multiple_argss(self):
+    def test_multiple_args(self):
         """
         Test multiple arg values are returned
         """
@@ -121,3 +121,28 @@ class TestDefaultConfig:
             args = _test(None, None)
             assert args["arg1"] == env1_value
             assert args["arg2"] == env2_value
+
+    def test_multiple_mixed(self):
+        """
+        Test mixed initialisation
+          arg1 - arg priority
+          arg2 - arg, env not set
+          arg3 - eng - arg = None
+        """
+        def _test(arg1, arg2, arg3):
+            return ArgInit().args
+
+        env1 = "ARG1"
+        env1_value = "arg1_env"
+        env3 = "ARG3"
+        env3_value = "arg3_env"
+        arg1_value = "arg1_arg"
+        arg2_value = "arg1_arg"
+        arg3_value = None
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setenv(env1, env1_value)
+            mp.setenv(env3, env3_value)
+            args = _test(arg1_value, arg2_value, arg3_value)
+            assert args["arg1"] == arg1_value
+            assert args["arg2"] == arg2_value
+            assert args["arg3"] == env3_value
