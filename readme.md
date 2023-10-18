@@ -28,7 +28,7 @@ What priority should be used to set an argument?
 
 ### Argument Priority Order
 
-Passed in arguments have prioirty over environment variables.
+Passed in arguments have priorty over environment variables.
 
 1. Arg
 2. Env

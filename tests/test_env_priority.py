@@ -77,10 +77,10 @@ class TestDefaultConfig:
         """
         def _test(arg1=None):
             return ArgInit(env_prefix=prefix, priority=ArgInit.ENV_PRIORITY, args=arguments).args
+
         with pytest.MonkeyPatch.context() as mp:
             for env, value in envs.items():
                 mp.setenv(env, value)
-        # with modified_environ(**envs):
             args = _test(arg1=arg1_value)
             assert args[expected.key] == expected.value
 
