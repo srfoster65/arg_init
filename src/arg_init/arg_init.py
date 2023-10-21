@@ -33,6 +33,7 @@ class ArgInit:
         use_kwargs: bool = False,
         func_is_bound: bool = False,
         set_attrs: bool = True,  # Only applicable if func_is_bound=True
+        protect_attrs: bool = True, # Only applicable if set_attrs=True
         args: None | list = None,
     ):
         self._env_prefix = env_prefix
@@ -40,6 +41,7 @@ class ArgInit:
         self._use_kwargs = use_kwargs
         self._func_is_bound = func_is_bound
         self._set_attrs = set_attrs
+        self._protect_attrs = protect_attrs
         self._args = Box()
         self._go(args)
 
@@ -104,7 +106,6 @@ class ArgInit:
                     logger.debug("Arg(%s) found", name)
                     return arg
         logger.debug("Arg(name=%s) not found. Creating default.", name)
-        # logger.debug("No Arg class provided. Creating Arg(name=%s)", name)
         return Arg(name)
 
     def _arg_priority(self, arg: Arg, value: any) -> None:
@@ -183,6 +184,8 @@ class ArgInit:
             logger.debug("Setting class attributes")
             class_ref = self._get_first_arg(frame)
             for arg, value in self.args.items():
+                if self._protect_attrs:
+                    arg = "_" + arg if not arg.startswith("_") else arg
                 if hasattr(class_ref, arg):
                     raise AttributeExistsError(arg)
                 logger.debug("  %s = %s", arg, value)
