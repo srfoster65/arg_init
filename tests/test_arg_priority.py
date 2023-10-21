@@ -10,8 +10,6 @@ import pytest
 from arg_init import Arg
 from arg_init import ArgInit
 
-from .environ import modified_environ
-
 
 logger = logging.getLogger(__name__)
 Expected = namedtuple('Expcted', 'key value')
@@ -82,19 +80,20 @@ class TestDefaultConfig:
         def _test(arg1=None):
             return ArgInit(env_prefix=prefix, priority=ArgInit.ARG_PRIORITY, args=arguments).args
 
-        # envs = envs if envs else {}
-        with modified_environ(**envs):
+        with pytest.MonkeyPatch.context() as mp:
+            for env, value in envs.items():
+                mp.setenv(env, value)
             args = _test(arg1=arg_value)
             print(args)
             assert args[expected.key] == expected.value
 
 
-    def test_multiple_argss(self):
+    def test_multiple_args(self):
         """
         Test multiple arg values are returned
         """
         def _test(arg1, arg2):
-            return ArgInit().args
+            return ArgInit(priority=ArgInit.ARG_PRIORITY).args
 
         arg1 = "arg1"
         arg1_value = "arg1_value"
@@ -110,14 +109,40 @@ class TestDefaultConfig:
         Test a multiple args can be initialised
         """
         def _test(arg1, arg2):
-            return ArgInit().args
+            return ArgInit(priority=ArgInit.ARG_PRIORITY).args
 
         env1 = "ARG1"
         env1_value = "arg1_env"
         env2 = "ARG2"
         env2_value = "arg2_env"
-        envs = {env1: env1_value, env2: env2_value}
-        with modified_environ(**envs):
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setenv(env1, env1_value)
+            mp.setenv(env2, env2_value)
             args = _test(None, None)
             assert args["arg1"] == env1_value
             assert args["arg2"] == env2_value
+
+    def test_multiple_mixed(self):
+        """
+        Test mixed initialisation
+          arg1 - arg priority
+          arg2 - arg, env not set
+          arg3 - eng - arg = None
+        """
+        def _test(arg1, arg2, arg3):
+            return ArgInit(priority=ArgInit.ARG_PRIORITY).args
+
+        env1 = "ARG1"
+        env1_value = "arg1_env"
+        env3 = "ARG3"
+        env3_value = "arg3_env"
+        arg1_value = "arg1_arg"
+        arg2_value = "arg1_arg"
+        arg3_value = None
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setenv(env1, env1_value)
+            mp.setenv(env3, env3_value)
+            args = _test(arg1_value, arg2_value, arg3_value)
+            assert args["arg1"] == arg1_value
+            assert args["arg2"] == arg2_value
+            assert args["arg3"] == env3_value

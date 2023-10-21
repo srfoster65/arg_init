@@ -104,7 +104,6 @@ class ArgInit:
                     logger.debug("Arg(%s) found", name)
                     return arg
         logger.debug("Arg(name=%s) not found. Creating default.", name)
-        # logger.debug("No Arg class provided. Creating Arg(name=%s)", name)
         return Arg(name)
 
     def _arg_priority(self, arg: Arg, value: any) -> None:
