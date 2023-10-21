@@ -27,42 +27,39 @@ class TestDefaultConfig:
         Test ArgInit on a class method
         """
         class Test:
-            """
-            blah
-            """
+            """Test Class"""
             def __init__(self, arg1):
                 ArgInit(func_is_bound=True)
 
         arg1_value = "arg1_value"
         test_class = Test(arg1_value)
-
-        print('in pytest', isclass(test_class))
-
-        assert test_class.arg1 == arg1_value
+        # Note: arg1 is accessed as _arg1 as protect_attrs=True
+        assert test_class._arg1 == arg1_value
 
 
-    def test_attribute_exists_not_set(self):
+    def test_exception_raised_if_protected_attr_exists(self):
         """
         Test exception raised if attempting to set an attribute that already exists
         """
         class Test:
-            def __init__(self, arg1):
-                self.arg1 = "other_value"
+            """Test Class"""
+            def __init__(self, arg1=None):
+                self._arg1 = "other_value"
                 ArgInit(func_is_bound=True)
 
         with pytest.raises(AttributeExistsError):
-            arg1_value = "arg1_value"
-            Test(arg1_value)
+            Test()
 
-    def test_attribute_not_set(self):
+    def test_exception_raised_if_non_protected_attr_exists(self):
         """
-        Test exception raised if attempting to set an attribute that already exists
+        Test exception raised if attempting to set an attribute that already exists.
+        Verify "_" is not used as a prefix to attr when protect_attrs=False.
         """
         class Test:
-            def __init__(self, arg1):
-                ArgInit(func_is_bound=True, set_attrs=False)
+            """Test Class"""
+            def __init__(self, arg1=None):
+                self.arg1 = "other_value"
+                ArgInit(func_is_bound=True, protect_attrs=False)
 
-        with pytest.raises(AttributeError):
-            arg1_value = "arg1_value"
-            arg1  = Test(arg1=arg1_value).args["arg1"]
-
+        with pytest.raises(AttributeExistsError):
+            Test()
