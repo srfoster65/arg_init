@@ -17,7 +17,7 @@ class TestDefaultConfig:
     Test args attributes
     """
 
-    def test_args_attribute(self):
+    def test_protected_attribute(self):
         """
         Test ArgItit().args exposes arguments as attributes
         """
@@ -27,4 +27,18 @@ class TestDefaultConfig:
 
         arg1_value = "arg1_value"
         test_class = Test(arg1_value)
+        #  pylint: disable=protected-access
+        assert test_class.args._arg1 == arg1_value
+
+    def test_attribute(self):
+        """
+        Test ArgItit().args exposes arguments as attributes
+        """
+        class Test:
+            def __init__(self, arg1):
+                self.args = ArgInit(protect_attrs=False).args
+
+        arg1_value = "arg1_value"
+        test_class = Test(arg1_value)
         assert test_class.args.arg1 == arg1_value
+

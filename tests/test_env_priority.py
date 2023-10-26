@@ -12,7 +12,7 @@ from arg_init import ArgInit
 
 
 logger = logging.getLogger(__name__)
-Expected = namedtuple('Expcted', 'key value')
+Expected = namedtuple('Expected', 'key value')
 
 
 class TestDefaultConfig:
@@ -24,28 +24,27 @@ class TestDefaultConfig:
         "prefix, arguments, arg1_value, envs, expected",
         [
             # No Arg defined
-            (None, [], "arg1_value", {}, Expected("arg1", "arg1_value")),
-            (None, [], "arg1_value", {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            (None, [], None, {}, Expected("arg1", None)),
+            (None, [], "arg1_value", {}, Expected("_arg1", "arg1_value")),
+            (None, [], "arg1_value", {"ARG1": "env1_value"}, Expected("_arg1", "env1_value")),
+            (None, [], None, {}, Expected("_arg1", None)),
 
             # Use arg
-            (None, [Arg("arg1", None, None, None, False, False, True, False)], "arg1_value", {}, Expected("arg1", "arg1_value")),
-            (None, [Arg("arg1", None, "default", None, False, False, True, False)], "arg1_value", {}, Expected("arg1", "arg1_value")),
-            (None, [Arg("arg1", None, "default", "new_arg", False, False, True, False)], "arg1_value", {}, Expected("new_arg", "arg1_value")),
-            (None, [Arg("arg1", None, "default", None, True, False, True, False)], None, {}, Expected("arg1", None)),
+            (None, [Arg("arg1", None, None, None, False, False, False)], "arg1_value", {}, Expected("arg1", "arg1_value")),
+            (None, [Arg("arg1", None, "default", None, False, False, False)], "arg1_value", {}, Expected("arg1", "arg1_value")),
+            (None, [Arg("arg1", None, "default", "new_arg", False, False, False)], "arg1_value", {}, Expected("new_arg", "arg1_value")),
+            (None, [Arg("arg1", None, "default", None, True, False, False)], None, {}, Expected("arg1", None)),
+
+            # Use arg, env disabled
+            (None, [Arg("arg1", None, None, None, False, False, True)], "arg1_value", {"ARG1": "env1_value"}, Expected("arg1", "arg1_value")),
 
             # Use env
-            (None, [Arg("arg1", None, None, None, False, False, True, False)], None, {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            (None, [Arg("arg1", "arg1", None, None, False, False, True, False)], "arg1_value", {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            (None, [Arg("arg1", "foo", None, None, False, False, True, False)], "arg1_value", {"FOO": "env1_value"}, Expected("arg1", "env1_value")),
-            ("prefix", [Arg("arg1", None, None, None, False, False, True, False)], "arg1_value", {"PREFIX_ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            ("prefix", [Arg("arg1", "arg1", None, None, False, False, True, False)], "arg1_value", {"PREFIX_ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            ("prefix", [Arg("arg1", "foo", None, None, False, False, True, False)], "arg1_value", {"PREFIX_FOO": "env1_value"}, Expected("arg1", "env1_value")),
-            (None, [Arg("arg1", None, "default", None, False, True, False, False)], "arg1_value", {"ARG1": ""}, Expected("arg1", "")),
+            (None, [Arg("arg1", None, None, None, False, False, False)], None, {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
+            (None, [Arg("arg1", "arg1", None, None, False, False, False)], "arg1_value", {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
+            (None, [Arg("arg1", "foo", None, None, False, False, False)], "arg1_value", {"FOO": "env1_value"}, Expected("arg1", "env1_value")),
 
             # Use default
-            (None, [Arg("arg1", None, "default", None, False, False, True, False)], None, {}, Expected("arg1", "default")),
-            (None, [Arg("arg1", None, "default", None, False, False, True, True)], None, {"ARG1": "env1_value"}, Expected("arg1", "default")),
+            (None, [Arg("arg1", None, "default", None, False, False, True)], None, {}, Expected("arg1", "default")),
+            (None, [Arg("arg1", None, "default", None, False, False, True)], None, {"ARG1": "env1_value"}, Expected("arg1", "default")),
         ],
     )
     def test_matrix(self, prefix, arguments, arg1_value, envs, expected):
@@ -84,6 +83,21 @@ class TestDefaultConfig:
             args = _test(arg1=arg1_value)
             assert args[expected.key] == expected.value
 
+    def test_env_prefix(self):
+        """
+        Test env_prefix is applied to arg name        
+        """
+        def _test(arg1):
+            return ArgInit(env_prefix="prefix").args
+
+        env1 = "PREFIX_ARG1"
+        env1_value = "env1_value"
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setenv(env1, env1_value)
+            arg1 = "_arg1"
+            arg1_value = "arg1_value"
+            args = _test(arg1_value)
+            assert args[arg1] == env1_value
 
     def test_multiple_args(self):
         """
@@ -92,9 +106,9 @@ class TestDefaultConfig:
         def _test(arg1, arg2):
             return ArgInit().args
 
-        arg1 = "arg1"
+        arg1 = "_arg1"
         arg1_value = "arg1_value"
-        arg2 = "arg2"
+        arg2 = "_arg2"
         arg2_value = "p2_value"
         args = _test(arg1_value, arg2_value)
         assert args[arg1] == arg1_value
@@ -116,8 +130,8 @@ class TestDefaultConfig:
             mp.setenv(env1, env1_value)
             mp.setenv(env2, env2_value)
             args = _test(None, None)
-            assert args["arg1"] == env1_value
-            assert args["arg2"] == env2_value
+            assert args["_arg1"] == env1_value
+            assert args["_arg2"] == env2_value
 
     def test_multiple_mixed(self):
         """
@@ -140,7 +154,6 @@ class TestDefaultConfig:
             mp.setenv(env1, env1_value)
             mp.setenv(env2, env2_value)
             args = _test(arg1_value, arg2_value, arg3_value)
-            assert args["arg1"] == env1_value
-            assert args["arg2"] == env2_value
-            assert args["arg3"] == arg3_value
-
+            assert args["_arg1"] == env1_value
+            assert args["_arg2"] == env2_value
+            assert args["_arg3"] == arg3_value

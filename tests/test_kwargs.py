@@ -30,8 +30,8 @@ class TestDefaultConfig:
         kwarg1_value = "kwarg1_value"
         kwargs = {kwarg1: kwarg1_value}
         args = _test(arg1_value, **kwargs)
-        assert args[arg1] == arg1_value
-        assert kwarg1 not in args
+        assert args["_arg1"] == arg1_value
+        assert "_kwarg1" not in args
 
 
     def test_kwargs_used(self):
@@ -47,5 +47,5 @@ class TestDefaultConfig:
         kwarg1_value = "kwarg1_value"
         kwargs = {kwarg1: kwarg1_value}
         args = _test(arg1_value, **kwargs)
-        assert args[arg1] == arg1_value
-        assert args[kwarg1] == kwarg1_value
+        assert args["_arg1"] == arg1_value
+        assert args["_kwarg1"] == kwarg1_value
