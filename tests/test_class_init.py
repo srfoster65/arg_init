@@ -29,7 +29,7 @@ class TestDefaultConfig:
         class Test:
             """Test Class"""
             def __init__(self, arg1):
-                ArgInit(func_is_bound=True)
+                ArgInit(func_is_bound=True).resolve()
 
         arg1_value = "arg1_value"
         test_class = Test(arg1_value)
@@ -45,7 +45,7 @@ class TestDefaultConfig:
             """Test Class"""
             def __init__(self, arg1=None):
                 self._arg1 = "other_value"
-                ArgInit(func_is_bound=True)
+                ArgInit(func_is_bound=True).resolve()
 
         with pytest.raises(AttributeExistsError):
             Test()
@@ -59,7 +59,7 @@ class TestDefaultConfig:
             """Test Class"""
             def __init__(self, arg1=None):
                 self.arg1 = "other_value"
-                ArgInit(func_is_bound=True, protect_attrs=False)
+                ArgInit(func_is_bound=True, protect_attrs=False).resolve()
 
         with pytest.raises(AttributeExistsError):
             Test()

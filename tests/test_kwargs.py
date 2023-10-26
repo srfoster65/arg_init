@@ -22,15 +22,15 @@ class TestDefaultConfig:
         Test kwargs are ignored if not explicity enabled
         """
         def _test(arg1, **kwargs):
-            return ArgInit().args
+            return ArgInit().resolve()
 
-        arg1 = "arg1"
+        arg1 = "_arg1"
         arg1_value = "arg1_value"
         kwarg1 = "kwarg1"
         kwarg1_value = "kwarg1_value"
         kwargs = {kwarg1: kwarg1_value}
         args = _test(arg1_value, **kwargs)
-        assert args["_arg1"] == arg1_value
+        assert args[arg1] == arg1_value
         assert "_kwarg1" not in args
 
 
@@ -39,13 +39,13 @@ class TestDefaultConfig:
         Test kwargs are processed if enabled
         """
         def _test(arg1, **kwargs):
-            return ArgInit(use_kwargs=True).args
+            return ArgInit().resolve(use_kwargs=True)
 
-        arg1 = "arg1"
+        arg1 = "_arg1"
         arg1_value = "arg1_value"
         kwarg1 = "kwarg1"
         kwarg1_value = "kwarg1_value"
         kwargs = {kwarg1: kwarg1_value}
         args = _test(arg1_value, **kwargs)
-        assert args["_arg1"] == arg1_value
+        assert args[arg1] == arg1_value
         assert args["_kwarg1"] == kwarg1_value

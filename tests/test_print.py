@@ -22,7 +22,7 @@ class TestPrintFunctions:
         """
 
         def _test(arg1):
-            return ArgInit().args
+            return ArgInit().resolve()
 
         arg1 = "_arg1"
         arg1_value = "arg1_value"
@@ -37,7 +37,7 @@ class TestPrintFunctions:
         """
 
         def _test(arg1):
-            return ArgInit().args
+            return ArgInit().resolve()
 
         arg1 = "_arg1"
         arg1_value = "arg1_value"

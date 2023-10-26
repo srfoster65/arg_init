@@ -9,7 +9,12 @@ Both above conditions are ignored if explicit values are provided for env or att
  
 """
 
+import logging
+
 from .arg import Arg
+
+
+logger = logging.getLogger(__name__)
 
 
 class ArgFactory:
@@ -18,10 +23,11 @@ class ArgFactory:
     def __init__(
         self,
         env_prefix: str = "",
-        protect_attr: bool = True,  # Only applicable if set_attrs=True
+        protect_attr: bool = True,
     ):
         self._env_prefix = env_prefix
         self._protect_attr = protect_attr
+        print("self._protect_attr", self._protect_attr)
 
     def make(
         self,
@@ -54,7 +60,10 @@ class ArgFactory:
     def _get_attr_name(self, name, attr):
         """Determine the name of the attr."""
         if attr:
+            logger.debug("Using suppied attr")
             return attr
         if self._protect_attr:
+            logger.debug("Adding '_' to attr name")
             return "_" + name if not name.startswith("_") else name
+        logger.debug("Using default attr name")
         return name

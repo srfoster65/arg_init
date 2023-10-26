@@ -6,14 +6,14 @@ from collections import namedtuple
 import logging
 
 from arg_init import ArgInit
-from arg_init import Arg
+# from arg_init import Arg
 
 
 logger = logging.getLogger(__name__)
 Expected = namedtuple('Expcted', 'key value')
 
 
-class TestDefaultConfig:
+class TestEdgeCases:
     """
     Class to test ArgInit for argument priority.
     """
@@ -23,9 +23,10 @@ class TestDefaultConfig:
         Test no action taken if no Arg available
         """
         def _test(arg1):
-            return ArgInit(args=[Arg("arg2")]).args
+            arg_init = ArgInit()
+            args = arg_init.resolve(args=[arg_init.make_arg("arg2")])
+            assert args[arg1_name] == arg1
 
-        arg1 = "_arg1"
+        arg1_name = "_arg1"
         arg1_value = "arg1_value"
-        args = _test(arg1_value)
-        assert args[arg1] == arg1_value
+        _test(arg1_value)

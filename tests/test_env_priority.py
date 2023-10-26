@@ -75,7 +75,7 @@ class TestDefaultConfig:
         2. Env is set, but disable_env = True
         """
         def _test(arg1=None):
-            return ArgInit(env_prefix=prefix, priority=ArgInit.ENV_PRIORITY, args=arguments).args
+            return ArgInit(env_prefix=prefix).resolve(priority=ArgInit.ENV_PRIORITY, args=arguments)
 
         with pytest.MonkeyPatch.context() as mp:
             for env, value in envs.items():
@@ -88,7 +88,7 @@ class TestDefaultConfig:
         Test env_prefix is applied to arg name        
         """
         def _test(arg1):
-            return ArgInit(env_prefix="prefix").args
+            return ArgInit(env_prefix="prefix").resolve()
 
         env1 = "PREFIX_ARG1"
         env1_value = "env1_value"
@@ -104,7 +104,7 @@ class TestDefaultConfig:
         Test initialisation from args when no envs defined
         """
         def _test(arg1, arg2):
-            return ArgInit().args
+            return ArgInit().resolve()
 
         arg1 = "_arg1"
         arg1_value = "arg1_value"
@@ -120,7 +120,7 @@ class TestDefaultConfig:
         Test initialised from envs
         """
         def _test(arg1, arg2):
-            return ArgInit().args
+            return ArgInit().resolve()
 
         env1 = "ARG1"
         env1_value = "arg1_env"
@@ -141,7 +141,7 @@ class TestDefaultConfig:
           arg3 - arg - env not set
         """
         def _test(arg1, arg2, arg3):
-            return ArgInit().args
+            return ArgInit().resolve()
 
         env1 = "ARG1"
         env1_value = "arg1_env"

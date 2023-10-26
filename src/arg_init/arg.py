@@ -23,7 +23,7 @@ class Attribute:
 
 
 class Arg:
-    """Class to represent argument attrubutes."""
+    """Class to represent argument attributes."""
 
     ARG_PRIORITY = "arg_priority"
     ENV_PRIORITY = "env_priority"

@@ -2,6 +2,7 @@
 
 from .arg_init import ArgInit
 from .arg  import Arg
+from .arg_factory import ArgFactory
 from .exceptions import AttributeExistsError
 
 
@@ -9,5 +10,6 @@ from .exceptions import AttributeExistsError
 __all__ = [
     "ArgInit",
     "Arg",
+    "ArgFactory",
     "AttributeExistsError",
 ]
