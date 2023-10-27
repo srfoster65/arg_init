@@ -47,7 +47,7 @@ class Arg:
         self._default = Attribute("default", default, force=True)
         self._value = None
         self._disable_env = disable_env
-        self._attr = attr or name
+        # self._attr = attr or name
         self._disable_env = disable_env
         self._priority = None
 
@@ -60,7 +60,7 @@ class Arg:
             f"arg={self.arg}",
             f"env={self.env}",
             f"default={self.default}",
-            f"attr={self._attr}",
+            # f"attr={self._attr}",
             f"disable_env={self._disable_env}",
             f"priority={self._priority}",
             f"value={self.value}"
@@ -75,7 +75,7 @@ class Arg:
     @property
     def name(self):
         """Name of Arg."""
-        return self.attr
+        return self.arg.name
 
     @property
     def value(self):
@@ -97,10 +97,10 @@ class Arg:
         """default attribute."""
         return self._default
 
-    @property
-    def attr(self):
-        """attr is the alternate name for the argument."""
-        return self._attr
+    # @property
+    # def attr(self):
+    #     """attr is the alternate name for the argument."""
+    #     return self._attr
 
     def resolve(self, priority=DEFAULT_PRIORITY_SYSTEM):
         """

@@ -5,11 +5,9 @@ Test ArgInit class variable initialisation.
 from collections import namedtuple
 import logging
 
-from inspect import isclass
-
 import pytest
 
-from arg_init import ArgInit
+from arg_init import ClassArgInit
 from arg_init import AttributeExistsError
 
 
@@ -29,12 +27,11 @@ class TestDefaultConfig:
         class Test:
             """Test Class"""
             def __init__(self, arg1):
-                ArgInit(func_is_bound=True).resolve()
+                ClassArgInit().resolve()
+                assert self._arg1 == arg1_value
 
         arg1_value = "arg1_value"
-        test_class = Test(arg1_value)
-        # Note: arg1 is accessed as _arg1 as protect_attrs=True
-        assert test_class._arg1 == arg1_value
+        Test(arg1_value)
 
 
     def test_exception_raised_if_protected_attr_exists(self):
@@ -45,7 +42,7 @@ class TestDefaultConfig:
             """Test Class"""
             def __init__(self, arg1=None):
                 self._arg1 = "other_value"
-                ArgInit(func_is_bound=True).resolve()
+                ClassArgInit().resolve()
 
         with pytest.raises(AttributeExistsError):
             Test()
@@ -59,7 +56,7 @@ class TestDefaultConfig:
             """Test Class"""
             def __init__(self, arg1=None):
                 self.arg1 = "other_value"
-                ArgInit(func_is_bound=True, protect_attrs=False).resolve()
+                ClassArgInit().resolve(protect_attrs=False)
 
         with pytest.raises(AttributeExistsError):
             Test()

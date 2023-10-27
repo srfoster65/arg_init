@@ -5,8 +5,7 @@ Test ArgInit processes kwargs.
 from collections import namedtuple
 import logging
 
-from arg_init import ArgInit
-# from arg_init import Arg
+from arg_init import FunctionArgInit
 
 
 logger = logging.getLogger(__name__)
@@ -22,11 +21,11 @@ class TestEdgeCases:
         """
         Test no action taken if no Arg available
         """
-        def _test(arg1):
-            arg_init = ArgInit()
-            args = arg_init.resolve(args=[arg_init.make_arg("arg2")])
-            assert args[arg1_name] == arg1
+        def test(arg1):
+            arg_init = FunctionArgInit()
+            arg_init.make_arg("arg2")
+            args = arg_init.resolve()
+            assert args["arg1"] == arg1_value
 
-        arg1_name = "_arg1"
         arg1_value = "arg1_value"
-        _test(arg1_value)
+        test(arg1_value)

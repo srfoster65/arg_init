@@ -2,131 +2,105 @@
 Class to process arguments, environment variables and return a set of
 processed attribute values.
 """
-
-from inspect import stack, getargvalues
+from abc import ABC, abstractmethod
+# from inspect import stack, getargvalues
 import logging
 
 from box import Box
 
-from .exceptions import AttributeExistsError
+# from .exceptions import AttributeExistsError
 from .arg_factory import ArgFactory
 
 
 logger = logging.getLogger(__name__)
 
 
-class ArgInit:
+
+ARG_PRIORITY = "arg_priority"
+ENV_PRIORITY = "env_priority"
+
+
+class ArgInit(ABC):
     """
     Class to resolve arguments of a function from passed in values, environment
     variables or default values.
     """
 
-    ARG_PRIORITY = "arg_priority"
-    ENV_PRIORITY = "env_priority"
     DEFAULT_PRIORITY_SYSTEM = ENV_PRIORITY
-    STACK_LEVEL_OFFSET = 1  # The calling frame is 2 layers up
+    STACK_LEVEL_OFFSET = 1  # The calling frame is 1 layer up
 
     def __init__(
         self,
         env_prefix: str = "",
-        func_is_bound: bool = False,
-        protect_attrs: bool = True,  # Only applicable if set_attrs=True
     ):
-        self._func_is_bound = func_is_bound
         self._arg_factory = ArgFactory(
-            env_prefix=env_prefix, protect_attr=protect_attrs
+            env_prefix=env_prefix
         )
         self._args = Box()
 
     @property
-    def args(self):
+    def args(self) -> Box:
         """Return the processed arguments."""
         return self._args
 
+    @abstractmethod
+    def resolve(self, priority, use_kwargs, set_attrs, protect_attrs):
+        """Virtual function to be implemented by any derived class."""
+        raise RuntimeError("_get_arguments() must be implement in derived class")  # pragma no cover
+
+
+    @abstractmethod
+    def _get_arguments(self, frame, use_kwargs):
+        """Virtual function to be implemented by any derived class."""
+        raise RuntimeError("_get_arguments() must be implement in derived class")  # pragma no cover
+
     def make_arg(self, name, **kwargs):
         """
-        Return an Arg object using the arguments provided
+        Create an Arg object using the arguments provided.
+        Retruns the key the Arg is stored under in self._args.
         """
-        return self._arg_factory.make(name, **kwargs)
+        arg = self._arg_factory.make(name, **kwargs)
+        self._args[name] = arg
 
-    def resolve(
+    def _resolve(
         self,
+        calling_stack,
         priority: str = DEFAULT_PRIORITY_SYSTEM,
         use_kwargs: bool = False,
-        set_attrs: bool = True,  # Only applicable if func_is_bound=True
-        args: None | list = None,
-    ):
+    ) -> None:
         """
         Resolve argument values
         """
-        calling_stack = stack()[self.STACK_LEVEL_OFFSET]
         logger.debug("Resolving arguments for function: %s", calling_stack.function)
-        function_args = self._function_arguments(
-            calling_stack.frame, use_kwargs
-        )
-        for name, value in function_args.items():
-            arg = self._get_arg(name, args)
-            arg.arg.value = value
-            arg.resolve(priority)
-            self._args[arg.name] = arg
-        self._set_class_attrs(set_attrs, calling_stack.frame)
-        return self.args
+        arguments = self._get_arguments(calling_stack.frame, use_kwargs)
+        self._make_args(arguments)
+        self._resolve_args(priority)
 
-    def _function_arguments(self, frame, use_kwargs):
+    def _get_kwargs(self, arginfo, use_kwargs) -> dict:
         """
-        Returns a dictionary containing key value pairs of all
-        named arguments and optionally kwargs and their values,
-        associated with the specified frame.
+        Return a dictionary containing kwargs to be resolved.
+        Returns an empty dictionary if use_kwargs=False
         """
-        arginfo = getargvalues(frame)
-        args = {
-            arg: arginfo.locals.get(arg)
-            for count, arg in enumerate(arginfo.args)
-            if not self._is_self_arg(count)
-        }
         if use_kwargs and arginfo.keywords:
             keywords = arginfo.keywords
             logger.debug("Adding kwargs: %s", arginfo.locals[keywords])
-            args.update(dict(arginfo.locals[keywords].items()))
-        logger.debug("Named arguments: %s", args)
-        return args
+            return dict(arginfo.locals[keywords].items())
+        return {}
 
-    def _is_self_arg(self, count: int = 0) -> bool:
-        """Return True if the count is 0 and func_is_bound is True"""
-        if self._func_is_bound and count == 0:
-            logger.debug("Ignoring 1st argument as function is from a class")
-            return True
-        return False
+    def _make_args(self, arguments) -> None:
+        for name, value in arguments.items():
+            self._make_arg(name)
+            self._args[name].arg.value = value
 
-    def _get_arg(self, name: str, args: None | list) -> str:
-        if args:
-            logger.debug("Searching for Arg(name=%s)", name)
-            for arg in args:
-                if arg.arg.name == name:
-                    logger.debug("Arg(%s) found", name)
-                    return arg
-        logger.debug("Arg(name=%s) not found. Creating default.", name)
-        return self._arg_factory.make(name)
+    def _resolve_args(self, priority) -> None:
+        for arg in self._args.values():
+            arg.resolve(priority)
 
-    def _set_class_attrs(self, set_attrs, frame):
-        """Set attributes as defined in "args" for the class object."""
-        if self._func_is_bound and set_attrs:
-            logger.debug("Setting class attributes")
-            class_ref = self._get_class_instance(frame)
-            for arg in self._args.values():
-                self._set_attr(class_ref, arg.name, arg.value)
-
-    def _set_attr(self, class_ref, name, value):
-        if hasattr(class_ref, name):
-            raise AttributeExistsError(name)
-        logger.debug("  %s = %s", name, value)
-        setattr(class_ref, name, value)
-
-    def _get_class_instance(self, frame):
+    def _make_arg(self, name: str) -> None:
         """
-        Return the value of the 1st argument from the calling function.
-        This should be the class instance.
+        Make default Arg if one does not already exist in self._args
         """
-        arginfo = getargvalues(frame)
-        first_arg = arginfo.args[0]
-        return arginfo.locals.get(first_arg)
+        logger.debug("Searching for Arg(name=%s)", name)
+        if name not in self._args:
+            logger.debug("Arg(name=%s) not found. Creating default.", name)
+            self.make_arg(name)
