@@ -1,12 +1,12 @@
 """
-
+Class to initialise Argument Values for a Class Method
 """
 
 from inspect import stack, getargvalues
 import logging
 
-from .arg_init import ArgInit
-from .exceptions import AttributeExistsError
+from ._arg_init import ArgInit
+from ._exceptions import AttributeExistsError
 
 
 logger = logging.getLogger(__name__)
@@ -27,15 +27,13 @@ class ClassArgInit(ArgInit):
         priority: str = ArgInit.DEFAULT_PRIORITY_SYSTEM,
         use_kwargs: bool = False,
         set_attrs: bool = True,
-        protect_attrs: bool = True,
+        protect_args: bool = True,
+        **kwargs
     ):
-        """
-        Resolve argument values
-        """
+        """Resolve argument values."""
         calling_stack = stack()[self.STACK_LEVEL_OFFSET]
-
         self._resolve(calling_stack, priority, use_kwargs)
-        self._set_class_attrs(set_attrs, protect_attrs, calling_stack.frame)
+        self._set_class_attrs(set_attrs, protect_args, calling_stack.frame)
         return self._args
 
     def _get_arguments(self, frame, use_kwargs):
@@ -54,18 +52,18 @@ class ClassArgInit(ArgInit):
         args.update(self._get_kwargs(arginfo, use_kwargs))
         return args
 
-    def _set_class_attrs(self, set_attrs, protect_attrs, frame):
+    def _set_class_attrs(self, set_attrs, protect_args, frame):
         """Set attributes as defined in "args" for the class object."""
         if set_attrs:
             logger.debug("Setting class attributes")
             class_ref = self._get_class_instance(frame)
             for arg in self._args.values():
-                attr_name = self._get_attr_name(arg.name, protect_attrs)
-                self._set_attr(class_ref, attr_name, arg.value)
+                arg_name = self._get_arg_name(arg.name, protect_args)
+                self._set_attr(class_ref, arg_name, arg.value)
 
     @staticmethod
-    def _get_attr_name(name, protect_attr):
-        if protect_attr:
+    def _get_arg_name(name, protect_arg):
+        if protect_arg:
             return name if name.startswith("_") else "_" + name
         return name
 

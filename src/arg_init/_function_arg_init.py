@@ -1,12 +1,12 @@
 """
+Class to initialise Argument Values for a Function
 
 """
-
 
 from inspect import stack, getargvalues
 import logging
 
-from .arg_init import ArgInit
+from ._arg_init import ArgInit
 
 
 logger = logging.getLogger(__name__)
@@ -24,6 +24,7 @@ class FunctionArgInit(ArgInit):
         self,
         priority: str = ArgInit.DEFAULT_PRIORITY_SYSTEM,
         use_kwargs: bool = False,
+        **kwargs
     ):
         """
         Resolve argument values
@@ -35,11 +36,9 @@ class FunctionArgInit(ArgInit):
     def _get_arguments(self, frame, use_kwargs):
         """
         Returns a dictionary containing key value pairs of all
-        named arguments and their values associated with the frame,
-        skipping the first argument as this is a reference to the
-        class instance.
+        named arguments and their values associated with the frame.
         """
         arginfo = getargvalues(frame)
-        args = {arg: arginfo.locals.get(arg) for count, arg in enumerate(arginfo.args)}
+        args = {arg: arginfo.locals.get(arg) for arg in arginfo.args}
         args.update(self._get_kwargs(arginfo, use_kwargs))
         return args

@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 Expected = namedtuple('Expcted', 'key value')
 
 
-class TestDefaultConfig:
+class TestKwargs:
     """
     Class to test ArgInit for argument priority.
     """

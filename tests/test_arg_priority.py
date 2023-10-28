@@ -1,5 +1,5 @@
 """
-Test ArgInit with argument over env priority
+Test ArgInit with argument priority
 """
 
 from collections import namedtuple
@@ -7,7 +7,6 @@ import logging
 
 import pytest
 
-# from arg_init import Arg
 from arg_init import FunctionArgInit
 from arg_init import ARG_PRIORITY
 
@@ -15,7 +14,7 @@ logger = logging.getLogger(__name__)
 Expected = namedtuple('Expcted', 'key value')
 
 
-class TestDefaultConfig:
+class TestArgPriority:
     """
     Class to test ArgInit for argument priority.
     """
@@ -34,15 +33,12 @@ class TestDefaultConfig:
             (None, {"name": "arg1", "default": "default", "force_arg": True}, None, {"ARG1": "env_value"}, Expected("arg1", None)),
             (None, {"name": "arg1", "disable_env": True}, "arg1_value", {"ARG1": "env1_value"}, Expected("arg1", "arg1_value")),
 
-
             # Use env
             (None, {"name": "arg1"}, None, {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
             (None, {"name": "arg1", "env": "ARG1"}, None, {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
             (None, {"name": "arg1", "env": "foo"}, None, {"FOO": "env1_value"}, Expected("arg1", "env1_value")),
-
             ("prefix", {"name": "arg1"}, None, {"PREFIX_ARG1": "env1_value"}, Expected("arg1", "env1_value")),
             ("prefix", {"name": "arg1", "env": "ARG1"}, None, {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-
             (None, {"name": "arg1", "force_env": True}, None, {"ARG1": ""}, Expected("arg1", "")),
 
             # Use default
@@ -81,22 +77,21 @@ class TestDefaultConfig:
             if argument:
                 arg_init.make_arg(**argument)
             args = arg_init.resolve(priority=ARG_PRIORITY)
-            assert args[expected.key].value == expected.value
+            assert args[expected.key] == expected.value
 
         with pytest.MonkeyPatch.context() as mp:
             for env, value in envs.items():
                 mp.setenv(env, value)
-            test(arg1=arg_value)
-            
+                test(arg1=arg_value)
 
     def test_multiple_args(self):
         """
-        Test multiple arg values are returned
+        Test multiple arg values
         """
         def test(arg1, arg2):  # pylint: disable=unused-argument
             args = FunctionArgInit().resolve(priority=ARG_PRIORITY)
-            assert args["arg1"].value == arg1_value
-            assert args["arg2"].value == arg2_value
+            assert args["arg1"] == arg1_value
+            assert args["arg2"] == arg2_value
 
         arg1_value = "arg1_value"
         arg2_value = "arg2_value"
@@ -105,12 +100,12 @@ class TestDefaultConfig:
 
     def test_multiple_envs(self):
         """
-        Test a multiple args can be initialised
+        Test a multiple args from envs
         """
         def test(arg1, arg2):  # pylint: disable=unused-argument
             args = FunctionArgInit().resolve(priority=ARG_PRIORITY)
-            assert args["arg1"].value == env1_value
-            assert args["arg2"].value == env2_value
+            assert args["arg1"] == env1_value
+            assert args["arg2"] == env2_value
 
         env1 = "ARG1"
         env1_value = "arg1_env"
@@ -130,9 +125,9 @@ class TestDefaultConfig:
         """
         def test(arg1, arg2, arg3):  # pylint: disable=unused-argument
             args = FunctionArgInit().resolve(priority=ARG_PRIORITY)
-            assert args["arg1"].value == arg1_value
-            assert args["arg2"].value == arg2_value
-            assert args["arg3"].value == env3_value
+            assert args["arg1"] == arg1_value
+            assert args["arg2"] == arg2_value
+            assert args["arg3"] == env3_value
 
         env1 = "ARG1"
         env1_value = "arg1_env"
@@ -152,7 +147,7 @@ class TestDefaultConfig:
         """
         def test(arg1):  # pylint: disable=unused-argument
             args = FunctionArgInit(env_prefix="prefix").resolve(priority=ARG_PRIORITY)
-            assert args["arg1"].value == arg1_value
+            assert args["arg1"] == arg1_value
 
         arg1_value = "arg1_value"
         test(arg1_value)

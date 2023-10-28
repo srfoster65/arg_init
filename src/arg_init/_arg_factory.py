@@ -10,7 +10,7 @@ Both above conditions are ignored if explicit values are provided for env or att
 
 import logging
 
-from .arg import Arg
+from ._arg import Arg
 
 
 logger = logging.getLogger(__name__)

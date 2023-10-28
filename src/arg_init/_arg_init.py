@@ -3,17 +3,14 @@ Class to process arguments, environment variables and return a set of
 processed attribute values.
 """
 from abc import ABC, abstractmethod
-# from inspect import stack, getargvalues
 import logging
 
 from box import Box
 
-# from .exceptions import AttributeExistsError
-from .arg_factory import ArgFactory
+from ._arg_factory import ArgFactory
 
 
 logger = logging.getLogger(__name__)
-
 
 
 ARG_PRIORITY = "arg_priority"
@@ -33,9 +30,7 @@ class ArgInit(ABC):
         self,
         env_prefix: str = "",
     ):
-        self._arg_factory = ArgFactory(
-            env_prefix=env_prefix
-        )
+        self._arg_factory = ArgFactory(env_prefix=env_prefix)
         self._args = Box()
 
     @property
@@ -44,22 +39,31 @@ class ArgInit(ABC):
         return self._args
 
     @abstractmethod
-    def resolve(self, priority, use_kwargs, set_attrs, protect_attrs):
-        """Virtual function to be implemented by any derived class."""
-        raise RuntimeError("_get_arguments() must be implement in derived class")  # pragma no cover
-
+    def resolve(self, **kwargs):
+        """Resolve argument values for the calling function/method"""
+        raise RuntimeError()  # pragma no cover
 
     @abstractmethod
     def _get_arguments(self, frame, use_kwargs):
-        """Virtual function to be implemented by any derived class."""
-        raise RuntimeError("_get_arguments() must be implement in derived class")  # pragma no cover
+        """
+        Returns a dictionary containing key value pairs of all
+        named arguments and their values associated with the frame.
+        """
+        raise RuntimeError()  # pragma no cover
 
-    def make_arg(self, name, **kwargs):
-        """
-        Create an Arg object using the arguments provided.
-        Retruns the key the Arg is stored under in self._args.
-        """
-        arg = self._arg_factory.make(name, **kwargs)
+    def make_arg(
+        self,
+        name: str,
+        env: str = None,
+        default: any = None,
+        force_arg: bool = False,  # Force use of arg value if value = None
+        force_env: bool = False,  # Force use of env value if value = None
+        disable_env: bool = False,  # Do not search for an env value
+    ):
+        """Create an Arg object using the arguments provided."""
+        arg = self._arg_factory.make(
+            name, env, default, force_arg, force_env, disable_env
+        )
         self._args[name] = arg
 
     def _resolve(
@@ -68,9 +72,7 @@ class ArgInit(ABC):
         priority: str = DEFAULT_PRIORITY_SYSTEM,
         use_kwargs: bool = False,
     ) -> None:
-        """
-        Resolve argument values
-        """
+        """Resolve argument values."""
         logger.debug("Resolving arguments for function: %s", calling_stack.function)
         arguments = self._get_arguments(calling_stack.frame, use_kwargs)
         self._make_args(arguments)
@@ -97,9 +99,6 @@ class ArgInit(ABC):
             arg.resolve(priority)
 
     def _make_arg(self, name: str) -> None:
-        """
-        Make default Arg if one does not already exist in self._args
-        """
         logger.debug("Searching for Arg(name=%s)", name)
         if name not in self._args:
             logger.debug("Arg(name=%s) not found. Creating default.", name)

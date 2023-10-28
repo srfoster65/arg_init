@@ -1,5 +1,5 @@
 """
-Test ArgInit with env over argument priority
+Test ArgInit with env priority
 """
 
 from collections import namedtuple
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 Expected = namedtuple('Expected', 'key value')
 
 
-class TestDefaultConfig:
+class TestEnvPriority:
     """
     Class to test ArgInit for argument priority.
     """
