@@ -21,7 +21,7 @@ class TestPrintFunctions:
         """
 
         def test(arg1):
-            args = FunctionArgInit().resolve()
+            args = FunctionArgInit().args
             out = str(args[arg1_key])
             assert expected in out
 
@@ -36,15 +36,15 @@ class TestPrintFunctions:
         """
 
         def test(arg1):
-            args = FunctionArgInit().resolve()
+            args = FunctionArgInit().args
             out = repr(args[arg1_key])
             assert expected in out
 
         arg1_key = "arg1"
         arg1_value = "arg1_value"
         expected = "<Arg("\
-                   "arg=<Attribute(name=arg1, value=arg1_value, force=False)>, "\
-                   "env=<Attribute(name=ARG1, value=None, force=False)>, "\
-                   "default=<Attribute(name=default, value=None, force=True)>, "\
-                   "disable_env=False, priority=env_priority, value=arg1_value)>"
+                   "name=arg1, env_name=ARG1, "\
+                   "values=<Values(arg=arg1_value, env=None, default=None)>, "\
+                   "value=arg1_value)"
+        
         test(arg1_value)

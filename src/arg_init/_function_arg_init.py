@@ -17,21 +17,12 @@ class FunctionArgInit(ArgInit):
     Initialises arguments from a function.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, use_kwargs=False, defaults=None, **kwargs):
         super().__init__(**kwargs)
-
-    def resolve(
-        self,
-        priority: str = ArgInit.DEFAULT_PRIORITY_SYSTEM,
-        use_kwargs: bool = False,
-        **kwargs
-    ):
-        """
-        Resolve argument values
-        """
+        if defaults is None:
+            defaults = {}
         calling_stack = stack()[self.STACK_LEVEL_OFFSET]
-        self._resolve(calling_stack, priority, use_kwargs)
-        return self._args
+        self._init_args(calling_stack, use_kwargs, defaults)
 
     def _get_arguments(self, frame, use_kwargs):
         """

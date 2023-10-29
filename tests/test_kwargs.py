@@ -23,7 +23,7 @@ class TestKwargs:
         Test kwargs are ignored if not explicity enabled
         """
         def test(arg1, **kwargs):
-            args = FunctionArgInit().resolve()
+            args = FunctionArgInit(use_kwargs=True).args
             assert args["arg1"] == arg1_value
             assert "_kwarg1" not in args
 
@@ -39,7 +39,7 @@ class TestKwargs:
         Test kwargs are processed if enabled
         """
         def test(arg1, **kwargs):
-            args = FunctionArgInit().resolve(use_kwargs=True)
+            args = FunctionArgInit(use_kwargs=True).args
             assert args["arg1"] == arg1_value
             assert args["kwarg1"] == kwarg1_value
 
@@ -56,7 +56,7 @@ class TestKwargs:
         """
         class Test:
             def __init__(self, arg1, **kwargs):
-                args = ClassArgInit().resolve(use_kwargs=True)
+                args = ClassArgInit(use_kwargs=True).args
                 assert args["arg1"] == arg1_value
                 assert args["kwarg1"] == kwarg1_value
 

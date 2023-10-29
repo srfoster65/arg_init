@@ -23,8 +23,8 @@ class TestFunctionArgInit:
         """
         def test(arg1):
             """Test Class"""
-            args = FunctionArgInit().resolve()
-            assert args.arg1 == arg1_value
+            arg_init = FunctionArgInit()
+            assert arg_init.args.arg1 == arg1_value
 
         arg1_value = "arg1_value"
         test(arg1_value)

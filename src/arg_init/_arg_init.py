@@ -3,11 +3,12 @@ Class to process arguments, environment variables and return a set of
 processed attribute values.
 """
 from abc import ABC, abstractmethod
+from os import environ
 import logging
 
 from box import Box
 
-from ._arg_factory import ArgFactory
+from ._arg import Values, Arg
 
 
 logger = logging.getLogger(__name__)
@@ -29,19 +30,16 @@ class ArgInit(ABC):
     def __init__(
         self,
         env_prefix: str = "",
+        priority: bool = ENV_PRIORITY,
     ):
-        self._arg_factory = ArgFactory(env_prefix=env_prefix)
+        self._env_prefix = env_prefix
+        self._priority = priority
         self._args = Box()
 
     @property
     def args(self) -> Box:
         """Return the processed arguments."""
         return self._args
-
-    @abstractmethod
-    def resolve(self, **kwargs):
-        """Resolve argument values for the calling function/method"""
-        raise RuntimeError()  # pragma no cover
 
     @abstractmethod
     def _get_arguments(self, frame, use_kwargs):
@@ -51,32 +49,16 @@ class ArgInit(ABC):
         """
         raise RuntimeError()  # pragma no cover
 
-    def make_arg(
-        self,
-        name: str,
-        env: str = None,
-        default: any = None,
-        force_arg: bool = False,  # Force use of arg value if value = None
-        force_env: bool = False,  # Force use of env value if value = None
-        disable_env: bool = False,  # Do not search for an env value
-    ):
-        """Create an Arg object using the arguments provided."""
-        arg = self._arg_factory.make(
-            name, env, default, force_arg, force_env, disable_env
-        )
-        self._args[name] = arg
-
-    def _resolve(
+    def _init_args(
         self,
         calling_stack,
-        priority: str = DEFAULT_PRIORITY_SYSTEM,
-        use_kwargs: bool = False,
+        use_kwargs: bool,
+        defaults,
     ) -> None:
         """Resolve argument values."""
-        logger.debug("Resolving arguments for function: %s", calling_stack.function)
+        logger.debug("Creating arguments for function: %s", calling_stack.function)
         arguments = self._get_arguments(calling_stack.frame, use_kwargs)
-        self._make_args(arguments)
-        self._resolve_args(priority)
+        self._make_args(arguments, defaults)
 
     def _get_kwargs(self, arginfo, use_kwargs) -> dict:
         """
@@ -89,17 +71,42 @@ class ArgInit(ABC):
             return dict(arginfo.locals[keywords].items())
         return {}
 
-    def _make_args(self, arguments) -> None:
+    def _make_args(self, arguments, defaults) -> None:
         for name, value in arguments.items():
-            self._make_arg(name)
-            self._args[name].arg.value = value
+            arg_defaults = defaults.get(name)
+            env_name = self._get_env_name(name, arg_defaults)
+            default_value = self._get_default_value(arg_defaults)
+            values = Values(
+                arg=value, env=self._get_env_value(env_name), default=default_value
+            )
+            self._args[name] = Arg(name, env_name, values).resolve(self._priority)
 
-    def _resolve_args(self, priority) -> None:
-        for arg in self._args.values():
-            arg.resolve(priority)
+    def _get_env_name(self, name, arg_defaults):
+        """Determine the name to use for the env."""
+        if arg_defaults:
+            if arg_defaults.disable_env:
+                return None
+            if arg_defaults.env_name:
+                return arg_defaults.env_name
+        env_parts = [item for item in (self._env_prefix, name) if item]
+        return "_".join(env_parts).upper()
 
-    def _make_arg(self, name: str) -> None:
-        logger.debug("Searching for Arg(name=%s)", name)
-        if name not in self._args:
-            logger.debug("Arg(name=%s) not found. Creating default.", name)
-            self.make_arg(name)
+    @staticmethod
+    def _get_env_value(env_name) -> str:
+        """Read the env value from environ."""
+        if env_name:
+            logger.debug("Searching for env: %s", env_name)
+            if env_name in environ:
+                value = environ[env_name]
+                logger.debug("Env found: %s=%s", env_name, value)
+                return value
+            logger.debug("Env not set")
+            return None
+        logger.debug("Env disabled")
+        return None
+
+    @staticmethod
+    def _get_default_value(arg_defaults):
+        if arg_defaults:
+            return arg_defaults.default_value
+        return None

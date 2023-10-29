@@ -11,15 +11,13 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class Attribute:
-    """Dataclass"""
-
-    name: str
-    value: any = None
-    force: bool = False
+class Values:
+    arg: any = None
+    env: any = None
+    default: any = None
 
     def __repr__(self):
-        return f"<Attribute(name={self.name}, value={self.value}, force={self.force})>"
+        return f"<Values(arg={self.arg}, env={self.env}, default={self.default})>"
 
 
 class Arg:
@@ -32,24 +30,13 @@ class Arg:
     def __init__(
         self,
         name: str,
-        env: str = None,
-        default: any = None,
-        attr: str = None,
-        force_arg: bool = False,  # Force use of arg value if value = None
-        force_env: bool = False,  # Force use of env value if value = None
-        disable_env: bool = False,  # Do not search for an env value.
+        env_name: str = None,
+        values=None,
     ):
-        self._arg = Attribute(name, force=force_arg)
-        self._env = Attribute(
-            self._get_env_name(env),
-            force=force_env,
-        )
-        self._default = Attribute("default", default, force=True)
+        self._name = name
+        self._env_name = env_name
+        self._values = values
         self._value = None
-        self._disable_env = disable_env
-        # self._attr = attr or name
-        self._disable_env = disable_env
-        self._priority = None
 
     def __eq__(self, other):
         """When testing for equality, test only the value attribute."""
@@ -57,13 +44,10 @@ class Arg:
 
     def _data(self):
         return [
-            f"arg={self.arg}",
-            f"env={self.env}",
-            f"default={self.default}",
-            # f"attr={self._attr}",
-            f"disable_env={self._disable_env}",
-            f"priority={self._priority}",
-            f"value={self.value}"
+            f"name={self.name}",
+            f"env_name={self.env_name}",
+            f"values={self.values}",
+            f"value={self.value}",
         ]
 
     def __str__(self):
@@ -75,7 +59,7 @@ class Arg:
     @property
     def name(self):
         """Name of Arg."""
-        return self.arg.name
+        return self._name
 
     @property
     def value(self):
@@ -83,85 +67,56 @@ class Arg:
         return self._value
 
     @property
-    def arg(self):
-        """arg attribute."""
-        return self._arg
-
-    @property
-    def env(self):
+    def env_name(self):
         """env attribute."""
-        return self._env
+        return self._env_name
 
     @property
-    def default(self):
+    def values(self):
         """default attribute."""
-        return self._default
-
-    # @property
-    # def attr(self):
-    #     """attr is the alternate name for the argument."""
-    #     return self._attr
+        return self._values
 
     def resolve(self, priority=DEFAULT_PRIORITY_SYSTEM):
         """
         Resolve the value Arg using the selected priority system.
-        This method should only be called by ArgInit()
         """
-        if not self._priority:
-            self._env.value = self._get_env_value()
-            self._priority = priority
-            logger.debug(
-                "Resolving value for %s", repr(self)
-            )
-            if priority == self.ARG_PRIORITY:
-                value = self._resolve_arg_priority()
-            if priority == self.ENV_PRIORITY:
-                value = self._resolve_env_priority()
-            self._value = value
+        logger.debug("Resolving value for %s", repr(self))
+        if priority == self.ARG_PRIORITY:
+            value = self._resolve_arg_priority()
+        if priority == self.ENV_PRIORITY:
+            value = self._resolve_env_priority()
+        self._value = value
         return self
 
-    def _set_arg_value(self) -> bool:
-        if self._arg.value or self._arg.force:
-            logger.debug("Using arg: value=%s", self._arg.value)
+    def _if_use_arg_value(self) -> bool:
+        if self.values.arg:
+            logger.debug("Using arg: value=%s", self.values.arg)
             return True
         return False
 
-    def _set_env_value(self) -> bool:
-        if (self._env.value or self._env.force) and not self._disable_env:
-            logger.debug("Using env: value=%s", self._env.value)
+    def _if_use_env_value(self) -> bool:
+        if self.values.env:
+            logger.debug("Using env: value=%s", self.values.env)
             return True
         return False
 
-    def _set_default_value(self):
-        logger.debug("Using default: value=%s", self._default.value)
+    def _log_use_default_value(self):
+        logger.debug("Using default: value=%s", self.values.default)
 
     def _resolve_arg_priority(self):
-        if self._set_arg_value():
-            return self._arg.value
-        if self._set_env_value():
-            return self._env.value
-        self._set_default_value()
-        return self._default.value
+        logger.debug("Resolving using arg priority")
+        if self._if_use_arg_value():
+            return self.values.arg
+        if self._if_use_env_value():
+            return self.values.env
+        self._log_use_default_value()
+        return self.values.default
 
     def _resolve_env_priority(self):
-        if self._set_env_value():
-            return self._env.value
-        if self._set_arg_value():
-            return self._arg.value
-        self._set_default_value()
-        return self._default.value
-
-    def _get_env_value(self) -> str:
-        """Read the env value from environ."""
-        env = self._env
-        logger.debug("Searching for env: %s", env.name)
-        if env.name and env.name in environ:
-            value = environ[env.name]
-            logger.debug("Env found: %s=%s", env.name, value)
-            return value
-        logger.debug("Env not found")
-        return None
-
-    def _get_env_name(self, env_name) -> str:
-        """Return the env name to check for a value."""
-        return (env_name if env_name else self._arg.name).upper()
+        logger.debug("Resolving using env priority")
+        if self._if_use_env_value():
+            return self.values.env
+        if self._if_use_arg_value():
+            return self.values.arg
+        self._log_use_default_value()
+        return self.values.default
