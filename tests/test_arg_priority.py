@@ -3,14 +3,13 @@ Test ArgInit with argument priority
 """
 
 from collections import namedtuple
-import logging
 
 import pytest
 
+from arg_init import ArgDefaults
 from arg_init import FunctionArgInit
 from arg_init import ARG_PRIORITY
 
-logger = logging.getLogger(__name__)
 Expected = namedtuple('Expected', 'key value')
 
 
@@ -22,64 +21,31 @@ class TestArgPriority:
     @pytest.mark.parametrize(
         "prefix, arg_value, envs, defaults, expected",
         [
-            # No Arg defined
-            (None, "arg1_value", {"ARG1": "env1_value"}, None, Expected("arg1", "arg1_value")),
-            # (None, {}, None, {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            # (None, {}, None, {}, Expected("arg1", None)),
-
-            # Use arg
-            # (None, {"name": "arg1"}, "arg1_value", {}, Expected("arg1", "arg1_value")),
-            # (None, {"name": "arg1", "default": "default"}, "arg1_value", {"ARG": "env_value"}, Expected("arg1", "arg1_value")),
-            # (None, {"name": "arg1", "default": "default", "force_arg": True}, None, {"ARG1": "env_value"}, Expected("arg1", None)),
-            # (None, {"name": "arg1", "disable_env": True}, "arg1_value", {"ARG1": "env1_value"}, Expected("arg1", "arg1_value")),
-
-            # # Use env
-            # (None, {"name": "arg1"}, None, {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            # (None, {"name": "arg1", "env": "ARG1"}, None, {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            # (None, {"name": "arg1", "env": "foo"}, None, {"FOO": "env1_value"}, Expected("arg1", "env1_value")),
-            # ("prefix", {"name": "arg1"}, None, {"PREFIX_ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            # ("prefix", {"name": "arg1", "env": "ARG1"}, None, {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            # (None, {"name": "arg1", "force_env": True}, None, {"ARG1": ""}, Expected("arg1", "")),
-
-            # # Use default
-            # (None, {"name": "arg1", "default": "default"}, None, {}, Expected("arg1", "default")),
-            # (None, {"name": "arg1", "default": "default"}, None, {"ARG1": ""}, Expected("arg1", "default")),
+            # Priority order
+            (None, "arg1_value", {"ARG1": "env1_value"}, {"arg1": ArgDefaults(default_value="default")}, Expected("arg1", "arg1_value")),
+            (None, None, {"ARG1": "env1_value"}, {"arg1": ArgDefaults(default_value="default")}, Expected("arg1", "env1_value")),
+            (None, None, None, {"arg1": ArgDefaults(default_value="default")}, Expected("arg1", "default")),
+            (None, None, None, None, Expected("arg1", None)),
         ],
     )
     def test_matrix(self, prefix, arg_value, envs, defaults, expected):
         """
-        Check combinations of args, envs and defaults.
-        No Args
-        1. Use Arg
-        2. Use Env
-        3. Use default
-        
-        Arg is used
-        1. With default argument, no env set
-        2. In preference to env and default
-        3. Arg is None and used as force_arg = True
-        4. Env is set but disable_env=True
-
-        Env is used
-        1. With default argument
-        2. Env is defined same as arg in argument
-        3. Env is renamed in argument
-        4. Prefix is set, env is undefined in argument
-        5. Prefix is set, env is defined in argument
-        6. Env is "" and used as force_env = True
-        
-        Default is used
-        1. Default is set in argument
-        2. Env is "" and is not used.
+        Priority Order
+        1. All defined - Arg is used
+        2. Env and default defined - Env is used
+        3. Default is defined - Default is used
+        4. Nothing defined - None is used
         """
-        def test(arg1=None):  # pylint: disable=unused-argument
+
+        def test(arg1):  # pylint: disable=unused-argument
             args = FunctionArgInit(env_prefix=prefix, defaults=defaults, priority=ARG_PRIORITY).args
             assert args[expected.key] == expected.value
 
         with pytest.MonkeyPatch.context() as mp:
-            for env, value in envs.items():
-                mp.setenv(env, value)
-                test(arg1=arg_value)
+            if envs:
+                for env, value in envs.items():
+                    mp.setenv(env, value)
+            test(arg1=arg_value)
 
     def test_multiple_args(self):
         """

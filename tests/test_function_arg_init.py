@@ -1,25 +1,23 @@
 """
-Test ArgInit class variable initialisation.
+Test FunctionArgInit
 """
 
 from collections import namedtuple
-import logging
 
 from arg_init import FunctionArgInit
 
 
-logger = logging.getLogger(__name__)
 Expected = namedtuple('Expcted', 'key value')
 
 
 class TestFunctionArgInit:
     """
-    Test class attributes are initialised
+    Test function arguments are initialised
     """
 
-    def test_class(self):
+    def test_function(self):
         """
-        Test ArgInit on a class method
+        Test FunctionArgInit
         """
         def test(arg1):
             """Test Class"""

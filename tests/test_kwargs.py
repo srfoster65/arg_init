@@ -3,13 +3,11 @@ Test ArgInit processes kwargs.
 """
 
 from collections import namedtuple
-import logging
 
 from arg_init import ClassArgInit
 from arg_init import FunctionArgInit
 
 
-logger = logging.getLogger(__name__)
 Expected = namedtuple('Expcted', 'key value')
 
 
@@ -23,6 +21,7 @@ class TestKwargs:
         Test kwargs are ignored if not explicity enabled
         """
         def test(arg1, **kwargs):
+            """Test Class"""
             args = FunctionArgInit(use_kwargs=True).args
             assert args["arg1"] == arg1_value
             assert "_kwarg1" not in args
@@ -39,6 +38,7 @@ class TestKwargs:
         Test kwargs are processed if enabled
         """
         def test(arg1, **kwargs):
+            """Test Class"""
             args = FunctionArgInit(use_kwargs=True).args
             assert args["arg1"] == arg1_value
             assert args["kwarg1"] == kwarg1_value
@@ -55,6 +55,7 @@ class TestKwargs:
         Test kwargs are processed if enabled
         """
         class Test:
+            """Test Class"""
             def __init__(self, arg1, **kwargs):
                 args = ClassArgInit(use_kwargs=True).args
                 assert args["arg1"] == arg1_value

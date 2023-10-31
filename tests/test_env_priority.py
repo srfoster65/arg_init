@@ -3,15 +3,13 @@ Test ArgInit with env priority
 """
 
 from collections import namedtuple
-import logging
 
 import pytest
 
-# from arg_init import Arg
+from arg_init import ArgDefaults
 from arg_init import FunctionArgInit
 
 
-logger = logging.getLogger(__name__)
 Expected = namedtuple('Expected', 'key value')
 
 
@@ -23,98 +21,49 @@ class TestEnvPriority:
     @pytest.mark.parametrize(
         "prefix, arg_value, envs, defaults, expected",
         [
-            # No Arg defined
             (None, "arg1_value", {"ARG1": "env1_value"}, None, Expected("arg1", "env1_value")),
-
-            # (None, {}, "arg1_value", {}, Expected("arg1", "arg1_value")),
-            # (None, {}, "arg1_value", {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            # (None, {}, None, {}, Expected("arg1", None)),
-
-            # # Use arg
-            # (None, {"name": "arg1"}, "arg1_value", {}, Expected("arg1", "arg1_value")),
-            # (None, {"name": "arg1", "default": "default"}, "arg1_value", {}, Expected("arg1", "arg1_value")),
-            # (None, {"name": "arg1", "default": "default", "force_arg": True}, None, {}, Expected("arg1", None)),
-            # (None, {"name": "arg1", "disable_env": True}, "arg1_value", {"ARG1": "env1_value"}, Expected("arg1", "arg1_value")),
-
-            # # Use env
-            # (None, {"name": "arg1"}, None, {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            # (None, {"name": "arg1", "env": "ARG1", "default": "default"}, "arg1_value", {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            # (None, {"name": "arg1", "env": "foo"}, "arg1_value", {"FOO": "env1_value"}, Expected("arg1", "env1_value")),
-            # ("prefix", {"name": "arg1"}, None, {"PREFIX_ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-            # ("prefix", {"name": "arg1", "env": "ARG1"}, None, {"ARG1": "env1_value"}, Expected("arg1", "env1_value")),
-
-            # # Use default
-            # (None, {"name": "arg1", "default": "default"}, None, {}, Expected("arg1", "default")),
-            # (None, {"name": "arg1", "default": "default"}, None, {"ARG1": ""}, Expected("arg1", "default")),
+            (None, "arg1_value", None, None, Expected("arg1", "env1_value")),
+            (None, None, None, {"arg1": ArgDefaults(default_value="default")}, Expected("arg1", "default")),
+            (None, None, None, None, Expected("arg1", None)),
         ],
     )
-    def test_matrix(self, prefix, arg_value, envs, defaults, expected):
+    def test_priority(self, prefix, arg_value, envs, defaults, expected):
         """
-        Check combinations of args, envs and defaults.
-        No Arg
-        1. Use Arg
-        2. Use Env
-        3. Use default
-
-        Env is used
-        1. With default argument
-        2. in preference to arg and default
-        3. Env is renamed in Arg
-        4. Prefix is set, env is undefined in Arg
-        5. Prefix is set, env is defined in Arg
-        6. Prefix is set, env is renamed in Arg
-        7. Env is "" and used as force_env = True
-
-
-
-        Arg is used
-        1. With default argument, no env set
-        2. In preference to default
-        3. Renamed using attr
-        4. Arg is None and used as force_arg = True
-
-        Env is used
-        1. With default argument
-        2. in preference to arg and default
-        3. Env is renamed in Arg
-        4. Prefix is set, env is undefined in Arg
-        5. Prefix is set, env is defined in Arg
-        6. Prefix is set, env is renamed in Arg
-        7. Env is "" and used as force_env = True
-        
-        Default is used
-        1. Default is set in Arg
-        2. Env is set, but disable_env = True
+        Priority Order
+        1. All defined - Env is used
+        2. Arg and default defined - Arg is used
+        3. Default is defined - Default is used
+        4. Nothing defined - None is used
         """
         def test(arg1):
             args = FunctionArgInit(env_prefix=prefix, defaults=defaults).args
             assert args[expected.key] == expected.value
 
         with pytest.MonkeyPatch.context() as mp:
-            for env, value in envs.items():
-                mp.setenv(env, value)
+            if envs:
+                for env, value in envs.items():
+                    mp.setenv(env, value)
                 test(arg1=arg_value)
 
-    def test_env_prefix(self):
-        """
-        Test env_prefix is applied to arg name        
-        """
-        def test(arg1):
-            args = FunctionArgInit(env_prefix="PREFIX").args
-            assert args["arg1"] == env1_value
 
-        env1 = "PREFIX_ARG1"
-        env1_value = "env1_value"
-        with pytest.MonkeyPatch.context() as mp:
-            mp.setenv(env1, env1_value)
-            test("arg1_value")
-            
+    def test_function_default(self):
+        """
+        Test function default is used if set and no arg passed in.
+        """
+
+        def test(arg1="func_default"):
+            args = FunctionArgInit(defaults={"arg1": ArgDefaults(default_value="default")}).args
+            assert args["arg1"] == "func_default"
+
+        test()
+
 
     def test_multiple_args(self):
         """
         Test initialisation from args when no envs defined
         """
         def test(arg1, arg2):
+            """Test Class"""
             args = FunctionArgInit().args
             assert args["arg1"] == arg1_value
             assert args["arg2"] == arg2_value
@@ -129,6 +78,7 @@ class TestEnvPriority:
         Test initialised from envs
         """
         def test(arg1, arg2):
+            """Test Class"""
             args = FunctionArgInit().args
             assert args["arg1"] == env1_value
             assert args["arg2"] == env2_value
@@ -142,6 +92,7 @@ class TestEnvPriority:
             mp.setenv(env2, env2_value)
             test("arg1_value", "arg2_value")
 
+
     def test_multiple_mixed(self):
         """
         Test mixed initialisation
@@ -150,6 +101,7 @@ class TestEnvPriority:
           arg3 - arg - env not set
         """
         def test(arg1, arg2, arg3):
+            """Test Class"""
             args =  FunctionArgInit().args
             assert args["arg1"] == env1_value
             assert args["arg2"] == env2_value

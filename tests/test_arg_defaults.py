@@ -1,5 +1,5 @@
 """
-Test ArgInit class variable initialisation.
+Test ArgDefaults
 """
 
 import logging
@@ -9,7 +9,7 @@ from arg_init import ClassArgInit, ArgDefaults
 logger = logging.getLogger(__name__)
 
 
-class TestUpdateArg:
+class TestArgDefaults:
     """
     Test default values are correctly applied when creating args
     """
@@ -34,7 +34,7 @@ class TestUpdateArg:
         """
         Test overriding env_name
         """
-
+        
         class Test:
             """Test Class"""
 
@@ -48,7 +48,7 @@ class TestUpdateArg:
 
     def test_disable_env(self):
         """
-        Test overriding disable_env
+        Test disable_env=True sets env_name to None
         """
 
         class Test:
