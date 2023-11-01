@@ -29,8 +29,8 @@ class ArgInit(ABC):
 
     def __init__(
         self,
-        env_prefix: str = "",
         priority: bool = ENV_PRIORITY,
+        env_prefix: str | None = None,
     ):
         self._env_prefix = env_prefix
         self._priority = priority
@@ -73,7 +73,7 @@ class ArgInit(ABC):
 
     def _make_args(self, arguments, defaults) -> None:
         for name, value in arguments.items():
-            arg_defaults = defaults.get(name)
+            arg_defaults = self._get_arg_defaults(name, defaults)
             env_name = self._get_env_name(name, arg_defaults)
             default_value = self._get_default_value(arg_defaults)
             values = Values(
@@ -81,13 +81,19 @@ class ArgInit(ABC):
             )
             self._args[name] = Arg(name, env_name, values).resolve(self._priority)
 
+    def _get_arg_defaults(self, name, defaults):
+        for arg_defaults in defaults:
+            if arg_defaults.name == name:
+                return arg_defaults
+        return None
+
     def _get_env_name(self, name, arg_defaults):
         """Determine the name to use for the env."""
         if arg_defaults:
             if arg_defaults.disable_env:
                 return None
             if arg_defaults.env_name:
-                return arg_defaults.env_name
+                return arg_defaults.env_name.upper()
         env_parts = [item for item in (self._env_prefix, name) if item]
         return "_".join(env_parts).upper()
 

@@ -5,7 +5,7 @@ Class to initialise Argument Values for a Class Method
 from inspect import stack, getargvalues
 import logging
 
-from ._arg_init import ArgInit
+from ._arg_init import ArgInit, ENV_PRIORITY
 
 
 logger = logging.getLogger(__name__)
@@ -20,22 +20,24 @@ class ClassArgInit(ArgInit):
 
     def __init__(
         self,
+        priority=ENV_PRIORITY,
+        env_prefix=None,
         use_kwargs=False,
         set_attrs=True,
         protect_attrs=True,
         defaults=None,
         **kwargs,
     ):
-        super().__init__(**kwargs)
+        super().__init__(priority, env_prefix, **kwargs)
         if defaults is None:
-            defaults = {}
+            defaults = []
 
         self._set_attrs = set_attrs
         self._protect_attrs = protect_attrs
         calling_stack = stack()[self.STACK_LEVEL_OFFSET]
         self._init_args(calling_stack, use_kwargs, defaults)
-        self._class_ref = self._get_class_instance(calling_stack.frame)
-        self._set_class_attrs()
+        class_instance = self._get_class_instance(calling_stack.frame)
+        self._set_class_attrs(class_instance)
 
     def _get_arguments(self, frame, use_kwargs):
         """
@@ -53,24 +55,24 @@ class ClassArgInit(ArgInit):
         args.update(self._get_kwargs(arginfo, use_kwargs))
         return args
 
-    def _set_class_attrs(self):
+    def _set_class_attrs(self, class_ref):
         """Set attributes for the class object."""
         if self._set_attrs:
             logger.debug("Setting class attributes")
             for arg in self._args.values():
-                self._set_attr(arg.name, arg.value)
+                self._set_attr(class_ref, arg.name, arg.value)
 
     def _get_attr_name(self, name):
         if self._protect_attrs:
             return name if name.startswith("_") else "_" + name
         return name
 
-    def _set_attr(self, name, value):
+    def _set_attr(self, class_instance, name, value):
         name = self._get_attr_name(name)
-        if hasattr(self._class_ref, name):
+        if hasattr(class_instance, name):
             raise AttributeError(f"Attribute already exists: {name}")
         logger.debug("  %s = %s", name, value)
-        setattr(self._class_ref, name, value)
+        setattr(class_instance, name, value)
 
     def _get_class_instance(self, frame):
         """
