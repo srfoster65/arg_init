@@ -53,12 +53,13 @@ class TestPrintFunctions:
         """
 
         arg1_defaults = ArgDefaults(
-            default_value="default", env_name="ENV", disable_env="True"
+            name="arg1", default_value="default", env_name="ENV", disable_env="True"
         )
-        defaults = {"arg1": arg1_defaults}
+        defaults = [arg1_defaults]
         out = repr(defaults)
         expected = (
             "<ArgDefaults("
+            "name=arg1, "
             "default_value=default, "
             "env_name=ENV, "
             "disable_env=True)"

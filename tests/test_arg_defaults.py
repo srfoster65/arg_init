@@ -23,8 +23,9 @@ class TestArgDefaults:
             """Test Class"""
 
             def __init__(self, arg1=None):
+                name = "arg1"
                 default_value = "arg1_default"
-                defaults = {"arg1": ArgDefaults(default_value=default_value)}
+                defaults = [ArgDefaults(name=name, default_value=default_value)]
                 arg_init = ClassArgInit(defaults=defaults)
                 assert arg_init.args.arg1.values.default == default_value
 
@@ -34,13 +35,14 @@ class TestArgDefaults:
         """
         Test overriding env_name
         """
-        
+
         class Test:
             """Test Class"""
 
             def __init__(self, arg1=None):
+                name = "arg1"
                 env_name = "ENV1"
-                defaults = {"arg1": ArgDefaults(env_name=env_name)}
+                defaults = [ArgDefaults(name=name, env_name=env_name)]
                 arg_init = ClassArgInit(defaults=defaults)
                 assert arg_init.args.arg1.env_name == env_name
 
@@ -55,11 +57,10 @@ class TestArgDefaults:
             """Test Class"""
 
             def __init__(self, arg1=None):
+                name = "arg1"
                 env_name = "ENV1"
                 disable_env = True
-                defaults = {
-                    "arg1": ArgDefaults(env_name=env_name, disable_env=disable_env)
-                }
+                defaults = [ArgDefaults(name=name, env_name=env_name, disable_env=disable_env)]
                 arg_init = ClassArgInit(defaults=defaults)
                 assert arg_init.args.arg1.env_name is None
 

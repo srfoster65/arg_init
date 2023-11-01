@@ -22,9 +22,9 @@ class TestArgPriority:
         "prefix, arg_value, envs, defaults, expected",
         [
             # Priority order
-            (None, "arg1_value", {"ARG1": "env1_value"}, {"arg1": ArgDefaults(default_value="default")}, Expected("arg1", "arg1_value")),
-            (None, None, {"ARG1": "env1_value"}, {"arg1": ArgDefaults(default_value="default")}, Expected("arg1", "env1_value")),
-            (None, None, None, {"arg1": ArgDefaults(default_value="default")}, Expected("arg1", "default")),
+            (None, "arg1_value", {"ARG1": "env1_value"}, [ArgDefaults(name="arg1", default_value="default")], Expected("arg1", "arg1_value")),
+            (None, None, {"ARG1": "env1_value"}, [ArgDefaults(name="arg1", default_value="default")], Expected("arg1", "env1_value")),
+            (None, None, None, [ArgDefaults(name="arg1", default_value="default")], Expected("arg1", "default")),
             (None, None, None, None, Expected("arg1", None)),
         ],
     )

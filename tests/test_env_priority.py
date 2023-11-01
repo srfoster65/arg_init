@@ -23,7 +23,7 @@ class TestEnvPriority:
         [
             (None, "arg1_value", {"ARG1": "env1_value"}, None, Expected("arg1", "env1_value")),
             (None, "arg1_value", None, None, Expected("arg1", "env1_value")),
-            (None, None, None, {"arg1": ArgDefaults(default_value="default")}, Expected("arg1", "default")),
+            (None, None, None, [ArgDefaults(name="arg1", default_value="default")], Expected("arg1", "default")),
             (None, None, None, None, Expected("arg1", None)),
         ],
     )
@@ -52,7 +52,8 @@ class TestEnvPriority:
         """
 
         def test(arg1="func_default"):
-            args = FunctionArgInit(defaults={"arg1": ArgDefaults(default_value="default")}).args
+            defaults = [ArgDefaults(name="arg1", default_value="default")]
+            args = FunctionArgInit(defaults=defaults).args
             assert args["arg1"] == "func_default"
 
         test()
