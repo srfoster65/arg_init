@@ -8,138 +8,148 @@ With Pip:
 pip install arg_init
 ```
 
-## Basic Usage
+## Basic Usage for Class functions
 
-ArgInit should be called from a function or class \_\_init\_\_() method that arguments should be processed for. ArgInit will determine the arguments of the calling function and resolve a value for each argument in turn from either an environment variable, the argument value or a default value.
-
-All environment variables must begin with the prefix MYAPP_ to ensure there are no namespace clashes.
+For Class methods: ClassArgInit() should be called from a class \_\_init\_\_() method that arguments should be processed for.
 
 ```python
-from arg_init import ArgInit
+from arg_init import ClassArgInit
+
+class MyClass:
+    def __init__(self, arg1=99):
+        ClassArgInit().args
+        print(self._arg1)
+```
+
+Resolved arguments are exposed as protected class attributes e.g. "self._arg1".
+
+## Basic Usage for simple functions
+
+FunctionArgInit() should be called from a function that arguments should be processed for.
+
+```python
+from arg_init import FunctionArgInit
 
 def my_func(arg1=99):
-    args = ArgInit(env_prefix="MYAPP").args
-
-my_func(101)
-
+    args = FunctionArgInit().args
+    print(args.arg1)
 ```
 
-Running the above program would result in:
+Resolved arguments are exposed by accessing the args attribute of FunctionArgInit. Resolved values can be accessed as attributes e.g. args.arg1 or as a dictionary item e.g. args["arg1"].
 
-1. With a clean environment:
-        args.arg1 = 101
-2. With the envirnment variable MYAPP_ARG1 set to "1":
-        args.arg1 = 1
-3. With the program modified to call my_func():
-        args.arg1 = 99
+## Other Use Cases
 
-### Overriding Default Argument Behaviour
+### Setting a Common Prefix for all Environment Variables
 
-It is possible to override default behaviour per argument by providing a list of Arg objects at initialisation time.
+To avoid namespace clashes with environment variables, it is recommneded to always supply an env_prefix argument when initialising ClassArgInit/FunctionArgInit. All environment variables are expected to have this prefix e.g. with an env_prefix of "myapp", arg1 would map to the environment variable "MYAPP_ARG1".
 
-```python
-from arg_init import ArgInit, Arg
-
-def my_func(arg1):
-    arg_1 = Arg("arg1", force_arg=True)
-    args = ArgInit(env_prefix="MYAPP", args=[arg_1]).args
-    ...
+```text
+env_prefix=<string>
 ```
 
-In this instance, no default is supplied for arg1 in the function definition as a value of **None** will be assigned in the absence of any env or argument being supplied.
-
-## Use with a Class
-
-When used with a class ArgInit should be initialised with the argument func_is_bound=True. This notifies ArgInit that the first argument is a class reference and should not be processed. 
-Note: When used with classes, ArgInit is expected to be called from the \_\_init\_\_() method (But this is not a requirement).
+env_prefix is converted to uppercase before use.
 
 ```python
-from arg_init import ArgInit
+from arg_init import ClassArgInit
 
 class MyApp:
     def __init__(self, arg1=None):
-        ArgInit(func_is_bound=True, env_prefix="myapp")
+        args = ClassArgInit(env_prefix="myapp").args
         ...
-
 ```
 
-By default, ArgInit will set all arguments as class attributes of the MyApp instance. The negative to this implemntation is that linters will not recognise class attributes as being valid. e.g. Any references to self.arg1 in MyApp will be highlighted as invalid.
+### Priority Modes
 
-If this behaviour is not required set the argument set_attrs=False when initialising ArgInit.
+Support for selecting the priority resolution mode is provided via the argument **priority**.
 
-### Modifying Class Attributes Names
-
-The names of the resolved arguments, and hence applied class attributes can be modified with the use of the Arg object and the attr argument.
-
-```python
-from arg_init import ArgInit, Arg
-
-class MyApp:
-    def __init__(self, arg1=None):
-        args = [Arg("arg1", attr="_arg1")]
-        ArgInit(func_is_bound=True, env_prefix="myapp", args=args)
-        ...
-
+```text
+priority=ENV_PRIORITY | ARG_PRIORITY
 ```
-
-In the example above, the instance of MyApp would have an attribute **_arg1** set with a value provided by resolving the arg1 argument.
-
-## Support for kwargs
-
-Support for kwargs in function signatures is provided via the argument **use_kwargs**.
-
-
-```python
-from arg_init import ArgInit, Arg
-
-def my_func(self, **kwargs):
-    args = ArgInit(env_prefix="myapp", use_kwargs=True).args
-    ...
-
-fn = my_func({"test": "hello"})
-
-```
-
-Running the above program would result in fn.args.test being assigned the value "hello"
-
-As before, environment variables will also be processed. If an envirnment variable MYAPP_TEST were assigned the value of "world", this would result in fn.args.test being assigned the value "world".
-
-## Priority Modes
 
 By default, enviroment variables have priority over argument values. This can be changed at initialisation to give arguments prioirty.
 
-Notice that the function arg1 default value is None, but the Arg default argument is set to "1".
-
 ```python
-from arg_init import ArgInit, Arg
+from arg_init import FunctionArgInit, ARG_PRIORITY
 
-def my_func(arg1=None):
-    arg_1 = Arg("arg1", default=1)
-    args = ArgInit(env_prefix="MYAPP", priority=ArgInit.ARG_PRIORITY, args=[arg_1]).args
-    return args
-
-print(my_func(10).arg1)
-
+def my_func(arg1):
+    arg_init = FunctionArgInit()
+    args = arg_init.resolve(priority=ARG_PRIORITY)
+    ...
 ```
 
-The example above will display the value "10" when run.
+Note: When using ARG_PRIORITY a default value should also be provided by ArgDefaults is a default value other than None is required.
 
-If the environment variable "MYAPP_ARG!" is set to "hello world" and the program is run again, it will still display "10", as arguments have priority over environment variables.
+### Overriding Default Argument Behaviour
 
-If the program is modified to not pass any arguments into the call to my_func() as shown below:
+It is possible to override default behaviour per argument using the ArgDefault object. A list of ArgDefaults objects can be passed into the call to ClassArgInit/FunctionArgInit.
+
+ArgDefaults takes a "name" argumment and zero or more of the following optional arguments:
+
++ default_value
++ env_name
++ disable_env
+
+#### default_value
+
+When using ARG_Priority, the only way to set a default value is to the use ArgDefaults(default_value=value)
+
+This can also be used when using ENV_Priority but the recommended solution is to use default python behaviour using function defaults e.g. fn(a=1).
+
+#### env_name
+
+Setting this value allows a custom env name to be set as the lookup for an argument. This overrides the default setting and ignores any env prefix settings.
+
+Note: env_name is converted to uppercase before use.
+
+#### disable_env
+
+If an argument should not use env value in its resolution process then set this attribute to True. If this attribute is set, even if the env exists it will not be used to resolve the argument value.
+
+#### Example using ArgDefaults
+
+In the example below, arg1 is modified to have a default value of 1 and to resolve from the environmnet variable "ALT_NAME"
 
 ```python
-from arg_init import ArgInit, Arg
+from arg_init import FunctionArgInit, ArgDefaults
 
-def my_func(arg1=None):
-    arg_1 = Arg("arg1", default=1)
-    args = ArgInit(env_prefix="MYAPP", priority=ArgInit.ARG_PRIORITY, args=[arg_1]).args
-    return args
-
-print(my_func().arg1)
-
+def func(arg1=None):
+    arg1_defaults = ArgDefaults(name="arg1", default_value=1, env_name="ALT_NAME")
+    args = FunctionArgInit(defaults=[arg1_defaults]).args
+    ...
 ```
 
-Assuming the environment variable "MYAPP_ARG!" is set to "hello world", the program will print out "hello world" when run.
+### Use with a Class
 
-If the environment variable is unset, and the program run a second time, it will print out "1"; The default value assigned to the Arg object associated with arg1.
+There are two additional class specific configuration options available:
+
++ set_attrs: default=True
++ protect_attr: default=True
+
+By default, ClassArgInit will set attributes directly on the calling class, using the argument name, with an "_" prefix for each argument in the calling functions' signature.
+
+Setting set_attrs to False will prevent ClassArgInit from setting these class attributes.
+
+Setting protect_attrs to False will cause the attributes to be set using the argument name, without a leading "_" character.
+
+```python
+from arg_init import ArgInit
+
+class MyApp:
+    def __init__(self, arg1=None):
+        ClassArgInit(set_attrs=True, protect_attrs=False)
+        ...
+```
+
+By default, ClassArgInit will set all arguments as protected class attributes of the MyApp instance. In the above example, arg1 will be available as an attribute "arg1" of the instance of MyApp.
+
+### Support for kwargs
+
+Support for kwargs in function signatures is provided via the argument **use_kwargs**. When this argument is set, any keword arguments would be initialised using the same resolution process as named arguments.
+
+```python
+from arg_init import FunctionArgInit
+
+def my_func(self, **kwargs):
+    args = FunctionArgInit(use_kwargs=True)
+    ...
+```
