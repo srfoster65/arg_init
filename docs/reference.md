@@ -1,63 +1,73 @@
 # Reference
 
-## ArgInit
+## ClassArgInit
 
 ```python
-ArgInit(env_prefix="", priority=ARG_PRIORITY, use_kwargs=False, func_is_bound=False, set_attrs=True, args=None)
+ClassArgInit(env_prefix=None, priority=ENV_PRIORITY, use_kwargs=False, set_attrs=True, protect_atts=True, defaults=None)
 ```
 
-Initialise arguments using the function that calls ArgInit as the reference. Process each argument, setting the value of the class dictionary, args, with either the value provided by the argument, an associated environment variable or a default value. If the value of the arg or env is None then try the next item in the selected priority system
+Resolve argument values using the bound function that calls ClassArgInit as the reference. Process each argument (skipping the first argument as this is a class reference) from the calling function, resolving and storing the value in a dictionary, where the argument name is the key.
 
 ### Arguments
 
-+ **env_prefix**: env_prefix is used to avoid namespace clashes with environment variables. If set, all environment variables must have include this prefix followed by an "_" character and the name of the argument.
++ **env_prefix**: env_prefix is used to avoid namespace clashes with environment variables. If set, all environment variables must include this prefix followed by an "_" character and the name of the argument.
 
-+ **priority**: By default arguments will be set based on the prioty env, arg, default. An alternate priority of arg, env, default is available by setting priority=ARG_PRIORITY.
++ **priority**: By default arguments will be set based on the priority env, arg, default. An alternate priority of arg, env, default is available by setting priority=ARG_PRIORITY.
 
 + **use_kwargs**: When initialising arguments, only named arguments will be initialised by default. If use_kwargs=True, then any keyword arguments will also be initialised
 
-+ **is_class**: Set to True if the function being processed is a class method i.e. the first argument is "self"
++ **set_attrs**: Set the arguments as class attributes. Default is true.
 
-+ **set_attrs**: If the function being processed is a class method (a bound function), set the arguments as class attributes. Default is true. Set to false to disable. This attribute has no effect if is_class=False.
++ **protect_attrs**: Add a leading "_" character to all assigned attribute names. Default is True.
 
-+ **args**: A list of Arg objects that allow overriding the processing behaviour of individual arguments.
++ **defaults**: A list of ArgDefault objects.
 
 ### Attributes
 
 #### args
 
-An object representing the processed arguments. Arguments are exposed as attributes or key/value pairs.
+An object representing the resolved arguments. Arguments are exposed as attributes or key/value pairs.
 
 Note: The returned object is a [python-box](https://github.com/cdgriffith/Box) Box class.
 
-## Arg
+## FunctionArgInit
 
 ```python
-Arg(name, env=None, default=None, attr=None, force_arg=False, force_env=True, force_default=True, disable_env=False)
+FunctionArgInit(env_prefix=None, priority=ENV_PRIORITY, use_kwargs=False, defaults=None)
 ```
 
-A dataclass that is used to customise the processing of arguments.
+Resolve argument values using the function that calls FunctionArgInit as the reference. Process each argument from the calling function, resolving and storing the value in a dictionary, where the argument name is the key.
 
 ### Arguments
 
-+ **name**: (required) The name of the argument.
++ **env_prefix**: env_prefix is used to avoid namespace clashes with environment variables. If set, all environment variables must include this prefix followed by an "_" character and the name of the argument.
 
-+ **env**: The name of the associated environment variable. Only required if different from the argument name. This value should not include any "env_prefix"
++ **priority**: By default arguments will be set based on the priority env, arg, default. An alternate priority of arg, env, default is available by setting priority=ARG_PRIORITY.
 
-+ **default**: The default value to be applied if both arg and env values are not used
++ **use_kwargs**: When initialising arguments, only named arguments will be initialised by default. If use_kwargs=True, then any keyword arguments will also be initialised
 
-+ **attr**: If set then the value of the argument in the args dictionary will use this name as the key instead of the arg name
++ **defaults**: A list of ArgDefault objects.
 
-+ **force_arg**: If True, set the value if the arg value is None
+### Attributes
 
-+ **force_env**: If True, set the value if the env value is ""
+#### args
 
-+ **force_default**: If False, and the default value is None then no argument will be set in the args dictionary.
+An object representing the resolved arguments. Arguments are exposed as attributes or key/value pairs.
 
-## AttributeExistsError
+Note: The returned object is a [python-box](https://github.com/cdgriffith/Box) Box class.
 
-Raised if attempting to set an attribute of an object and an attribute with the same name already exists.
+### ArgDefaults
 
 ```python
-AttributeExistsError(Exception)
+ArgDefaults(name, default_value=None, env_name="", disable_env=False)
 ```
+
+A class that can be used to modify settings for an individual argument.
+
+### Arguments
+
++ **env_name**: The name of the associated environment variable. If not set, env defaults to the uppercase equivalent of the argument name.
+
++ **default_value**: The default value to be applied if both arg and env values are not used.
+
++ **disable_env**: If True then do not consider the env value when resolving the value.

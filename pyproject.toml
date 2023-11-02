@@ -58,7 +58,7 @@ disable = []
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "--cov=src"
+addopts = "--cov=src --cov-report term-missing"
 testpaths = [
     "tests",
 ]
