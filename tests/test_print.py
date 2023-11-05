@@ -40,8 +40,8 @@ class TestPrintFunctions:
         arg1_value = "arg1_value"
         expected = (
             "<Arg("
-            "name=arg1, env_name=ARG1, "
-            "values=<Values(arg=arg1_value, env=None, default=None)>, "
+            "name=arg1, alt_name=arg1, "
+            "values=<Values(arg=arg1_value, env=None, config=None, default=None)>, "
             "value=arg1_value)"
         )
 
@@ -53,15 +53,11 @@ class TestPrintFunctions:
         """
 
         arg1_defaults = ArgDefaults(
-            name="arg1", default_value="default", env_name="ENV", disable_env="True"
+            name="arg1", default_value="default", alt_name="ENV"
         )
         defaults = [arg1_defaults]
         out = repr(defaults)
         expected = (
-            "<ArgDefaults("
-            "name=arg1, "
-            "default_value=default, "
-            "env_name=ENV, "
-            "disable_env=True)"
+            "<ArgDefaults(" "name=arg1, " "default_value=default, " "alt_name=ENV)>"
         )
         assert expected in out

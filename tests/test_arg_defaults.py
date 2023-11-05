@@ -41,27 +41,9 @@ class TestArgDefaults:
 
             def __init__(self, arg1=None):
                 name = "arg1"
-                env_name = "ENV1"
-                defaults = [ArgDefaults(name=name, env_name=env_name)]
+                alt_name = "ENV1"
+                defaults = [ArgDefaults(name=name, alt_name=alt_name)]
                 arg_init = ClassArgInit(defaults=defaults)
-                assert arg_init.args.arg1.env_name == env_name
-
-        Test()
-
-    def test_disable_env(self):
-        """
-        Test disable_env=True sets env_name to None
-        """
-
-        class Test:
-            """Test Class"""
-
-            def __init__(self, arg1=None):
-                name = "arg1"
-                env_name = "ENV1"
-                disable_env = True
-                defaults = [ArgDefaults(name=name, env_name=env_name, disable_env=disable_env)]
-                arg_init = ClassArgInit(defaults=defaults)
-                assert arg_init.args.arg1.env_name is None
+                assert arg_init.args.arg1.alt_name == alt_name
 
         Test()
