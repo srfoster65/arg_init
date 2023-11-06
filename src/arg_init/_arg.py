@@ -77,7 +77,7 @@ class Arg:
         for priority in priority_order:
             logger.debug("Checking %s value", priority)
             value = self._get_value(priority)
-            if value:
+            if value is not None:
                 logger.debug("Resolved %s = %s from %s", name, value, priority)
                 self._value = value
                 break

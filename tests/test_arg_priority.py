@@ -52,6 +52,20 @@ class TestArgPriority:
                     mp.setenv(env, value)
             test(arg1=arg_value)
 
+
+    def test_false_values(self):
+        """
+        Test a logical false value sets the argument.
+        """
+        def test(arg1):  # pylint: disable=unused-argument
+            arg1_defaults = ArgDefaults("arg1", default_value=1)
+            args = FunctionArgInit(priority=PRIORITY_ORDER, defaults=[arg1_defaults]).args
+            assert args["arg1"] == arg1_value
+
+        arg1_value = 0
+        test(arg1_value)
+
+
     def test_multiple_args(self):
         """
         Test multiple arg values
