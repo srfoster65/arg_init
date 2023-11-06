@@ -106,16 +106,16 @@ class ArgInit(ABC):
     def _make_args(self, arguments, defaults, config) -> None:
         for name, value in arguments.items():
             arg_defaults = self._get_arg_defaults(name, defaults)
-            alt_name = self._get_alt_name(name, arg_defaults)
-            env_name = self._get_env_name(name, arg_defaults)
-
+            config_name = self._get_config_name(name, arg_defaults)
+            env_name = self._get_env_name(self._env_prefix, name, arg_defaults)
             default_value = self._get_default_value(arg_defaults)
             values = Values(
                 arg=value,
                 env=self._get_env_value(env_name),
-                config=config.get(alt_name),
+                config=config.get(config_name),
                 default=default_value
             )
+            alt_name = self._get_alt_name(arg_defaults)
             self._args[name] = Arg(name, alt_name, values).resolve(name, self._priority)
 
     def _get_arg_defaults(self, name, defaults):
@@ -127,18 +127,28 @@ class ArgInit(ABC):
         return None
 
     @staticmethod
-    def _get_alt_name(name, arg_defaults):
-        """Determine the name to use for the config."""
+    def _get_alt_name(arg_defaults):
+        """Return the alternate name for the argument."""
         if arg_defaults and arg_defaults.alt_name:
             return arg_defaults.alt_name
-        return name
+        return None
 
-    def _get_env_name(self, name, arg_defaults):
-        """Determine the name to use for the env."""
-        if arg_defaults and arg_defaults.alt_name:
-            return arg_defaults.alt_name
-        env_parts = [item for item in (self._env_prefix, name) if item]
+    @classmethod
+    def _get_config_name(cls, name, arg_defaults):
+        """Determine the name to use for the config."""
+        alt_name = cls._get_alt_name(arg_defaults)
+        return alt_name if alt_name else name
+
+    @staticmethod
+    def _construct_env_name(env_prefix, name):
+        env_parts = [item for item in (env_prefix, name) if item]
         return "_".join(env_parts).upper()
+
+    @classmethod
+    def _get_env_name(cls, env_prefix, name, arg_defaults):
+        """Determine the name to use for the env."""
+        alt_name = cls._get_alt_name(arg_defaults)
+        return (alt_name if alt_name else cls._construct_env_name(env_prefix, name)).upper()
 
     @staticmethod
     def _get_env_value(env_name) -> str | None:

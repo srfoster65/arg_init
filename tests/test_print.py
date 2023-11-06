@@ -40,9 +40,9 @@ class TestPrintFunctions:
         arg1_value = "arg1_value"
         expected = (
             "<Arg("
-            "name=arg1, alt_name=arg1, "
+            "name=arg1, alt_name=None, "
             "values=<Values(arg=arg1_value, env=None, config=None, default=None)>, "
-            "value=arg1_value)"
+            "value=arg1_value)>"
         )
 
         test(arg1_value)
