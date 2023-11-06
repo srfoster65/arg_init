@@ -17,6 +17,7 @@ classifiers = [
 ]
 dependencies = [
     "python-box>=7.0.1",
+    "pyyaml>=6.0.1",
 ]
 license = {text = "MIT"}
 dynamic = ["version"]
@@ -37,6 +38,9 @@ lint = [
 test = [
     "pytest>=7.4.2",
     "pytest-cov>=4.1.0",
+    "pyfakefs>=5.3.0",
+    "mypy>=1.6.1",
+    "types-PyYAML>=6.0.12.12",
 ]
 docs = [
     "mkdocs>=1.5.3",
