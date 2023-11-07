@@ -21,9 +21,9 @@ class TestEnvVariants:
         "prefix, arg_value, envs, defaults, expected",
         [
             ("prefix", None, {"PREFIX_ARG1": "env1_value"}, None, Expected("arg1", "env1_value")),
-            ("prefix", None, {"ENV1": "env1_value"}, [ArgDefaults(name="arg1", env_name="ENV1")], Expected("arg1", "env1_value")),
-            (None, None, {"ARG1": "env1_value"}, [ArgDefaults(name="arg1", default_value="default", disable_env=True)], Expected("arg1", "default")),
-            (None, None, {"ENV1": "env1_value"}, [ArgDefaults(name="arg1", default_value="default", env_name="ENV1", disable_env=True)], Expected("arg1", "default")),
+            ("prefix", None, {"ENV1": "env1_value"}, [ArgDefaults(name="arg1", alt_name="ENV1")], Expected("arg1", "env1_value")),
+            # (None, None, {"ARG1": "env1_value"}, [ArgDefaults(name="arg1", default_value="default", disable_env=True)], Expected("arg1", "default")),
+            # (None, None, {"ENV1": "env1_value"}, [ArgDefaults(name="arg1", default_value="default", env_name="ENV1", disable_env=True)], Expected("arg1", "default")),
         ],
     )
     def test_env_variants(self, prefix, arg_value, envs, defaults, expected):

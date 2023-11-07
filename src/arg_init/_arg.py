@@ -2,39 +2,32 @@
 Data Class used to customise ArgInit behaviour
 """
 
-from dataclasses import dataclass
-from os import environ
 import logging
 
+from ._priority import Priority
+# from ._values import Values
 
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class Values:
-    arg: any = None
-    env: any = None
-    default: any = None
-
-    def __repr__(self):
-        return f"<Values(arg={self.arg}, env={self.env}, default={self.default})>"
 
 
 class Arg:
     """Class to represent argument attributes."""
 
-    ARG_PRIORITY = "arg_priority"
-    ENV_PRIORITY = "env_priority"
-    DEFAULT_PRIORITY_SYSTEM = ENV_PRIORITY
+    _mapping = {
+        Priority.CONFIG: "config",
+        Priority.ENV: "env",
+        Priority.ARG: "arg",
+        Priority.DEFAULT: "default",
+    }
 
     def __init__(
         self,
         name: str,
-        env_name: str = None,
+        alt_name: str | None = None,
         values=None,
     ):
         self._name = name
-        self._env_name = env_name
+        self._alt_name = alt_name
         self._values = values
         self._value = None
 
@@ -45,7 +38,7 @@ class Arg:
     def _data(self):
         return [
             f"name={self.name}",
-            f"env_name={self.env_name}",
+            f"alt_name={self.alt_name}",
             f"values={self.values}",
             f"value={self.value}",
         ]
@@ -67,56 +60,28 @@ class Arg:
         return self._value
 
     @property
-    def env_name(self):
+    def alt_name(self):
         """env attribute."""
-        return self._env_name
+        return self._alt_name
 
     @property
     def values(self):
-        """default attribute."""
+        """Values to use when resolving Arg."""
         return self._values
 
-    def resolve(self, priority=DEFAULT_PRIORITY_SYSTEM):
+    def resolve(self, name, priority_order):
         """
         Resolve the value Arg using the selected priority system.
         """
         logger.debug("Resolving value for %s", repr(self))
-        if priority == self.ARG_PRIORITY:
-            value = self._resolve_arg_priority()
-        if priority == self.ENV_PRIORITY:
-            value = self._resolve_env_priority()
-        self._value = value
+        for priority in priority_order:
+            logger.debug("Checking %s value", priority)
+            value = self._get_value(priority)
+            if value is not None:
+                logger.debug("Resolved %s = %s from %s", name, value, priority)
+                self._value = value
+                break
         return self
 
-    def _if_use_arg_value(self) -> bool:
-        if self.values.arg:
-            logger.debug("Using arg: value=%s", self.values.arg)
-            return True
-        return False
-
-    def _if_use_env_value(self) -> bool:
-        if self.values.env:
-            logger.debug("Using env: value=%s", self.values.env)
-            return True
-        return False
-
-    def _log_use_default_value(self):
-        logger.debug("Using default: value=%s", self.values.default)
-
-    def _resolve_arg_priority(self):
-        logger.debug("Resolving using arg priority")
-        if self._if_use_arg_value():
-            return self.values.arg
-        if self._if_use_env_value():
-            return self.values.env
-        self._log_use_default_value()
-        return self.values.default
-
-    def _resolve_env_priority(self):
-        logger.debug("Resolving using env priority")
-        if self._if_use_env_value():
-            return self.values.env
-        if self._if_use_arg_value():
-            return self.values.arg
-        self._log_use_default_value()
-        return self.values.default
+    def _get_value(self, priority):
+        return getattr(self._values, self._mapping[priority])

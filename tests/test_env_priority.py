@@ -19,15 +19,16 @@ class TestEnvPriority:
     """
 
     @pytest.mark.parametrize(
-        "prefix, arg_value, envs, defaults, expected",
+        "prefix, arg_value, envs, config, defaults, expected",
         [
-            (None, "arg1_value", {"ARG1": "env1_value"}, None, Expected("arg1", "env1_value")),
-            (None, "arg1_value", None, None, Expected("arg1", "env1_value")),
-            (None, None, None, [ArgDefaults(name="arg1", default_value="default")], Expected("arg1", "default")),
-            (None, None, None, None, Expected("arg1", None)),
+            (None, "arg1_value", {"ARG1": "env1_value"}, {"test": {"arg1": "config1_value"}}, [ArgDefaults(name="arg1", default_value="default")], Expected("arg1", "config1_value")),
+            (None, "arg1_value", {"ARG1": "env1_value"}, {}, [ArgDefaults(name="arg1", default_value="default")], Expected("arg1", "env1_value")),
+            (None, "arg1_value", None, {}, [ArgDefaults(name="arg1", default_value="default")], Expected("arg1", "env1_value")),
+            (None, None, None, {}, [ArgDefaults(name="arg1", default_value="default")], Expected("arg1", "default")),
+            (None, None, None, {}, None, Expected("arg1", None)),
         ],
     )
-    def test_priority(self, prefix, arg_value, envs, defaults, expected):
+    def test_priority(self, prefix, arg_value, envs, config, defaults, expected, fs):
         """
         Priority Order
         1. All defined - Env is used
@@ -39,6 +40,7 @@ class TestEnvPriority:
             args = FunctionArgInit(env_prefix=prefix, defaults=defaults).args
             assert args[expected.key] == expected.value
 
+        fs.create_file("config.yaml", contents=str(config))
         with pytest.MonkeyPatch.context() as mp:
             if envs:
                 for env, value in envs.items():

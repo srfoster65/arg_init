@@ -6,15 +6,15 @@
 [![PyPI][pypi_badge]][pypi_url]
 [![PyPI - License][license_badge]][license_url]
 
-When running code there is often a need to initialise arguments either directly from a passed in value, indirectly via an environment variable or a via default value. Argparse provides this functionality (or can be easily augmented to) already but has one major drawback; It does not work when the code is invoked as a library.
+When running code there is often a need to initialise arguments either directly from a passed in value, indirectly via an environment variable or config file or a via default value. Argparse provides this functionality (or can be easily augmented to, with the exception of loading from a config file) already but has one major drawback; It does not work when the code is invoked as a library.
 
-arg_init provides functionality to resolve argument values for a given function/method from either an environment variable, an argument value or a default value. Introspection is used to determine the arguments of the calling function, and a dictionary is created of resolved values for each argument. Resolved values are determined using either Environment Priority (default) or Argument Priority.
+arg_init provides functionality to resolve argument values for a given function/method from either a config file, an environment variable, an argument value or a default value. Introspection is used to determine the arguments of the calling function, and a dictionary is created of resolved values for each argument. Resolved values are determined using a predefined priority system that can be customised by the user.
 
-When resolving from an environment variable, the environment variable name is assumed to be the same as the argument name, in uppercase e.g. An argument, arg1 would resolve from an environment variable, "ARG1". This behaviour can be modified by providing a custom env_name via argument defaults or by setting an env_prefix.
+When resolving from an environment variable, the environment variable name is assumed to be the same as the argument name, in uppercase e.g. An argument, arg1 would resolve from an environment variable, "ARG1". This behaviour can be modified by providing an alternate name via argument defaults or by setting an env_prefix.
 
 If the calling function is a class method, arguments may also be made available as class attributes. See reference for more details.
 
-Because it is implemented in the application, it will work if called via a CLI script or as a library by another python program.
+Because argument initialisation is implemented in the application, it will work if called via a CLI script or as a library by another python program.
 
 **arg_init** provides two classes; ClassArgInit and FunctionArgInit for initialising arguments of bound class functions and unbound functions respectively. These classes iterate over all arguments of the calling function, exposing a dictionary containing key/value pairs of argument name, with values assigned according to the priority system selected.
 
@@ -30,47 +30,56 @@ ClassArgInit:
 
 - Class attributes may be set that represent the resolved argument values
 
-If ArgumentParser is used to create a CLI for an application then default values should **not** be assigned in add_argument(). This is to prevent different behaviours between launching as a CLI and an imported library. What happens is that ArgumentParser will provide values for all arguments that have a default assigned. This effectively renders default values in the called function redundant as a value is always provided, even if the value is None.
-
 ## Priority
 
-The argument value is set when a non **None** value is found, or all options are exhausted. At this point the argument is set to None.
+The argument value is set when a value is found , or all options are exhausted. At this point the argument is set to None.
 
 What priority should be used to set an argument?
 
 ### Argument Priority Order
 
-If passed in arguments have priorty over environment variables.
+If passed in arguments have priorty:
 
-1. Arg
-2. Env
-3. Default
-
-And if the function has a non **None** default argument e.g. f(a=1), then the argument value will always be used to set the value, never allowing an env value to take effect.
+And if the function has a non **None** default argument e.g. f(a=1), then the argument value will always be used to set the value, never allowing a config or env value to take effect.
 
 There are two obvious solutions to this:
 
-1. Change the priority order.
+1. Lower the priority of arguments.
 2. Provide an alternate means to specify a default value. If a default value is required in the function signature, to allow ommission of an argument when calling, ensure it is set to None.
 
-### Env Priority Order
+### Default Values
 
-Environment variables have prioirty over passed in arguments.
+The problem: How to avoid violating the DRY principle when an application can be invoked via a CLI or as a library.
 
-1. Env
-2. Arg
-3. Default
+If an application is to be called as a library then the defaults MUST be implemented in the application, not the CLI script. But ArgumentParser will pass in None values if no value is specified for an argument. This None value will be used in preference to function default! So defaults must be specified in ArgumentParser and the applicication. This is not a good design pattern.
 
-This allows use of the standard default argument values for a python function if no env is defined.
+Providing an alternate means to specify a default value resolves this.
+There is a small gotcha here though. It is not possible to apply a non None value via an argument.
 
-**ArgInit** supports both priority models.
-This becomes a personal choice, and behaviour can be chosen at implementation/run time. Default priority order is: **Env Priority**.
+
+**arg-init** supports customisable priority models.
+This becomes a personal choice, and behaviour can be chosen at implementation/run time.
+
+### Default Priority Order
+
+The default priority implemented is:
+
+- **CONFIG_PRIORITY**
+  1. Config
+  1. Env
+  1. Arg
+  1. Default
+
+Two further predifined priority models are provided
+
+- **ENV_PRIORITY**
+- **ARG_PRIOIRTY**
 
 ## Usage
 
 ### Simple Useage
 
-The following examples show how to use arg_init to initialise a class or function, with a default value assigned to the argument.
+The following examples show how to use arg_init to initialise a class or function
 
 ```python
 from arg_init import ClassArgInit
@@ -89,9 +98,9 @@ def func(arg1=10):
     ...
 ```
 
-In the examples above, arg1 will be initialised with the value from the environment variable "ARG1" if set, else it will take the passed in value. Finally it will have a default value of None assigned.
+In the examples above, arg1 will be initialised with the value from the config file, the environment variable "ARG1", else it will take the passed in value. Finally it will have a default value of None assigned.
 
-As these examples use the default priority sytem: ENV_PRIORITY, standard python function defaults can be used in the function signature.
+As these examples use the default priority sytem, they will not work if used with ArgumentParser without ArgumentParser replicating the default values.
 
 ### Other use cases
 
@@ -118,7 +127,7 @@ def func(arg1=None):
 ```
 
 Note:
-As this example uses argument priority, a default **must** be provided via ArgDefaults.
+As this example uses argument priority, a default **must** be provided via ArgDefaults if the default is not None.
 
 ### Recommendation
 

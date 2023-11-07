@@ -16,7 +16,7 @@ class TestKwargs:
     Class to test ArgInit for argument priority.
     """
 
-    def test_kwargs_not_used(self):
+    def test_kwargs_not_used(self, fs):
         """
         Test kwargs are ignored if not explicity enabled
         """
@@ -33,7 +33,7 @@ class TestKwargs:
         test(arg1_value, **kwargs)
 
 
-    def test_kwargs_used_for_function(self):
+    def test_kwargs_used_for_function(self, fs):
         """
         Test kwargs are processed if enabled
         """
@@ -50,7 +50,7 @@ class TestKwargs:
         test(arg1_value, **kwargs)
 
 
-    def test_kwargs_used_for_class(self):
+    def test_kwargs_used_for_class(self, fs):
         """
         Test kwargs are processed if enabled
         """

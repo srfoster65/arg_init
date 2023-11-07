@@ -30,7 +30,7 @@ FunctionArgInit() should be called from a function that arguments should be proc
 ```python
 from arg_init import FunctionArgInit
 
-def my_func(arg1=99):
+def my_func(arg1=None):
     args = FunctionArgInit().args
     print(args.arg1)
 ```
@@ -38,6 +38,41 @@ def my_func(arg1=99):
 Resolved arguments are exposed by accessing the args attribute of FunctionArgInit. Resolved values can be accessed as attributes e.g. args.arg1 or as a dictionary item e.g. args["arg1"].
 
 ## Other Use Cases
+
+### Using config files to resolve argument values
+
+By default arg-init will search for a config file named "config", with the extension: toml, yaml, json (in that order) in the current working directory. This behaviour can be overridden by specifying an absolute or relative path to a different config file.
+
+#### TOML files
+
+The section heading should be the name of the class, if using ClassArgInit or the name of the function, if using FunctionArgInit.
+
+```toml
+[MyApp]
+arg1 = 42
+```
+
+#### YAML Files
+
+The top level dictionary key should be the name of the class, if using ClassArgInit or the name of the function, if using FunctionArgInit.
+
+```yaml
+MyApp:
+  arg1: 42
+```
+
+#### JSON Files
+
+The top level dictionary key should be the name of the class, if using ClassArgInit or the name of the function, if using FunctionArgInit.
+
+```json
+{
+  "MyApp":
+  {
+    "arg1": 42
+  }
+}
+```
 
 ### Setting a Common Prefix for all Environment Variables
 
@@ -87,7 +122,6 @@ ArgDefaults takes a "name" argumment and zero or more of the following optional 
 
 + default_value
 + env_name
-+ disable_env
 
 #### default_value
 
@@ -100,10 +134,6 @@ This can also be used when using ENV_Priority but the recommended solution is to
 Setting this value allows a custom env name to be set as the lookup for an argument. This overrides the default setting and ignores any env prefix settings.
 
 Note: env_name is converted to uppercase before use.
-
-#### disable_env
-
-If an argument should not use env value in its resolution process then set this attribute to True. If this attribute is set, even if the env exists it will not be used to resolve the argument value.
 
 #### Example using ArgDefaults
 

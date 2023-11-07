@@ -4,6 +4,7 @@ Test ArgInit class variable initialisation.
 
 from collections import namedtuple
 
+from pyfakefs.fake_filesystem_unittest import patchfs
 import pytest
 
 from arg_init import ClassArgInit
@@ -17,7 +18,7 @@ class TestClassArgInit:
     Test class attributes are initialised
     """
 
-    def test_class(self):
+    def test_class(self, fs):
         """
         Test ArgInit on a class method
         """
@@ -31,7 +32,7 @@ class TestClassArgInit:
         Test(arg1_value)
 
 
-    def test_protect_attr_false_sets_attr(self):
+    def test_protect_attr_false_sets_attr(self, fs):
         """
         Test ArgInit on a class method
         """
@@ -45,7 +46,7 @@ class TestClassArgInit:
         Test(arg1_value)
 
 
-    def test_exception_raised_if_protected_attr_exists(self):
+    def test_exception_raised_if_protected_attr_exists(self, fs):
         """
         Test exception raised if attempting to set an attribute that already exists
         """
@@ -59,7 +60,7 @@ class TestClassArgInit:
             Test()
 
 
-    def test_exception_raised_if_non_protected_attr_exists(self):
+    def test_exception_raised_if_non_protected_attr_exists(self, fs):
         """
         Test exception raised if attempting to set an attribute that already exists.
         Verify "_" is not used as a prefix to attr when protect_args=False.
@@ -74,7 +75,7 @@ class TestClassArgInit:
             Test()
 
 
-    def test_set_attrs_false_does_not_set_attrs(self):
+    def test_set_attrs_false_does_not_set_attrs(self, fs):
         """
         Test exception raised if attempting to set an attribute that already exists.
         Verify "_" is not used as a prefix to attr when protect_args=False.

@@ -4,7 +4,7 @@ on a per argument basis.
 """
 
 from dataclasses import dataclass
-
+from typing import Any
 
 @dataclass
 class ArgDefaults:
@@ -14,14 +14,12 @@ class ArgDefaults:
     """
 
     name: str
-    default_value: any = None
-    env_name: str = None
-    disable_env: bool = False
+    default_value: Any = None
+    alt_name: str | None = None
 
     def __repr__(self) -> str:
         return (
             f"<ArgDefaults(name={self.name}, "
             f"default_value={self.default_value}, "
-            f"env_name={self.env_name}, "
-            f"disable_env={self.disable_env})>"
+            f"alt_name={self.alt_name})>"
         )
