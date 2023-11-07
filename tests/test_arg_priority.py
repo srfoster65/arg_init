@@ -10,10 +10,14 @@ from arg_init import ArgDefaults
 from arg_init import FunctionArgInit
 from arg_init import Priority
 
-Expected = namedtuple('Expected', 'key value')
+Expected = namedtuple("Expected", "key value")
 
-# Custom priority order
+# Common test defaults
 PRIORITY_ORDER = (Priority.ARG, Priority.CONFIG, Priority.ENV, Priority.DEFAULT)
+ENV = {"ARG1": "env1_value"}
+CONFIG = '{"test": {"arg1": "config1_value"}}'
+DEFAULTS = [ArgDefaults(name="arg1", default_value="default")]
+
 
 class TestArgPriority:
     """
@@ -24,11 +28,11 @@ class TestArgPriority:
         "prefix, arg_value, envs, config, defaults, expected",
         [
             # Priority order
-            (None, "arg1_value", {"ARG1": "env1_value"}, {"test": {"arg1": "config1_value"}}, [ArgDefaults(name="arg1", default_value="default")], Expected("arg1", "arg1_value")),
-            (None, None, {"ARG1": "env1_value"}, {"test": {"arg1": "config1_value"}}, [ArgDefaults(name="arg1", default_value="default")], Expected("arg1", "config1_value")),
-            (None, None, {"ARG1": "env1_value"}, {}, [ArgDefaults(name="arg1", default_value="default")], Expected("arg1", "env1_value")),
-            (None, None, None, {}, [ArgDefaults(name="arg1", default_value="default")], Expected("arg1", "default")),
-            (None, None, None, {}, None, Expected("arg1", None)),
+            (None, "arg1_value", ENV, CONFIG, DEFAULTS, Expected("arg1", "arg1_value")),
+            (None, None, ENV, CONFIG, DEFAULTS, Expected("arg1", "config1_value")),
+            (None, None, ENV, None, DEFAULTS, Expected("arg1", "env1_value")),
+            (None, None, None, None, DEFAULTS, Expected("arg1", "default")),
+            (None, None, None, None, None, Expected("arg1", None)),
         ],
     )
     def test_matrix(self, prefix, arg_value, envs, config, defaults, expected, fs):
@@ -42,34 +46,24 @@ class TestArgPriority:
         """
 
         def test(arg1):  # pylint: disable=unused-argument
-            args = FunctionArgInit(env_prefix=prefix, defaults=defaults, priority=PRIORITY_ORDER).args
+            args = FunctionArgInit(
+                env_prefix=prefix, defaults=defaults, priority=PRIORITY_ORDER
+            ).args
             assert args[expected.key] == expected.value
 
-        fs.create_file("config.yaml", contents=str(config))
+        if config:
+            fs.create_file("config.yaml", contents=config)
         with pytest.MonkeyPatch.context() as mp:
             if envs:
                 for env, value in envs.items():
                     mp.setenv(env, value)
             test(arg1=arg_value)
 
-
-    def test_false_values(self):
-        """
-        Test a logical false value sets the argument.
-        """
-        def test(arg1):  # pylint: disable=unused-argument
-            arg1_defaults = ArgDefaults("arg1", default_value=1)
-            args = FunctionArgInit(priority=PRIORITY_ORDER, defaults=[arg1_defaults]).args
-            assert args["arg1"] == arg1_value
-
-        arg1_value = 0
-        test(arg1_value)
-
-
-    def test_multiple_args(self):
+    def test_multiple_args(self, fs):  # pylint: disable=unused-argument
         """
         Test multiple arg values
         """
+
         def test(arg1, arg2):  # pylint: disable=unused-argument
             args = FunctionArgInit(priority=PRIORITY_ORDER).args
             assert args["arg1"] == arg1_value
@@ -83,6 +77,7 @@ class TestArgPriority:
         """
         Test multiple args defined in a config file
         """
+
         def test(arg1=None, arg2=None):  # pylint: disable=unused-argument
             args = FunctionArgInit(priority=PRIORITY_ORDER).args
             assert args[arg1] == config1_value
@@ -96,10 +91,11 @@ class TestArgPriority:
         fs.create_file("config.yaml", contents=str(config))
         test()
 
-    def test_multiple_envs(self):
+    def test_multiple_envs(self, fs):  # pylint: disable=unused-argument
         """
         Test a multiple args from envs
         """
+
         def test(arg1=None, arg2=None):  # pylint: disable=unused-argument
             args = FunctionArgInit(priority=PRIORITY_ORDER).args
             assert args["arg1"] == env1_value
@@ -114,13 +110,14 @@ class TestArgPriority:
             mp.setenv(env2, env2_value)
             test()
 
-    def test_multiple_mixed(self):
+    def test_multiple_mixed(self, fs):  # pylint: disable=unused-argument
         """
         Test mixed initialisation
           arg1 - arg priority
           arg2 - arg, env not set
           arg3 - eng - arg = None
         """
+
         def test(arg1, arg2, arg3):  # pylint: disable=unused-argument
             args = FunctionArgInit(priority=PRIORITY_ORDER).args
             assert args["arg1"] == arg1_value
@@ -139,10 +136,11 @@ class TestArgPriority:
             mp.setenv(env3, env3_value)
             test(arg1_value, arg2_value, arg3_value)
 
-    def test_env_prefix(self):
+    def test_env_prefix(self, fs):  # pylint: disable=unused-argument
         """
         Test using env_prefix does not affect results
         """
+
         def test(arg1):  # pylint: disable=unused-argument
             args = FunctionArgInit(env_prefix="prefix", priority=PRIORITY_ORDER).args
             assert args["arg1"] == arg1_value

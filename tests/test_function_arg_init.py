@@ -15,11 +15,11 @@ class TestFunctionArgInit:
     Test function arguments are initialised
     """
 
-    def test_function(self):
+    def test_function(self, fs):  # pylint: disable=unused-argument
         """
         Test FunctionArgInit
         """
-        def test(arg1):
+        def test(arg1):  # pylint: disable=unused-argument
             """Test Class"""
             arg_init = FunctionArgInit()
             assert arg_init.args.arg1 == arg1_value

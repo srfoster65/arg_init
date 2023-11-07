@@ -11,6 +11,7 @@ from arg_init import FunctionArgInit
 
 class TestFileConfigs:
     """
+    Test initialising content from various config file formats
     """
 
     def test_toml_file(self, fs):
@@ -96,7 +97,7 @@ class TestFileConfigs:
             fs.create_file("named_file.ini")
             test()
 
-    def test_missing_named_file_raises_exception(self, fs):
+    def test_missing_named_file_raises_exception(self, fs):  # pylint: disable=unused-argument
         """
         Test missing named config file raises an exception.
         When an alternate config file is specified, it MUST exist.

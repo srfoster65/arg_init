@@ -7,7 +7,7 @@ from arg_init._version import __version__
 
 class TestVersionDefined:
     """
-    Class to test a version is defined in _version.py
+    Test a version is defined in _version.py
     """
 
     def test_version_defined(self):

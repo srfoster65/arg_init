@@ -22,18 +22,14 @@ class TestEnvVariants:
         [
             ("prefix", None, {"PREFIX_ARG1": "env1_value"}, None, Expected("arg1", "env1_value")),
             ("prefix", None, {"ENV1": "env1_value"}, [ArgDefaults(name="arg1", alt_name="ENV1")], Expected("arg1", "env1_value")),
-            # (None, None, {"ARG1": "env1_value"}, [ArgDefaults(name="arg1", default_value="default", disable_env=True)], Expected("arg1", "default")),
-            # (None, None, {"ENV1": "env1_value"}, [ArgDefaults(name="arg1", default_value="default", env_name="ENV1", disable_env=True)], Expected("arg1", "default")),
         ],
     )
-    def test_env_variants(self, prefix, arg_value, envs, defaults, expected):
+    def test_env_variants(self, prefix, arg_value, envs, defaults, expected, fs):  # pylint: disable=unused-argument
         """
 
         Test advanced env use cases
         1. Prefix - Env is used
         2. Default env_name (Prefix not used) - Env is used
-        3. Default env_name with env disabled - Default is used
-        4. env_name defined with env_disabled - Default is used
 
         """
         def test(arg1):  # pylint: disable=unused-argument
