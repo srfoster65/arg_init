@@ -112,11 +112,10 @@ class ArgInit(ABC):
             values = Values(
                 arg=value,
                 env=self._get_env_value(env_name),
-                config=config.get(config_name),
+                config=self._get_config_value(config, config_name),
                 default=default_value
             )
-            alt_name = self._get_alt_name(arg_defaults)
-            self._args[name] = Arg(name, alt_name, values).resolve(name, self._priority)
+            self._args[name] = Arg(name, env_name, config_name, values).resolve(name, self._priority)
 
     def _get_arg_defaults(self, name, defaults):
         """Check if any defaults exist for the named arg."""
@@ -150,16 +149,48 @@ class ArgInit(ABC):
         alt_name = cls._get_alt_name(arg_defaults)
         return (alt_name if alt_name else cls._construct_env_name(env_prefix, name)).upper()
 
+    # @staticmethod
+    # def _get_env_value(env_name) -> str | None:
+    #     """Read the env value from environ."""
+    #     logger.debug("Searching for env: %s", env_name)
+    #     if env_name in environ:
+    #         value = environ[env_name]
+    #         logger.debug("Env found: %s=%s", env_name, value)
+    #         return value
+    #     logger.debug("Env not set")
+    #     return None
+
     @staticmethod
-    def _get_env_value(env_name) -> str | None:
-        """Read the env value from environ."""
-        logger.debug("Searching for env: %s", env_name)
-        if env_name in environ:
-            value = environ[env_name]
-            logger.debug("Env found: %s=%s", env_name, value)
+    def _get_value(name, dictionary) -> str | None:
+        """Read the env value."""
+        # logger.debug("Searching for %s", name)
+        if name in dictionary:
+            value = dictionary[name]
+            logger.debug("Not found: %s=%s", name, value)
             return value
-        logger.debug("Env not set")
+        logger.debug("%s not set", name)
         return None
+
+    @classmethod
+    def _get_config_value(cls, config, name):
+        logger.debug("Searching config for: %s", name)
+        return cls._get_value(name, config)
+
+    @classmethod
+    def _get_env_value(cls, name):
+        logger.debug("Searching environment for: %s", name)
+        return cls._get_value(name, environ)
+
+
+    # @staticmethod
+    # def _get_config_value(config, name):
+    #     logger.debug("Searching for config: %s", name)
+    #     if name in config:
+    #         value = config[name]
+    #         logger.debug("Config found: %s=%s", name, value)
+    #         return value
+    #     logger.debug("Config not set")
+    #     return None
 
     @staticmethod
     def _get_default_value(arg_defaults):

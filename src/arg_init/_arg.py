@@ -23,11 +23,13 @@ class Arg:
     def __init__(
         self,
         name: str,
-        alt_name: str | None = None,
+        env_name: str | None = None,
+        config_name: str | None = None,
         values=None,
     ):
         self._name = name
-        self._alt_name = alt_name
+        self._env_name = env_name
+        self._config_name = config_name
         self._values = values
         self._value = None
 
@@ -38,7 +40,8 @@ class Arg:
     def _data(self):
         return [
             f"name={self.name}",
-            f"alt_name={self.alt_name}",
+            f"env_name={self.env_name}",
+            f"config_name={self.config_name}",
             f"values={self.values}",
             f"value={self.value}",
         ]
@@ -60,9 +63,14 @@ class Arg:
         return self._value
 
     @property
-    def alt_name(self):
+    def env_name(self):
         """env attribute."""
-        return self._alt_name
+        return self._env_name
+
+    @property
+    def config_name(self):
+        """env attribute."""
+        return self._config_name
 
     @property
     def values(self):
