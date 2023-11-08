@@ -66,3 +66,10 @@ addopts = "--cov=src --cov-report term-missing"
 testpaths = [
     "tests",
 ]
+
+[tool.mypy]
+files = "src/arg_init/"
+disallow_untyped_calls = true
+# disallow_untyped_defs = true
+check_untyped_defs = true
+# disallow_untyped_decorators = true
