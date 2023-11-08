@@ -2,6 +2,7 @@
 
 [![tests][tests_badge]][tests_url]
 [![codecov][codecov_badge]][codecov_url]
+[![mypy][mypy_badge]][mypy_url]
 [![Docs][docs_badge]][docs_url]
 [![PyPI][pypi_badge]][pypi_url]
 [![PyPI - License][license_badge]][license_url]
@@ -151,6 +152,8 @@ Please see the [documentation](https://srfoster65.github.io/arg_init/) for furth
 [tests_url]: https://github.com/srfoster65/arg_init/actions/workflows/build.yml
 [codecov_badge]: https://codecov.io/gh/srfoster65/arg_init/graph/badge.svg?token=FFNWSCS4BB
 [codecov_url]: https://codecov.io/gh/srfoster65/arg_init
+[mypy_badge]: https://github.com/srfoster65/arg_init/actions/workflows/mypy.yml/badge.svg
+[mypy_url]: https://github.com/srfoster65/arg_init/actions/workflows/mypy.yml
 [docs_badge]: https://github.com/srfoster65/arg_init/actions/workflows/docs.yml/badge.svg
 [docs_url]: https://srfoster65.github.io/arg_init/
 [pypi_badge]: https://img.shields.io/pypi/v/arg-init?logo=python&logoColor=%23cccccc
