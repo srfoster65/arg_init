@@ -3,6 +3,7 @@ Class to initialise Argument Values for a Class Method
 """
 
 from inspect import getargvalues
+from typing import Any
 import logging
 
 from ._arg_init import ArgInit
@@ -29,7 +30,7 @@ class ClassArgInit(ArgInit):
         defaults=None,
         config_name="config",
         **kwargs,
-    ):
+    ) -> None:
         self._set_attrs = set_attrs
         self._protect_attrs = protect_attrs
         super().__init__(priority, env_prefix, use_kwargs, defaults, config_name, **kwargs)
@@ -39,7 +40,7 @@ class ClassArgInit(ArgInit):
         class_instance = self._get_class_instance(calling_stack.frame)
         self._set_class_arg_attrs(class_instance)
 
-    def _get_arguments(self, frame, use_kwargs):
+    def _get_arguments(self, frame, use_kwargs) -> dict:
         """
         Returns a dictionary containing key value pairs of all
         named arguments for the specified frame. The first
@@ -55,19 +56,19 @@ class ClassArgInit(ArgInit):
         args.update(self._get_kwargs(arginfo, use_kwargs))
         return args
 
-    def _set_class_arg_attrs(self, class_ref):
+    def _set_class_arg_attrs(self, class_ref) -> None:
         """Set attributes for the class object."""
         if self._set_attrs:
             logger.debug("Setting class attributes")
             for arg in self._args.values():
                 self._set_attr(class_ref, arg.name, arg.value)
 
-    def _get_attr_name(self, name):
+    def _get_attr_name(self, name) -> str:
         if self._protect_attrs:
             return name if name.startswith("_") else "_" + name
         return name
 
-    def _set_attr(self, class_instance, name, value):
+    def _set_attr(self, class_instance, name, value) -> None:
         name = self._get_attr_name(name)
         if hasattr(class_instance, name):
             raise AttributeError(f"Attribute already exists: {name}")
@@ -75,7 +76,7 @@ class ClassArgInit(ArgInit):
         setattr(class_instance, name, value)
 
     @staticmethod
-    def _get_class_instance(frame):
+    def _get_class_instance(frame) -> Any | None:
         """
         Return the value of the 1st argument from the calling function.
         This should be the class instance.
@@ -84,6 +85,7 @@ class ClassArgInit(ArgInit):
         first_arg = arginfo.args[0]
         return arginfo.locals.get(first_arg)
 
-    def _get_name(self, calling_stack):
+    @staticmethod
+    def _get_name(calling_stack) -> str:
         """Return the name of the current class instance."""
         return calling_stack.frame.f_locals["self"].__class__.__name__

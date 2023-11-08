@@ -5,11 +5,13 @@ processed attribute values.
 from abc import ABC, abstractmethod
 from inspect import stack
 from os import environ
+from typing import Any
 import logging
 
 from box import Box
 
 from ._arg import Arg
+from ._arg_defaults import ArgDefaults
 from ._config import read_config
 from ._priority import Priority
 from ._values import Values
@@ -33,7 +35,7 @@ class ArgInit(ABC):
         defaults,
         config,
         **kwargs,  # pylint: disable=unused-argument
-    ):
+    ) -> None:
         self._env_prefix = env_prefix
         self._priority = priority
         self._args = Box()
@@ -58,7 +60,7 @@ class ArgInit(ABC):
         return self._config
 
     @abstractmethod
-    def _get_arguments(self, frame, use_kwargs):
+    def _get_arguments(self, frame, use_kwargs) -> dict:
         """
         Returns a dictionary containing key value pairs of all
         named arguments and their values associated with the frame.
@@ -66,14 +68,14 @@ class ArgInit(ABC):
         raise RuntimeError()  # pragma no cover
 
     @abstractmethod
-    def _get_name(self, calling_stack):
+    def _get_name(self, calling_stack) -> str:
         """
         Return the name of the item having arguments initialised.
         """
         raise RuntimeError()  # pragma no cover
 
     # @abstractmethod
-    def _post_init(self, calling_stack):
+    def _post_init(self, calling_stack) -> None:
         """
         Class specific post initialisation actions.
         This can optionally be overridden by derived classes
@@ -117,7 +119,7 @@ class ArgInit(ABC):
             )
             self._args[name] = Arg(name, env_name, config_name, values).resolve(name, self._priority)
 
-    def _get_arg_defaults(self, name, defaults):
+    def _get_arg_defaults(self, name, defaults)-> ArgDefaults | None:
         """Check if any defaults exist for the named arg."""
         if defaults:
             for arg_defaults in defaults:
@@ -126,39 +128,28 @@ class ArgInit(ABC):
         return None
 
     @staticmethod
-    def _get_alt_name(arg_defaults):
+    def _get_alt_name(arg_defaults) -> str | None:
         """Return the alternate name for the argument."""
         if arg_defaults and arg_defaults.alt_name:
             return arg_defaults.alt_name
         return None
 
     @classmethod
-    def _get_config_name(cls, name, arg_defaults):
+    def _get_config_name(cls, name, arg_defaults) -> str:
         """Determine the name to use for the config."""
         alt_name = cls._get_alt_name(arg_defaults)
         return alt_name if alt_name else name
 
     @staticmethod
-    def _construct_env_name(env_prefix, name):
+    def _construct_env_name(env_prefix, name) -> str:
         env_parts = [item for item in (env_prefix, name) if item]
         return "_".join(env_parts).upper()
 
     @classmethod
-    def _get_env_name(cls, env_prefix, name, arg_defaults):
+    def _get_env_name(cls, env_prefix, name, arg_defaults) -> str:
         """Determine the name to use for the env."""
         alt_name = cls._get_alt_name(arg_defaults)
         return (alt_name if alt_name else cls._construct_env_name(env_prefix, name)).upper()
-
-    # @staticmethod
-    # def _get_env_value(env_name) -> str | None:
-    #     """Read the env value from environ."""
-    #     logger.debug("Searching for env: %s", env_name)
-    #     if env_name in environ:
-    #         value = environ[env_name]
-    #         logger.debug("Env found: %s=%s", env_name, value)
-    #         return value
-    #     logger.debug("Env not set")
-    #     return None
 
     @staticmethod
     def _get_value(name, dictionary) -> str | None:
@@ -172,28 +163,17 @@ class ArgInit(ABC):
         return None
 
     @classmethod
-    def _get_config_value(cls, config, name):
+    def _get_config_value(cls, config, name) -> Any:
         logger.debug("Searching config for: %s", name)
         return cls._get_value(name, config)
 
     @classmethod
-    def _get_env_value(cls, name):
+    def _get_env_value(cls, name) -> str | None:
         logger.debug("Searching environment for: %s", name)
         return cls._get_value(name, environ)
 
-
-    # @staticmethod
-    # def _get_config_value(config, name):
-    #     logger.debug("Searching for config: %s", name)
-    #     if name in config:
-    #         value = config[name]
-    #         logger.debug("Config found: %s=%s", name, value)
-    #         return value
-    #     logger.debug("Config not set")
-    #     return None
-
     @staticmethod
-    def _get_default_value(arg_defaults):
+    def _get_default_value(arg_defaults) -> Any:
         if arg_defaults:
             return arg_defaults.default_value
         return None

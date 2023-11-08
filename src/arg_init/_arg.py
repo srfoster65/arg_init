@@ -2,10 +2,11 @@
 Data Class used to customise ArgInit behaviour
 """
 
+from typing import Any
 import logging
 
 from ._priority import Priority
-# from ._values import Values
+
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +38,7 @@ class Arg:
         """When testing for equality, test only the value attribute."""
         return self.value == other
 
-    def _data(self):
+    def _data(self) -> list[str]:
         return [
             f"name={self.name}",
             f"env_name={self.env_name}",
@@ -77,7 +78,7 @@ class Arg:
         """Values to use when resolving Arg."""
         return self._values
 
-    def resolve(self, name, priority_order):
+    def resolve(self, name, priority_order) -> Any:
         """
         Resolve the value Arg using the selected priority system.
         """
@@ -91,5 +92,5 @@ class Arg:
                 break
         return self
 
-    def _get_value(self, priority):
+    def _get_value(self, priority) -> Any:
         return getattr(self._values, self._mapping[priority])

@@ -14,7 +14,7 @@ class ArgDefaults:
     """
 
     name: str
-    default_value: Any = None
+    default_value: Any | None = None
     alt_name: str | None = None
 
     def __repr__(self) -> str:

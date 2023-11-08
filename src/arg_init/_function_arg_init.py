@@ -25,10 +25,10 @@ class FunctionArgInit(ArgInit):
         defaults=None,
         config_name="config",
         **kwargs,
-    ):
+    ) -> None:
         super().__init__(priority, env_prefix, use_kwargs, defaults, config_name, **kwargs)
 
-    def _get_arguments(self, frame, use_kwargs):
+    def _get_arguments(self, frame, use_kwargs) -> dict:
         """
         Returns a dictionary containing key value pairs of all
         named arguments and their values associated with the frame.
