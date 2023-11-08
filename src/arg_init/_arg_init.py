@@ -13,7 +13,7 @@ from box import Box
 from ._arg import Arg
 from ._arg_defaults import ArgDefaults
 from ._config import read_config
-from ._priority import Priority
+from ._priority import Priority, DEFAULT_PRIORITY
 from ._values import Values
 
 
@@ -29,23 +29,19 @@ class ArgInit(ABC):
 
     def __init__(
         self,
-        priority,
-        env_prefix: str | None,
-        use_kwargs,
-        defaults,
-        config,
+        priority = DEFAULT_PRIORITY,
+        env_prefix: str | None = None,
+        use_kwargs = False,
+        defaults = None,
+        config_name = "config",
         **kwargs,  # pylint: disable=unused-argument
     ) -> None:
         self._env_prefix = env_prefix
         self._priority = priority
         self._args = Box()
         calling_stack = stack()[self.STACK_LEVEL_OFFSET]
-        calling_stack.frame.f_locals["arg1"] = 2
         name = self._get_name(calling_stack)
-        self._config = read_config(config) if Priority.CONFIG in priority else {}
-        if self._config:
-            logger.debug("Section id in config file: %s", name)
-        arg_config = self.config.get(name, {})
+        arg_config = self._read_config(config_name, name, priority)
         self._init_args(name, calling_stack, use_kwargs, defaults, arg_config)
         self._post_init(calling_stack)
 
@@ -177,3 +173,20 @@ class ArgInit(ABC):
         if arg_defaults:
             return arg_defaults.default_value
         return None
+
+    def _read_config(
+        self,
+        config_name,
+        section_name: str,
+        priority: tuple,
+    ) -> dict:
+        config = config = (
+            read_config(config_name) if Priority.CONFIG in priority else {}
+        )
+        if config:
+            logger.debug("Checking for section '%s' in config file", section_name)
+        if section_name in config:
+            logger.debug("config=%s", config[section_name])
+            return config[section_name]
+        logger.debug("No config data found for section: %s", section_name)
+        return {}
