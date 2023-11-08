@@ -6,8 +6,7 @@ from collections import namedtuple
 
 import pytest
 
-from arg_init import ArgDefaults
-from arg_init import FunctionArgInit
+from arg_init import FunctionArgInit, ArgDefaults
 
 Expected = namedtuple('Expected', 'key value')
 

@@ -4,11 +4,10 @@ Test ArgInit processes kwargs.
 
 from collections import namedtuple
 
-from arg_init import ClassArgInit
-from arg_init import FunctionArgInit
+from arg_init import ClassArgInit, FunctionArgInit
 
 
-Expected = namedtuple('Expcted', 'key value')
+Expected = namedtuple('Expected', 'key value')
 
 
 class TestKwargs:
