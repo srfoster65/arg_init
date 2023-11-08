@@ -2,15 +2,19 @@
 Class to initialise Argument Values for a Class Method
 """
 
-from inspect import getargvalues
-from typing import Any
+from inspect import getargvalues, FrameInfo
+from pathlib import Path
+from typing import Any, Optional, Callable
 import logging
 
 from ._arg_init import ArgInit
-from ._priority import DEFAULT_PRIORITY
+from ._arg_defaults import ArgDefaults
+from ._priority import Priority, DEFAULT_PRIORITY
 
 
 logger = logging.getLogger(__name__)
+Defaults = Optional[list[ArgDefaults]]
+Priorities= tuple[Priority, Priority, Priority, Priority]
 
 
 class ClassArgInit(ArgInit):
@@ -20,27 +24,29 @@ class ClassArgInit(ArgInit):
     i.e. an argument named "self"
     """
 
+    STACK_LEVEL_OFFSET = 2  # The calling frame is 2 layers up
+
     def __init__(
         self,
-        priority=DEFAULT_PRIORITY,
-        env_prefix=None,
-        use_kwargs=False,
-        set_attrs=True,
-        protect_attrs=True,
-        defaults=None,
-        config_name="config",
-        **kwargs,
+        priorities: Priorities = DEFAULT_PRIORITY,
+        env_prefix: Optional[str] = None,
+        use_kwargs: bool = False,
+        defaults: Defaults = None,
+        config_name: str | Path = "config",
+        set_attrs: bool = True,
+        protect_attrs: bool = True,
+        **kwargs: dict,  # pylint: disable=unused-argument
     ) -> None:
         self._set_attrs = set_attrs
         self._protect_attrs = protect_attrs
-        super().__init__(priority, env_prefix, use_kwargs, defaults, config_name, **kwargs)
+        super().__init__(priorities, env_prefix, use_kwargs, defaults, config_name, **kwargs)
 
-    def _post_init(self, calling_stack):
+    def _post_init(self, calling_stack: FrameInfo) -> None:
         """Class specific post init behaviour."""
         class_instance = self._get_class_instance(calling_stack.frame)
         self._set_class_arg_attrs(class_instance)
 
-    def _get_arguments(self, frame, use_kwargs) -> dict:
+    def _get_arguments(self, frame: Any, use_kwargs: bool) -> dict:
         """
         Returns a dictionary containing key value pairs of all
         named arguments for the specified frame. The first
@@ -56,19 +62,19 @@ class ClassArgInit(ArgInit):
         args.update(self._get_kwargs(arginfo, use_kwargs))
         return args
 
-    def _set_class_arg_attrs(self, class_ref) -> None:
+    def _set_class_arg_attrs(self, class_ref: Callable) -> None:
         """Set attributes for the class object."""
         if self._set_attrs:
             logger.debug("Setting class attributes")
             for arg in self._args.values():
                 self._set_attr(class_ref, arg.name, arg.value)
 
-    def _get_attr_name(self, name) -> str:
+    def _get_attr_name(self, name: str) -> str:
         if self._protect_attrs:
             return name if name.startswith("_") else "_" + name
         return name
 
-    def _set_attr(self, class_instance, name, value) -> None:
+    def _set_attr(self, class_instance: Callable, name: str, value: Any) -> None:
         name = self._get_attr_name(name)
         if hasattr(class_instance, name):
             raise AttributeError(f"Attribute already exists: {name}")
@@ -76,16 +82,15 @@ class ClassArgInit(ArgInit):
         setattr(class_instance, name, value)
 
     @staticmethod
-    def _get_class_instance(frame) -> Any | None:
+    def _get_class_instance(frame: Any) -> Callable:
         """
         Return the value of the 1st argument from the calling function.
         This should be the class instance.
         """
         arginfo = getargvalues(frame)
         first_arg = arginfo.args[0]
-        return arginfo.locals.get(first_arg)
+        return arginfo.locals[first_arg]
 
-    @staticmethod
-    def _get_name(calling_stack) -> str:
+    def _get_name(self, calling_stack: FrameInfo) -> str:
         """Return the name of the current class instance."""
         return calling_stack.frame.f_locals["self"].__class__.__name__

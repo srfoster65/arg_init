@@ -32,7 +32,7 @@ def _toml_loader() -> Callable:
     return toml_load
 
 
-def _get_loader(path) -> Callable:
+def _get_loader(path: Path) -> Callable:
     match path.suffix:
         case ".json":
             return _json_loader()
@@ -44,7 +44,7 @@ def _get_loader(path) -> Callable:
             raise RuntimeError(f"Unsupported file format: {path.suffix}")
 
 
-def _find_config(file) -> Path | None:
+def _find_config(file: str | Path) -> Path | None:
     if isinstance(file, Path):
         file.resolve()
         logger.debug("Using named config file: %s", file.resolve())
@@ -55,10 +55,11 @@ def _find_config(file) -> Path | None:
         if path.exists():
             logger.debug("config found: %s", path)
             return path
+    logger.debug("No supported config files found")
     return None
 
 
-def read_config(file="config") -> dict:
+def read_config(file: str | Path) -> dict | None:
     """Read a config file."""
     logger.debug("Reading config file")
     path = _find_config(file)
@@ -66,4 +67,4 @@ def read_config(file="config") -> dict:
         loader = _get_loader(path)
         with open(path, "rb") as f:
             return loader(f)
-    return {}
+    return None
