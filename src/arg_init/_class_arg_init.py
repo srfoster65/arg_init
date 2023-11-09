@@ -4,7 +4,7 @@ Class to initialise Argument Values for a Class Method
 
 from inspect import getargvalues, FrameInfo
 from pathlib import Path
-from typing import Any, Optional, Callable
+from typing import Any, Optional
 import logging
 
 from ._aliases import Defaults, Priorities, ClassCallback
