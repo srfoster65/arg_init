@@ -3,11 +3,11 @@ Class to initialise Argument Values for a Function
 
 """
 
-from inspect import getargvalues
+from inspect import FrameInfo, getargvalues
+from typing import Any
 import logging
 
 from ._arg_init import ArgInit
-from ._priority import DEFAULT_PRIORITY
 
 logger = logging.getLogger(__name__)
 
@@ -17,18 +17,9 @@ class FunctionArgInit(ArgInit):
     Initialises arguments from a function.
     """
 
-    def __init__(
-        self,
-        priority=DEFAULT_PRIORITY,
-        env_prefix=None,
-        use_kwargs=False,
-        defaults=None,
-        config_name="config",
-        **kwargs,
-    ):
-        super().__init__(priority, env_prefix, use_kwargs, defaults, config_name, **kwargs)
+    STACK_LEVEL_OFFSET = 1  # The calling frame is 2 layers up
 
-    def _get_arguments(self, frame, use_kwargs):
+    def _get_arguments(self, frame: Any, use_kwargs: bool) -> dict[Any, Any]:
         """
         Returns a dictionary containing key value pairs of all
         named arguments and their values associated with the frame.
@@ -38,5 +29,5 @@ class FunctionArgInit(ArgInit):
         args.update(self._get_kwargs(arginfo, use_kwargs))
         return args
 
-    def _get_name(self, calling_stack):
+    def _get_name(self, calling_stack: FrameInfo) -> str:
         return calling_stack.function

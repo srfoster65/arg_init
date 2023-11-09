@@ -2,12 +2,15 @@
 Data Class used to customise ArgInit behaviour
 """
 
+from typing import Any
 import logging
 
 from ._priority import Priority
-# from ._values import Values
+from ._values import Values
 
 logger = logging.getLogger(__name__)
+# Typing aliases
+Priorities = tuple[Priority, Priority, Priority, Priority]
 
 
 class Arg:
@@ -25,19 +28,19 @@ class Arg:
         name: str,
         env_name: str | None = None,
         config_name: str | None = None,
-        values=None,
-    ):
+        values: Values | None = None,
+    ) -> None:
         self._name = name
         self._env_name = env_name
         self._config_name = config_name
         self._values = values
         self._value = None
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """When testing for equality, test only the value attribute."""
         return self.value == other
 
-    def _data(self):
+    def _data(self) -> list[str]:
         return [
             f"name={self.name}",
             f"env_name={self.env_name}",
@@ -46,38 +49,38 @@ class Arg:
             f"value={self.value}",
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.value)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<Arg(" + ", ".join(self._data()) + ")>"
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Name of Arg."""
         return self._name
 
     @property
-    def value(self):
+    def value(self) -> Any:
         """Resolved value of Arg."""
         return self._value
 
     @property
-    def env_name(self):
+    def env_name(self) -> str | None:
         """env attribute."""
         return self._env_name
 
     @property
-    def config_name(self):
+    def config_name(self) -> str | None:
         """env attribute."""
         return self._config_name
 
     @property
-    def values(self):
+    def values(self) -> Values | None:
         """Values to use when resolving Arg."""
         return self._values
 
-    def resolve(self, name, priority_order):
+    def resolve(self, name: str, priority_order: Priorities) -> Any:
         """
         Resolve the value Arg using the selected priority system.
         """
@@ -91,5 +94,5 @@ class Arg:
                 break
         return self
 
-    def _get_value(self, priority):
+    def _get_value(self, priority: Priority) -> Any:
         return getattr(self._values, self._mapping[priority])

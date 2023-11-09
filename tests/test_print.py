@@ -2,8 +2,7 @@
 Test printing functions
 """
 
-from arg_init import FunctionArgInit
-from arg_init import ArgDefaults
+from arg_init import FunctionArgInit, ArgDefaults
 
 
 class TestPrintFunctions:

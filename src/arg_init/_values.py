@@ -12,9 +12,9 @@ class Values:
     """
 
     arg: Any = None
-    env: Any = None
+    env: str | None = None
     config: Any = None
     default: Any = None
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Values(arg={self.arg}, env={self.env}, config={self.config}, default={self.default})>"

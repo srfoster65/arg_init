@@ -22,7 +22,7 @@ DEFAULTS = [ArgDefaults(name="arg1", default_value="default")]
 
 class TestArguments:
     """
-    Class to test ArgInit for argument priority.
+    Class to test arguments are initialised correctly.
     """
 
     @pytest.mark.parametrize(
@@ -41,11 +41,11 @@ class TestArguments:
     ):
         """
         Priority Order
-        1. All defined - Arg is used
-        2. Config, env and default defined - Config is used
-        2. Env and default defined - Env is used
-        3. Default is defined - Default is used
-        4. Nothing defined - None is used
+        1. Test 0 argument
+        2. Test "" argument
+        2. Test "" env. Note env only supports string
+        3. Test 0 config
+        4. Test "" config
         """
 
         def test(arg1):  # pylint: disable=unused-argument
@@ -65,7 +65,7 @@ class TestArguments:
 
     def test_default_value(self):
         """
-        Test overriding default_value
+        Test setting a default_value
         """
 
         class Test:
@@ -82,7 +82,7 @@ class TestArguments:
 
     def test_env_name(self):
         """
-        Test overriding env_name
+        Test setting an explicit an env_name
         """
 
         class Test:

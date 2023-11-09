@@ -3,7 +3,12 @@
 from ._class_arg_init import ClassArgInit
 from ._arg_defaults import ArgDefaults
 from ._function_arg_init import FunctionArgInit
-from ._priority import Priority, DEFAULT_PRIORITY, ARG_PRIORITY
+from ._priority import (
+    Priority,
+    CONFIG_PRIORITY,
+    ENV_PRIORITY,
+    ARG_PRIORITY,
+)
 
 # External API
 __all__ = [
@@ -11,6 +16,7 @@ __all__ = [
     "FunctionArgInit",
     "ArgDefaults",
     "Priority",
-    "DEFAULT_PRIORITY",
+    "CONFIG_PRIORITY",
+    "ENV_PRIORITY",
     "ARG_PRIORITY",
 ]

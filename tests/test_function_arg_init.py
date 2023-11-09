@@ -7,7 +7,7 @@ from collections import namedtuple
 from arg_init import FunctionArgInit
 
 
-Expected = namedtuple('Expcted', 'key value')
+Expected = namedtuple('Expected', 'key value')
 
 
 class TestFunctionArgInit:

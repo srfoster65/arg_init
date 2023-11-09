@@ -6,14 +6,12 @@ from collections import namedtuple
 
 import pytest
 
-from arg_init import ArgDefaults
-from arg_init import FunctionArgInit
-from arg_init import Priority
+from arg_init import FunctionArgInit, ArgDefaults, ARG_PRIORITY
+
 
 Expected = namedtuple("Expected", "key value")
 
 # Common test defaults
-PRIORITY_ORDER = (Priority.ARG, Priority.CONFIG, Priority.ENV, Priority.DEFAULT)
 ENV = {"ARG1": "env1_value"}
 CONFIG = '{"test": {"arg1": "config1_value"}}'
 DEFAULTS = [ArgDefaults(name="arg1", default_value="default")]
@@ -47,7 +45,7 @@ class TestArgPriority:
 
         def test(arg1):  # pylint: disable=unused-argument
             args = FunctionArgInit(
-                env_prefix=prefix, defaults=defaults, priority=PRIORITY_ORDER
+                env_prefix=prefix, defaults=defaults, priorities=ARG_PRIORITY
             ).args
             assert args[expected.key] == expected.value
 
@@ -65,7 +63,7 @@ class TestArgPriority:
         """
 
         def test(arg1, arg2):  # pylint: disable=unused-argument
-            args = FunctionArgInit(priority=PRIORITY_ORDER).args
+            args = FunctionArgInit(priorities=ARG_PRIORITY).args
             assert args["arg1"] == arg1_value
             assert args["arg2"] == arg2_value
 
@@ -79,7 +77,7 @@ class TestArgPriority:
         """
 
         def test(arg1=None, arg2=None):  # pylint: disable=unused-argument
-            args = FunctionArgInit(priority=PRIORITY_ORDER).args
+            args = FunctionArgInit(priorities=ARG_PRIORITY).args
             assert args[arg1] == config1_value
             assert args[arg2] == config2_value
 
@@ -97,7 +95,7 @@ class TestArgPriority:
         """
 
         def test(arg1=None, arg2=None):  # pylint: disable=unused-argument
-            args = FunctionArgInit(priority=PRIORITY_ORDER).args
+            args = FunctionArgInit(priorities=ARG_PRIORITY).args
             assert args["arg1"] == env1_value
             assert args["arg2"] == env2_value
 
@@ -119,7 +117,7 @@ class TestArgPriority:
         """
 
         def test(arg1, arg2, arg3):  # pylint: disable=unused-argument
-            args = FunctionArgInit(priority=PRIORITY_ORDER).args
+            args = FunctionArgInit(priorities=ARG_PRIORITY).args
             assert args["arg1"] == arg1_value
             assert args["arg2"] == arg2_value
             assert args["arg3"] == env3_value
@@ -142,7 +140,7 @@ class TestArgPriority:
         """
 
         def test(arg1):  # pylint: disable=unused-argument
-            args = FunctionArgInit(env_prefix="prefix", priority=PRIORITY_ORDER).args
+            args = FunctionArgInit(env_prefix="prefix", priorities=ARG_PRIORITY).args
             assert args["arg1"] == arg1_value
 
         arg1_value = "arg1_value"
