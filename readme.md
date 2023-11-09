@@ -21,7 +21,7 @@ Because argument initialisation is implemented in the application, it will work 
 
 ## Notes
 
-ArgInit uses introspection (via the [inspect](https://docs.python.org/3/library/inspect.html) module) to determine function arguments and values. Its use is minimal and is only executed once at startup so performance should not be an issue.
+arg_init uses introspection (via the [inspect](https://docs.python.org/3/library/inspect.html) module) to determine function arguments and values. Its use is minimal and is only executed once at startup so performance should not be an issue.
 
 It is not practical to dynamically determine if the function to be processed is a bound function (a class method, with a class reference (self) as the first parameter) or an unbound function (a simple function), so selection is determined by the use of the called class: ClassArgInit of FunctionArgInit.
 
@@ -29,11 +29,11 @@ Fucntionality is identical for both implementations, with the following exceptio
 
 ClassArgInit:
 
-- Class attributes may be set that represent the resolved argument values
+- Class attributes are set (may be optionally disabled) that represent the resolved argument values
 
 ## Priority
 
-The argument value is set when a value is found , or all options are exhausted. At this point the argument is set to None.
+The argument value is set when a non **None** value is found, or all options are exhausted. At this point the argument is set to None.
 
 What priority should be used to set an argument?
 
@@ -55,11 +55,9 @@ The problem: How to avoid violating the DRY principle when an application can be
 If an application is to be called as a library then the defaults MUST be implemented in the application, not the CLI script. But ArgumentParser will pass in None values if no value is specified for an argument. This None value will be used in preference to function default! So defaults must be specified in ArgumentParser and the applicication. This is not a good design pattern.
 
 Providing an alternate means to specify a default value resolves this.
-There is a small gotcha here though. It is not possible to apply a non None value via an argument.
-
 
 **arg-init** supports customisable priority models.
-This becomes a personal choice, and behaviour can be chosen at implementation/run time.
+It is left to the user to select an appropriate priority sequence (or use the default option) for each specfic use case.
 
 ### Default Priority Order
 

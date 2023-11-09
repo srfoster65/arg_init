@@ -183,3 +183,18 @@ def my_func(self, **kwargs):
     args = FunctionArgInit(use_kwargs=True)
     ...
 ```
+
+### Using a Custom Prioirity Sequence
+
+A custom priority sequence can be defined. This can be used, for example, to disable a specific resolution feature.
+
+```python
+from arg_init import FunctionArgInit, Priority
+
+def my_func(self, **kwargs):
+    priorities = list(Priority.ENV, Priority.ARG, Priority.DEFAULT)
+    args = FunctionArgInit(priorities=priorities)
+    ...
+```
+
+The example above disables the use of a config file during the resolution process.
