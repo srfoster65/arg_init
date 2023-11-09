@@ -10,7 +10,8 @@ Supported formats are:
 from pathlib import Path
 from json import load as json_load
 from tomllib import load as toml_load
-from typing import Callable
+# from typing import Callable, Any, SupportsRead, DefaultNamedArg
+from typing import Callable, Any
 import logging
 
 from yaml import safe_load as yaml_safe_load
@@ -18,21 +19,21 @@ from yaml import safe_load as yaml_safe_load
 
 logger = logging.getLogger(__name__)
 FORMATS = ["yaml", "toml", "json"]
+LoaderCallback = Callable[[Any], dict[Any, Any]]
 
-
-def _yaml_loader() -> Callable:
+def _yaml_loader() -> LoaderCallback:
     return yaml_safe_load
 
 
-def _json_loader() -> Callable:
+def _json_loader() -> LoaderCallback:
     return json_load
 
 
-def _toml_loader() -> Callable:
+def _toml_loader() -> LoaderCallback:
     return toml_load
 
 
-def _get_loader(path: Path) -> Callable:
+def _get_loader(path: Path) -> LoaderCallback:
     match path.suffix:
         case ".json":
             return _json_loader()
@@ -59,7 +60,7 @@ def _find_config(file: str | Path) -> Path | None:
     return None
 
 
-def read_config(file: str | Path) -> dict | None:
+def read_config(file: str | Path) -> dict[Any, Any] | None:
     """Read a config file."""
     logger.debug("Reading config file")
     path = _find_config(file)

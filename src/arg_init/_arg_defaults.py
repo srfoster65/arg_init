@@ -6,6 +6,7 @@ on a per argument basis.
 from dataclasses import dataclass
 from typing import Any
 
+
 @dataclass
 class ArgDefaults:
     """

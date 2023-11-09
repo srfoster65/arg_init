@@ -19,7 +19,7 @@ class FunctionArgInit(ArgInit):
 
     STACK_LEVEL_OFFSET = 1  # The calling frame is 2 layers up
 
-    def _get_arguments(self, frame: Any, use_kwargs: bool) -> dict:
+    def _get_arguments(self, frame: Any, use_kwargs: bool) -> dict[Any, Any]:
         """
         Returns a dictionary containing key value pairs of all
         named arguments and their values associated with the frame.

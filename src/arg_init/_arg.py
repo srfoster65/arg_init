@@ -9,6 +9,8 @@ from ._priority import Priority
 from ._values import Values
 
 logger = logging.getLogger(__name__)
+# Typing aliases
+Priorities = tuple[Priority, Priority, Priority, Priority]
 
 
 class Arg:
@@ -78,7 +80,7 @@ class Arg:
         """Values to use when resolving Arg."""
         return self._values
 
-    def resolve(self, name: str, priority_order: tuple) -> Any:
+    def resolve(self, name: str, priority_order: Priorities) -> Any:
         """
         Resolve the value Arg using the selected priority system.
         """

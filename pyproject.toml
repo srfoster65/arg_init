@@ -41,6 +41,7 @@ test = [
     "pyfakefs>=5.3.0",
     "mypy>=1.6.1",
     "types-PyYAML>=6.0.12.12",
+    "pydantic>=2.4.2",
 ]
 docs = [
     "mkdocs>=1.5.3",
@@ -68,8 +69,24 @@ testpaths = [
 ]
 
 [tool.mypy]
+plugins = [
+  "pydantic.mypy"
+]
 files = "src/arg_init/"
-disallow_untyped_calls = true
-disallow_untyped_defs = true
+
+follow_imports = "silent"
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_any_generics = true
 check_untyped_defs = true
-disallow_untyped_decorators = true
+no_implicit_reexport = true
+
+# for strict mypy: (this is the tricky one :-))
+disallow_untyped_defs = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+show-error-content = true

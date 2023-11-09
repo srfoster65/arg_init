@@ -11,6 +11,7 @@ import logging
 
 from box import Box
 
+from ._aliases import Defaults, Priorities
 from ._arg import Arg
 from ._arg_defaults import ArgDefaults
 from ._config import read_config
@@ -19,13 +20,12 @@ from ._values import Values
 
 
 logger = logging.getLogger(__name__)
-Defaults = Optional[list[ArgDefaults]]
-Priorities= tuple[Priority, Priority, Priority, Priority]
+
 
 class ArgInit(ABC):
     """
-    Class to resolve arguments of a function from passed in values, environment
-    variables or default values.
+    Class to resolve arguments of a function from passed in values, a config file,
+    environment variables or default values.
     """
 
     STACK_LEVEL_OFFSET = 0  # Overridden by concrete class
@@ -37,7 +37,7 @@ class ArgInit(ABC):
         use_kwargs: bool = False,
         defaults: Defaults = None,
         config_name: str | Path = "config",
-        **kwargs: dict,  # pylint: disable=unused-argument
+        **kwargs: dict[Any, Any],  # pylint: disable=unused-argument
     ) -> None:
         self._env_prefix = env_prefix
         self._priorities = priorities
@@ -54,7 +54,7 @@ class ArgInit(ABC):
         return self._args
 
     @abstractmethod
-    def _get_arguments(self, frame: Any, use_kwargs: bool) -> dict:
+    def _get_arguments(self, frame: Any, use_kwargs: bool) -> dict[Any, Any]:
         """
         Returns a dictionary containing key value pairs of all
         named arguments and their values associated with the frame.
@@ -81,14 +81,14 @@ class ArgInit(ABC):
         calling_stack: FrameInfo,
         use_kwargs: bool,
         defaults: Defaults,
-        config: dict,
+        config: dict[Any, Any],
     ) -> None:
         """Resolve argument values."""
         logger.debug("Creating arguments for: %s", name)
         arguments = self._get_arguments(calling_stack.frame, use_kwargs)
         self._make_args(arguments, defaults, config)
 
-    def _get_kwargs(self, arginfo: Any, use_kwargs: bool) -> dict:
+    def _get_kwargs(self, arginfo: Any, use_kwargs: bool) -> dict[Any, Any]:
         """
         Return a dictionary containing kwargs to be resolved.
         Returns an empty dictionary if use_kwargs=False
@@ -100,7 +100,7 @@ class ArgInit(ABC):
         return {}
 
     def _make_args(
-        self, arguments: dict, defaults: Defaults, config: Mapping
+        self, arguments: dict[Any, Any], defaults: Defaults, config: Mapping[Any, Any]
     ) -> None:
         for name, value in arguments.items():
             arg_defaults = self._get_arg_defaults(name, defaults)
@@ -156,9 +156,8 @@ class ArgInit(ABC):
         ).upper()
 
     @staticmethod
-    def _get_value(name: str, dictionary: Mapping) -> str | None:
+    def _get_value(name: str, dictionary: Mapping[Any, Any]) -> str | None:
         """Read the env value."""
-        # logger.debug("Searching for %s", name)
         if name in dictionary:
             value = dictionary[name]
             logger.debug("Not found: %s=%s", name, value)
@@ -167,7 +166,7 @@ class ArgInit(ABC):
         return None
 
     @classmethod
-    def _get_config_value(cls, config: Mapping, name: str) -> Any:
+    def _get_config_value(cls, config: Mapping[Any, Any], name: str) -> Any:
         logger.debug("Searching config for: %s", name)
         return cls._get_value(name, config)
 
@@ -187,7 +186,7 @@ class ArgInit(ABC):
         config_name: str | Path,
         section_name: str,
         priorities: Priorities,
-    ) -> dict:
+    ) -> dict[Any, Any]:
         if Priority.CONFIG in priorities:
             config = read_config(config_name)
             if config:
