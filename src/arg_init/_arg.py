@@ -5,12 +5,11 @@ Data Class used to customise ArgInit behaviour
 from typing import Any
 import logging
 
+from ._aliases import Priorities
 from ._priority import Priority
 from ._values import Values
 
 logger = logging.getLogger(__name__)
-# Typing aliases
-Priorities = tuple[Priority, Priority, Priority, Priority]
 
 
 class Arg:
