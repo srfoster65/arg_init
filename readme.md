@@ -53,27 +53,34 @@ There are two obvious solutions to this:
 
 The problem: How to avoid violating the DRY principle when an application can be invoked via a CLI or as a library.
 
-If an application is to be called as a library then the defaults MUST be implemented in the application, not the CLI script. But ArgumentParser will pass in None values if no value is specified for an argument. This None value will be used in preference to function default! So defaults must be specified in ArgumentParser and the applicication. This is not a good design pattern.
+If an application is to be called as a library then the defaults MUST be implemented in the application, not the CLI script. But ArgumentParser will pass in None values if no value is specified for an argument. This None value will be used in preference to function default! So defaults must be also be specified in ArgumentParser and the applicication. This is not a good design pattern.
 
 Providing an alternate means to specify a default value resolves this.
+
+### Priority Order
 
 **arg-init** supports customisable priority models.
 It is left to the user to select an appropriate priority sequence (or use the default option) for each specfic use case.
 
-### Default Priority Order
+#### Default Priority Order
 
 The default priority implemented is:
 
-- **CONFIG_PRIORITY**
+**CONFIG_PRIORITY**
+
   1. Config
-  1. Env
-  1. Arg
-  1. Default
+  2. Env
+  3. Arg
+  4. Default
+
+#### Predefined Priority Orders
 
 Two further predifined priority models are provided
 
 - **ENV_PRIORITY**
 - **ARG_PRIOIRTY**
+
+The user may also define a custom priority order if the predefined options are not suitable.
 
 ## Usage
 
@@ -85,7 +92,7 @@ The following examples show how to use arg_init to initialise a class or functio
 from arg_init import ClassArgInit
 
 class MyApp:
-    def __init__(self, arg1=10):
+    def __init__(self, arg1=None):
         ClassArgInit()
         ...
 ```
@@ -93,7 +100,7 @@ class MyApp:
 ```python
 from arg_init import FunctionArgInit
 
-def func(arg1=10):
+def func(arg1=None):
     FunctionArgInit()
     ...
 ```
@@ -121,13 +128,10 @@ The example below shows how to use argument priority when resolving the values o
 from arg_init import FunctionArgInit, ARG_PRIOIRITY, ArgDefaults
 
 def func(arg1=None):
-    arg1_defaults = ArgDefaults(default_value=1)
-    args = FunctionArgInit(priority=ARG_PRIORITY, defaults={"arg1": arg1_defaults}).args
+    arg1_defaults = ArgDefaults("arg1", default_value=1)
+    args = FunctionArgInit(priority=ARG_PRIORITY, defaults=[arg1_defaults]).args
     ...
 ```
-
-Note:
-As this example uses argument priority, a default **must** be provided via ArgDefaults if the default is not None.
 
 ### Recommendation
 
@@ -153,8 +157,8 @@ Please see the [documentation](https://srfoster65.github.io/arg_init/) for furth
 [codecov_url]: https://codecov.io/gh/srfoster65/arg_init
 [mypy_badge]: https://github.com/srfoster65/arg_init/actions/workflows/mypy.yml/badge.svg
 [mypy_url]: https://github.com/srfoster65/arg_init/actions/workflows/mypy.yml
-[ruff_badge]: https://github.com/srfoster65/arg_init/actions/workflows/ruff.yml/badge.svg
-[ruff_url]: https://github.com/srfoster65/arg_init/actions/workflows/ruff.yml
+[ruff_badge]: https://github.com/srfoster65/arg_init/actions/workflows/lint.yml/badge.svg
+[ruff_url]: https://github.com/srfoster65/arg_init/actions/workflows/lint.yml
 [docs_badge]: https://github.com/srfoster65/arg_init/actions/workflows/docs.yml/badge.svg
 [docs_url]: https://srfoster65.github.io/arg_init/
 [pypi_badge]: https://img.shields.io/pypi/v/arg-init?logo=python&logoColor=%23cccccc
