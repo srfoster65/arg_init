@@ -8,7 +8,7 @@ import pytest
 
 from arg_init import FunctionArgInit, ArgDefaults
 
-Expected = namedtuple('Expected', 'key value')
+Expected = namedtuple("Expected", "key value")
 
 
 class TestEnvVariants:
@@ -20,7 +20,13 @@ class TestEnvVariants:
         "prefix, arg_value, envs, defaults, expected",
         [
             ("prefix", None, {"PREFIX_ARG1": "env1_value"}, None, Expected("arg1", "env1_value")),
-            ("prefix", None, {"ENV1": "env1_value"}, [ArgDefaults(name="arg1", alt_name="ENV1")], Expected("arg1", "env1_value")),
+            (
+                "prefix",
+                None,
+                {"ENV1": "env1_value"},
+                [ArgDefaults(name="arg1", alt_name="ENV1")],
+                Expected("arg1", "env1_value"),
+            ),
         ],
     )
     def test_env_variants(self, prefix, arg_value, envs, defaults, expected, fs):  # pylint: disable=unused-argument
@@ -31,6 +37,7 @@ class TestEnvVariants:
         2. Default env_name (Prefix not used) - Env is used
 
         """
+
         def test(arg1):  # pylint: disable=unused-argument
             args = FunctionArgInit(env_prefix=prefix, defaults=defaults).args
             assert args[expected.key] == expected.value

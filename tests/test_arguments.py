@@ -36,9 +36,7 @@ class TestArguments:
             (None, None, '{"test": {"arg1": ""}}', DEFAULTS, Expected("arg1", "")),
         ],
     )
-    def test_logical_false_values(
-        self, arg_value, envs, config, defaults, expected, fs
-    ):
+    def test_logical_false_values(self, arg_value, envs, config, defaults, expected, fs):
         """
         Priority Order
         1. Test 0 argument
@@ -49,9 +47,7 @@ class TestArguments:
         """
 
         def test(arg1):  # pylint: disable=unused-argument
-            args = FunctionArgInit(
-                defaults=defaults, priority=PRIORITY_ORDER
-            ).args
+            args = FunctionArgInit(defaults=defaults, priority=PRIORITY_ORDER).args
             print(args[expected.key], expected.value)
             assert args[expected.key] == expected.value
 

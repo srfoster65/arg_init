@@ -7,7 +7,7 @@ from collections import namedtuple
 from arg_init import FunctionArgInit
 
 
-Expected = namedtuple('Expected', 'key value')
+Expected = namedtuple("Expected", "key value")
 
 
 class TestFunctionArgInit:
@@ -19,6 +19,7 @@ class TestFunctionArgInit:
         """
         Test FunctionArgInit
         """
+
         def test(arg1):  # pylint: disable=unused-argument
             """Test Class"""
             arg_init = FunctionArgInit()

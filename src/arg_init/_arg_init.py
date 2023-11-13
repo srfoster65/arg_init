@@ -183,8 +183,8 @@ class ArgInit(ABC):
             config = read_config(config_name)
             logger.debug("Checking for section '%s' in config file", section_name)
             if config and section_name in config:
-                    logger.debug("config=%s", config[section_name])
-                    return config[section_name]
+                logger.debug("config=%s", config[section_name])
+                return config[section_name]
             logger.debug("No section '%s' data found", section_name)
             return {}
         logger.debug("skipping file based config based on priorities")
