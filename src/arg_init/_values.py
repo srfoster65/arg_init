@@ -1,15 +1,12 @@
-"""
-Class to represent values used to resolve an argument.
-"""
+"""Class to represent values used to resolve an argument."""
 
 from dataclasses import dataclass
 from typing import Any
 
+
 @dataclass
 class Values:
-    """
-    Possible values an argument could be resolved from
-    """
+    """Possible values an argument could be resolved from."""
 
     arg: Any = None
     env: str | None = None
