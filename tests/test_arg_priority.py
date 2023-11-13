@@ -44,9 +44,7 @@ class TestArgPriority:
         """
 
         def test(arg1):  # pylint: disable=unused-argument
-            args = FunctionArgInit(
-                env_prefix=prefix, defaults=defaults, priorities=ARG_PRIORITY
-            ).args
+            args = FunctionArgInit(env_prefix=prefix, defaults=defaults, priorities=ARG_PRIORITY).args
             assert args[expected.key] == expected.value
 
         if config:

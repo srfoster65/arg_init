@@ -51,12 +51,8 @@ class TestPrintFunctions:
         Test repr() returns correct string
         """
 
-        arg1_defaults = ArgDefaults(
-            name="arg1", default_value="default", alt_name="ENV"
-        )
+        arg1_defaults = ArgDefaults(name="arg1", default_value="default", alt_name="ENV")
         defaults = [arg1_defaults]
         out = repr(defaults)
-        expected = (
-            "<ArgDefaults(name=arg1, default_value=default, alt_name=ENV)>"
-        )
+        expected = "<ArgDefaults(name=arg1, default_value=default, alt_name=ENV)>"
         assert expected in out

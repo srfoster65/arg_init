@@ -1,22 +1,19 @@
-"""
-Data Class used to customise ArgInit behaviour
-"""
+"""Class to represent an Argument."""
 
-from typing import Any
 import logging
+from typing import Any
 
+from ._aliases import Priorities
 from ._priority import Priority
 from ._values import Values
 
 logger = logging.getLogger(__name__)
-# Typing aliases
-Priorities = tuple[Priority, Priority, Priority, Priority]
 
 
 class Arg:
     """Class to represent argument attributes."""
 
-    _mapping = {
+    _mapping = {  # noqa: RUF012
         Priority.CONFIG: "config",
         Priority.ENV: "env",
         Priority.ARG: "arg",
@@ -36,7 +33,7 @@ class Arg:
         self._values = values
         self._value = None
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         """When testing for equality, test only the value attribute."""
         return self.value == other
 
@@ -61,18 +58,18 @@ class Arg:
         return self._name
 
     @property
-    def value(self) -> Any:
+    def value(self) -> object | None:
         """Resolved value of Arg."""
         return self._value
 
     @property
     def env_name(self) -> str | None:
-        """env attribute."""
+        """Env attribute."""
         return self._env_name
 
     @property
     def config_name(self) -> str | None:
-        """env attribute."""
+        """Config_name attribute."""
         return self._config_name
 
     @property
@@ -80,10 +77,8 @@ class Arg:
         """Values to use when resolving Arg."""
         return self._values
 
-    def resolve(self, name: str, priority_order: Priorities) -> Any:
-        """
-        Resolve the value Arg using the selected priority system.
-        """
+    def resolve(self, name: str, priority_order: Priorities) -> object | None:
+        """Resolve the value Arg using the selected priority system."""
         logger.debug("Resolving value for %s", repr(self))
         for priority in priority_order:
             logger.debug("Checking %s value", priority)
@@ -94,5 +89,5 @@ class Arg:
                 break
         return self
 
-    def _get_value(self, priority: Priority) -> Any:
+    def _get_value(self, priority: Priority) -> Any | None:  # noqa: ANN401
         return getattr(self._values, self._mapping[priority])

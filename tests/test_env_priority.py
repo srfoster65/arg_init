@@ -10,7 +10,7 @@ import pytest
 from arg_init import FunctionArgInit, ArgDefaults, Priority
 
 
-Expected = namedtuple('Expected', 'key value')
+Expected = namedtuple("Expected", "key value")
 
 
 # Common test defaults
@@ -43,6 +43,7 @@ class TestEnvPriority:
         3. Default is defined - Default is used
         4. Nothing defined - None is used
         """
+
         def test(arg1):  # pylint: disable=unused-argument
             args = FunctionArgInit(env_prefix=prefix, defaults=defaults).args
             assert args[expected.key] == expected.value
@@ -53,7 +54,6 @@ class TestEnvPriority:
                 for env, value in envs.items():
                     mp.setenv(env, value)
                 test(arg1=arg_value)
-
 
     def test_function_default(self, fs):  # pylint: disable=unused-argument
         """
@@ -67,11 +67,11 @@ class TestEnvPriority:
 
         test()
 
-
     def test_multiple_args(self, fs):  # pylint: disable=unused-argument
         """
         Test initialisation from args when no envs defined
         """
+
         def test(arg1, arg2):  # pylint: disable=unused-argument
             """Test Class"""
             args = FunctionArgInit().args
@@ -82,11 +82,11 @@ class TestEnvPriority:
         arg2_value = "arg2_value"
         test(arg1_value, arg2_value)
 
-
     def test_multiple_envs(self, fs):  # pylint: disable=unused-argument
         """
         Test initialised from envs
         """
+
         def test(arg1, arg2):  # pylint: disable=unused-argument
             """Test Class"""
             args = FunctionArgInit().args
@@ -102,7 +102,6 @@ class TestEnvPriority:
             mp.setenv(env2, env2_value)
             test("arg1_value", "arg2_value")
 
-
     def test_multiple_mixed(self, fs):  # pylint: disable=unused-argument
         """
         Test mixed initialisation
@@ -110,9 +109,10 @@ class TestEnvPriority:
           arg2 - env, arg = None
           arg3 - arg - env not set
         """
+
         def test(arg1, arg2, arg3):  # pylint: disable=unused-argument
             """Test Class"""
-            args =  FunctionArgInit().args
+            args = FunctionArgInit().args
             assert args["arg1"] == env1_value
             assert args["arg2"] == env2_value
             assert args["arg3"] == arg3_value

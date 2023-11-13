@@ -1,5 +1,5 @@
 """
-Helper module to read a config file
+Helper module to read a config file.
 
 Supported formats are:
 - JSON
@@ -7,19 +7,20 @@ Supported formats are:
 - YAML
 """
 
-from pathlib import Path
-from json import load as json_load
-from tomllib import load as toml_load
-# from typing import Callable, Any, SupportsRead, DefaultNamedArg
-from typing import Callable, Any
 import logging
+from json import load as json_load
+from pathlib import Path
+from tomllib import load as toml_load
+from typing import Any
 
 from yaml import safe_load as yaml_safe_load
 
+from ._aliases import LoaderCallback
+from ._exceptions import UnsupportedFileFormatError
 
 logger = logging.getLogger(__name__)
 FORMATS = ["yaml", "toml", "json"]
-LoaderCallback = Callable[[Any], dict[Any, Any]]
+
 
 def _yaml_loader() -> LoaderCallback:
     return yaml_safe_load
@@ -42,7 +43,7 @@ def _get_loader(path: Path) -> LoaderCallback:
         case ".toml":
             return _toml_loader()
         case _:
-            raise RuntimeError(f"Unsupported file format: {path.suffix}")
+            raise UnsupportedFileFormatError(path.suffix)
 
 
 def _find_config(file: str | Path) -> Path | None:
@@ -66,6 +67,6 @@ def read_config(file: str | Path) -> dict[Any, Any] | None:
     path = _find_config(file)
     if path:
         loader = _get_loader(path)
-        with open(path, "rb") as f:
+        with Path.open(path, "rb") as f:
             return loader(f)
     return None

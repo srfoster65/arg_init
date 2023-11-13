@@ -42,6 +42,7 @@ test = [
     "mypy>=1.6.1",
     "types-PyYAML>=6.0.12.12",
     "pydantic>=2.4.2",
+    "ruff>=0.1.5",
 ]
 docs = [
     "mkdocs>=1.5.3",
@@ -68,6 +69,7 @@ testpaths = [
     "tests",
 ]
 
+
 [tool.mypy]
 plugins = [
   "pydantic.mypy"
@@ -90,3 +92,82 @@ init_typed = true
 warn_required_dynamic_aliases = true
 
 show-error-content = true
+
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    # "tests/**"
+]
+
+# Same as Black.
+line-length = 120
+indent-width = 4
+
+# Assume Python 3.8
+target-version = "py311"
+
+[tool.ruff.lint]
+exclude = [
+    "tests/**"
+]
+# select = [
+#     "A",  # prevent using keywords that clobber python builtins
+#     "B",  # bugbear: security warnings
+#     "E",  # pycodestyle
+#     "F",  # pyflakes
+#     "ISC",  # implicit string concatenation
+#     "UP",  # alert you when better syntax is available in your python version
+#     "RUF",  # the ruff developer's own rules
+# ]
+select = ["ALL"]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+# select = ["E4", "E7", "E9", "F"]
+ignore = ["ANN002", "ANN003", "ANN101", "ANN102", "D203", "D212", "COM812", "ISC001", "D205"]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["D104"]
+
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+
