@@ -1,0 +1,47 @@
+name: CI
+
+on:
+- push
+
+jobs:
+
+    # Stage 1: Validate Source
+    test:
+        name: Test the package
+        uses: ./.github/workflows/test.yml
+
+    mypy:
+        name: Static Type Check the package
+        uses: ./.github/workflows/mypy.yml
+
+    ruff:
+        name: Lint the package
+        uses: ./.github/workflows/ruff.yml
+
+
+    # Stage 2: Build Packages
+    build:
+        name: Build the package
+        uses: ./.github/workflows/build.yml
+        needs:
+            - test
+            - mypy
+            - ruff
+    
+    # Stage 3: Release Packages and Build documentation
+    pypi:
+        if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
+        uses: ./.github/workflows/pypi.yml
+        needs:
+        - build
+
+    github:
+        if: startsWith(github.ref, 'refs/tags/')  # only publish to github on tag pushes
+        uses: ./.github/workflows/github.yml
+        needs:
+        - build
+
+    docs:
+        uses: ./.github/workflows/docs.yml
+        needs:
+        - build
