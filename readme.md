@@ -8,7 +8,7 @@
 [![PyPI][pypi_badge]][pypi_url]
 [![PyPI - License][license_badge]][license_url]
 
-When running code there is often a need to initialise arguments either directly from a passed in value, indirectly via an environment variable or config file or a via default value. Argparse provides this functionality (or can be easily augmented to, with the exception of loading from a config file) already but has one major drawback; It does not work when the code is invoked as a library.
+When running code there is often a requirement to initialise arguments either directly from a passed in value, indirectly via an environment variable or config file or a via default value. Argparse provides this functionality (or can be easily augmented to, with the exception of loading from a config file) already but has one major drawback; It does not work when the code is invoked as a library.
 
 arg_init provides functionality to resolve argument values for a given function/method from either a config file, an environment variable, an argument value or a default value. Introspection is used to determine the arguments of the calling function, and a dictionary is created of resolved values for each argument. Resolved values are determined using a predefined priority system that can be customised by the user.
 
@@ -92,7 +92,7 @@ The following examples show how to use arg_init to initialise a class or functio
 from arg_init import ClassArgInit
 
 class MyApp:
-    def __init__(self, arg1=None):
+    def __init__(self, arg1):
         ClassArgInit()
         ...
 ```
@@ -100,7 +100,7 @@ class MyApp:
 ```python
 from arg_init import FunctionArgInit
 
-def func(arg1=None):
+def func(arg1):
     FunctionArgInit()
     ...
 ```
@@ -116,7 +116,7 @@ The example below shows how to change the environment variable name used to init
 ```python
 from arg_init import FunctionArgInit, ArgDefaults
 
-def func(arg1=None):
+def func(arg1):
     arg1_defaults = ArgDefaults(env_name="TEST")
     args = FunctionArgInit(defaults={"arg1": arg1_defaults}).args
     ...
@@ -127,7 +127,7 @@ The example below shows how to use argument priority when resolving the values o
 ```python
 from arg_init import FunctionArgInit, ARG_PRIOIRITY, ArgDefaults
 
-def func(arg1=None):
+def func(arg1):
     arg1_defaults = ArgDefaults("arg1", default_value=1)
     args = FunctionArgInit(priority=ARG_PRIORITY, defaults=[arg1_defaults]).args
     ...
@@ -141,7 +141,7 @@ To avoid namespace clashes with environment variables, it is recommneded to alwa
 from arg_init import ClassArgInit
 
 class MyApp:
-    def __init__(self, arg1=None):
+    def __init__(self, arg1):
         args = ClassArgInit(env_prefix="myapp").args
         ...
 ```
@@ -157,8 +157,8 @@ Please see the [documentation](https://srfoster65.github.io/arg_init/) for furth
 [codecov_url]: https://codecov.io/gh/srfoster65/arg_init
 [mypy_badge]: https://github.com/srfoster65/arg_init/actions/workflows/mypy.yml/badge.svg
 [mypy_url]: https://github.com/srfoster65/arg_init/actions/workflows/mypy.yml
-[ruff_badge]: https://github.com/srfoster65/arg_init/actions/workflows/lint.yml/badge.svg
-[ruff_url]: https://github.com/srfoster65/arg_init/actions/workflows/lint.yml
+[ruff_badge]: https://github.com/srfoster65/arg_init/actions/workflows/ruff.yml/badge.svg
+[ruff_url]: https://github.com/srfoster65/arg_init/actions/workflows/ruff.yml
 [docs_badge]: https://github.com/srfoster65/arg_init/actions/workflows/docs.yml/badge.svg
 [docs_url]: https://srfoster65.github.io/arg_init/
 [pypi_badge]: https://img.shields.io/pypi/v/arg-init?logo=python&logoColor=%23cccccc
