@@ -9,8 +9,8 @@ jobs:
     test:
         name: Test the package
         uses: ./.github/workflows/test.yml
-        secrets: inherit # pass all secrets
-            # CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        secrets:
+            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     mypy:
         name: Static Type Check the package
@@ -49,6 +49,11 @@ jobs:
             id-token: write  # IMPORTANT: mandatory for sigstore
       
     docs:
+        if:  # build docs if pushing to main or releasing
+            contains('
+              refs/heads/main
+              refs/tags
+            ', github.ref)
         uses: ./.github/workflows/docs.yml
         needs:
             - test
@@ -57,4 +62,3 @@ jobs:
             - build
         permissions:
             contents: write  # IMPORTANT: mandatory for making GitHub Releases
-    

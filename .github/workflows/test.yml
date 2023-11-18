@@ -1,12 +1,16 @@
 name: test
 
 on:
-- workflow_call
+  workflow_call:
+    secrets:
+      CODECOV_TOKEN:
+        required: true
 
 jobs:
   test:
     name: run unittests
     runs-on: ubuntu-latest
+
 
     steps:
     - uses: actions/checkout@v4
@@ -27,5 +31,6 @@ jobs:
       uses: codecov/codecov-action@v3
       with:
         flags: build
+        token: ${{ secrets.CODECOV_TOKEN }}
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
