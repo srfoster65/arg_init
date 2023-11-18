@@ -55,3 +55,6 @@ jobs:
             - mypy
             - ruff
             - build
+        permissions:
+            contents: write  # IMPORTANT: mandatory for making GitHub Releases
+    
