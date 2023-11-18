@@ -9,6 +9,8 @@ jobs:
     test:
         name: Test the package
         uses: ./.github/workflows/test.yml
+        secrets: inherit # pass all secrets
+            # CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     mypy:
         name: Static Type Check the package
@@ -18,30 +20,38 @@ jobs:
         name: Lint the package
         uses: ./.github/workflows/ruff.yml
 
-
-    # Stage 2: Build Packages
     build:
         name: Build the package
         uses: ./.github/workflows/build.yml
-        needs:
-            - test
-            - mypy
-            - ruff
     
-    # Stage 3: Release Packages and Build documentation
+    # Stage 2: Release Packages and Build documentation
     pypi:
         if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
         uses: ./.github/workflows/pypi.yml
         needs:
-        - build
+            - test
+            - mypy
+            - ruff
+            - build
+        permissions:
+            id-token: write
 
     github:
         if: startsWith(github.ref, 'refs/tags/')  # only publish to github on tag pushes
         uses: ./.github/workflows/github.yml
         needs:
-        - build
-
+            - test
+            - mypy
+            - ruff
+            - build
+        permissions:
+            contents: write  # IMPORTANT: mandatory for making GitHub Releases
+            id-token: write  # IMPORTANT: mandatory for sigstore
+      
     docs:
         uses: ./.github/workflows/docs.yml
         needs:
-        - build
+            - test
+            - mypy
+            - ruff
+            - build
