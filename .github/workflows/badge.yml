@@ -1,0 +1,27 @@
+name: Badge
+
+on:
+  workflow_call:
+    secrets:
+        GITHUB_TOKEN:
+  workflow_dispatch:
+
+jobs:
+    badge:
+      runs-on: ubuntu-latest
+      steps:
+        # - id: status
+        #   run: echo "##[set-output name=data;]$(date)"
+        - name: Pass-Fail badge
+          uses: RubbaBoy/BYOB@v1.3.0
+          env:
+            GITHUB_TOKEN: ${{ github.token }}
+          with:
+            NAME: status
+            LABEL: 'Ruff'
+            STATUS: 'passing'
+            COLOR: green
+            GITHUB_TOKEN: $GITHUB_TOKEN
+
+
+            # echo "dir=$CCACHE_DIR" >> $GITHUB_OUTPUT
