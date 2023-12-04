@@ -1,16 +1,19 @@
+# Main workflow
+
 name: CI
 
 on:
-- push
-
+    push:
+      branches:
+      - '*'
+      - '!badges'
+  
 jobs:
 
     # Stage 1: Validate Source
     test:
         name: Test the package
         uses: ./.github/workflows/test.yml
-        secrets:
-            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     mypy:
         name: Static Type Check the package
@@ -50,10 +53,7 @@ jobs:
       
     docs:
         if:  # build docs if pushing to main or releasing
-            contains('
-              refs/heads/main
-              refs/tags
-            ', github.ref)
+            contains('refs/heads/main refs/tags', github.ref)
         uses: ./.github/workflows/docs.yml
         needs:
             - test
