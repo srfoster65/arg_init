@@ -1,4 +1,4 @@
-name: lint
+name: ruff
 
 on:
 - workflow_call
@@ -24,4 +24,11 @@ jobs:
       run: pdm run ruff check .
 
     - name: Run Ruff format
+      id: ruff_format
       run: pdm run ruff format .
+
+    - name: create badge
+      uses: srfoster65/workflow_badge_action@main
+      with:
+        label: ${{ github.job}}
+        status: ${{ steps.ruff_format.outcome }}

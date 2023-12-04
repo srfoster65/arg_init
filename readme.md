@@ -157,7 +157,7 @@ Please see the [documentation](https://srfoster65.github.io/arg_init/) for furth
 [codecov_url]: https://codecov.io/gh/srfoster65/arg_init
 [mypy_badge]: https://github.com/srfoster65/arg_init/actions/workflows/mypy.yml/badge.svg
 [mypy_url]: https://github.com/srfoster65/arg_init/actions/workflows/mypy.yml
-[ruff_badge]: https://github.com/srfoster65/arg_init/actions/workflows/ruff.yml/badge.svg
+[ruff_badge]: https://raw.githubusercontent.com/srfoster65/arg_init/main/ruff.svg
 [ruff_url]: https://github.com/srfoster65/arg_init/actions/workflows/ruff.yml
 [docs_badge]: https://github.com/srfoster65/arg_init/actions/workflows/docs.yml/badge.svg
 [docs_url]: https://srfoster65.github.io/arg_init/
