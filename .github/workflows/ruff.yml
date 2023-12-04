@@ -4,7 +4,7 @@ on:
 - workflow_call
 
 jobs:
-  build:
+  ruff:  # name used in badge label
     name: ruff
     runs-on: ubuntu-latest
 
