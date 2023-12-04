@@ -33,13 +33,12 @@ class ArgInit(ABC):
 
     def __init__(  # noqa: PLR0913
         self,
-        # *,
         priorities: Priorities = DEFAULT_PRIORITY,
         env_prefix: str | None = None,
         use_kwargs: UseKWArgs = UseKWArgs.FALSE,
         defaults: Defaults = None,
         config_name: str | Path = "config",
-        **kwargs: dict[Any, Any],  # noqa: ARG002
+        **kwargs: Any,  # noqa: ANN401 ARG002
     ) -> None:
         self._env_prefix = env_prefix
         self._priorities = priorities
