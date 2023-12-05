@@ -1,0 +1,969 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Package to simplify Argument initialisation.">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../reference/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.3">
+    
+    
+      
+        <title>Usage - Arg Init</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.79e020e9.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.a5377069.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="indigo">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#usage" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Arg Init" class="md-header__button md-logo" aria-label="Arg Init" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Arg Init
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Usage
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/srfoster65/arg_init" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    srfoster65/arg_init
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href=".." class="md-tabs__link">
+          
+  
+  Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../changelog/" class="md-tabs__link">
+        
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../license/" class="md-tabs__link">
+        
+  
+    
+  
+  License
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Arg Init" class="md-nav__button md-logo" aria-label="Arg Init" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Arg Init
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/srfoster65/arg_init" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    srfoster65/arg_init
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Documentation
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage-for-class-functions" class="md-nav__link">
+    Basic Usage for Class functions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage-for-simple-functions" class="md-nav__link">
+    Basic Usage for simple functions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-use-cases" class="md-nav__link">
+    Other Use Cases
+  </a>
+  
+    <nav class="md-nav" aria-label="Other Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-config-files-to-resolve-argument-values" class="md-nav__link">
+    Using config files to resolve argument values
+  </a>
+  
+    <nav class="md-nav" aria-label="Using config files to resolve argument values">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#toml-files" class="md-nav__link">
+    TOML files
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yaml-files" class="md-nav__link">
+    YAML Files
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json-files" class="md-nav__link">
+    JSON Files
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-common-prefix-for-all-environment-variables" class="md-nav__link">
+    Setting a Common Prefix for all Environment Variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#priority-modes" class="md-nav__link">
+    Priority Modes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overriding-default-argument-behaviour" class="md-nav__link">
+    Overriding Default Argument Behaviour
+  </a>
+  
+    <nav class="md-nav" aria-label="Overriding Default Argument Behaviour">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default_value" class="md-nav__link">
+    default_value
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#env_name" class="md-nav__link">
+    env_name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-using-argdefaults" class="md-nav__link">
+    Example using ArgDefaults
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-with-a-class" class="md-nav__link">
+    Use with a Class
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#support-for-kwargs" class="md-nav__link">
+    Support for kwargs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-a-custom-prioirity-sequence" class="md-nav__link">
+    Using a Custom Prioirity Sequence
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../license/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    License
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage-for-class-functions" class="md-nav__link">
+    Basic Usage for Class functions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage-for-simple-functions" class="md-nav__link">
+    Basic Usage for simple functions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-use-cases" class="md-nav__link">
+    Other Use Cases
+  </a>
+  
+    <nav class="md-nav" aria-label="Other Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-config-files-to-resolve-argument-values" class="md-nav__link">
+    Using config files to resolve argument values
+  </a>
+  
+    <nav class="md-nav" aria-label="Using config files to resolve argument values">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#toml-files" class="md-nav__link">
+    TOML files
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yaml-files" class="md-nav__link">
+    YAML Files
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json-files" class="md-nav__link">
+    JSON Files
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-common-prefix-for-all-environment-variables" class="md-nav__link">
+    Setting a Common Prefix for all Environment Variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#priority-modes" class="md-nav__link">
+    Priority Modes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overriding-default-argument-behaviour" class="md-nav__link">
+    Overriding Default Argument Behaviour
+  </a>
+  
+    <nav class="md-nav" aria-label="Overriding Default Argument Behaviour">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default_value" class="md-nav__link">
+    default_value
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#env_name" class="md-nav__link">
+    env_name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-using-argdefaults" class="md-nav__link">
+    Example using ArgDefaults
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-with-a-class" class="md-nav__link">
+    Use with a Class
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#support-for-kwargs" class="md-nav__link">
+    Support for kwargs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-a-custom-prioirity-sequence" class="md-nav__link">
+    Using a Custom Prioirity Sequence
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="usage">Usage</h1>
+<h2 id="installation">Installation</h2>
+<p>With Pip:</p>
+<pre><code class="language-text">pip install arg_init
+</code></pre>
+<h2 id="basic-usage-for-class-functions">Basic Usage for Class functions</h2>
+<p>For Class methods: ClassArgInit() should be called from a class __init__() method that arguments should be processed for.</p>
+<pre><code class="language-python">from arg_init import ClassArgInit
+
+class MyClass:
+    def __init__(self, arg1=99):
+        ClassArgInit().args
+        print(self._arg1)
+</code></pre>
+<p>Resolved arguments are exposed as protected class attributes e.g. "self._arg1".</p>
+<h2 id="basic-usage-for-simple-functions">Basic Usage for simple functions</h2>
+<p>FunctionArgInit() should be called from a function that arguments should be processed for.</p>
+<pre><code class="language-python">from arg_init import FunctionArgInit
+
+def my_func(arg1=None):
+    args = FunctionArgInit().args
+    print(args.arg1)
+</code></pre>
+<p>Resolved arguments are exposed by accessing the args attribute of FunctionArgInit. Resolved values can be accessed as attributes e.g. args.arg1 or as a dictionary item e.g. args["arg1"].</p>
+<h2 id="other-use-cases">Other Use Cases</h2>
+<h3 id="using-config-files-to-resolve-argument-values">Using config files to resolve argument values</h3>
+<p>By default arg-init will search for a config file named "config", with the extension: toml, yaml, json (in that order) in the current working directory. This behaviour can be overridden by specifying an absolute or relative path to a different config file.</p>
+<h4 id="toml-files">TOML files</h4>
+<p>The section heading should be the name of the class, if using ClassArgInit or the name of the function, if using FunctionArgInit.</p>
+<pre><code class="language-toml">[MyApp]
+arg1 = 42
+</code></pre>
+<h4 id="yaml-files">YAML Files</h4>
+<p>The top level dictionary key should be the name of the class, if using ClassArgInit or the name of the function, if using FunctionArgInit.</p>
+<pre><code class="language-yaml">MyApp:
+  arg1: 42
+</code></pre>
+<h4 id="json-files">JSON Files</h4>
+<p>The top level dictionary key should be the name of the class, if using ClassArgInit or the name of the function, if using FunctionArgInit.</p>
+<pre><code class="language-json">{
+  &quot;MyApp&quot;:
+  {
+    &quot;arg1&quot;: 42
+  }
+}
+</code></pre>
+<h3 id="setting-a-common-prefix-for-all-environment-variables">Setting a Common Prefix for all Environment Variables</h3>
+<p>To avoid namespace clashes with environment variables, it is recommneded to always supply an env_prefix argument when initialising ClassArgInit/FunctionArgInit. All environment variables are expected to have this prefix e.g. with an env_prefix of "myapp", arg1 would map to the environment variable "MYAPP_ARG1".</p>
+<pre><code class="language-text">env_prefix=&lt;string&gt;
+</code></pre>
+<p>env_prefix is converted to uppercase before use.</p>
+<pre><code class="language-python">from arg_init import ClassArgInit
+
+class MyApp:
+    def __init__(self, arg1=None):
+        args = ClassArgInit(env_prefix=&quot;myapp&quot;).args
+        ...
+</code></pre>
+<h3 id="priority-modes">Priority Modes</h3>
+<p>Support for selecting the priority resolution mode is provided via the argument <strong>priority</strong>.</p>
+<pre><code class="language-text">priority=ENV_PRIORITY | ARG_PRIORITY
+</code></pre>
+<p>By default, enviroment variables have priority over argument values. This can be changed at initialisation to give arguments prioirty.</p>
+<pre><code class="language-python">from arg_init import FunctionArgInit, ARG_PRIORITY
+
+def my_func(arg1):
+    arg_init = FunctionArgInit()
+    args = arg_init.resolve(priority=ARG_PRIORITY)
+    ...
+</code></pre>
+<p>Note: When using ARG_PRIORITY a default value should also be provided by ArgDefaults is a default value other than None is required.</p>
+<h3 id="overriding-default-argument-behaviour">Overriding Default Argument Behaviour</h3>
+<p>It is possible to override default behaviour per argument using the ArgDefault object. A list of ArgDefaults objects can be passed into the call to ClassArgInit/FunctionArgInit.</p>
+<p>ArgDefaults takes a "name" argumment and zero or more of the following optional arguments:</p>
+<ul>
+<li>default_value</li>
+<li>env_name</li>
+</ul>
+<h4 id="default_value">default_value</h4>
+<p>When using ARG_Priority, the only way to set a default value is to the use ArgDefaults(default_value=value)</p>
+<p>This can also be used when using ENV_Priority but the recommended solution is to use default python behaviour using function defaults e.g. fn(a=1).</p>
+<h4 id="env_name">env_name</h4>
+<p>Setting this value allows a custom env name to be set as the lookup for an argument. This overrides the default setting and ignores any env prefix settings.</p>
+<p>Note: env_name is converted to uppercase before use.</p>
+<h4 id="example-using-argdefaults">Example using ArgDefaults</h4>
+<p>In the example below, arg1 is modified to have a default value of 1 and to resolve from the environmnet variable "ALT_NAME"</p>
+<pre><code class="language-python">from arg_init import FunctionArgInit, ArgDefaults
+
+def func(arg1=None):
+    arg1_defaults = ArgDefaults(name=&quot;arg1&quot;, default_value=1, env_name=&quot;ALT_NAME&quot;)
+    args = FunctionArgInit(defaults=[arg1_defaults]).args
+    ...
+</code></pre>
+<h3 id="use-with-a-class">Use with a Class</h3>
+<p>There are two additional class specific configuration options available:</p>
+<ul>
+<li>set_attrs: default=True</li>
+<li>protect_attr: default=True</li>
+</ul>
+<p>By default, ClassArgInit will set attributes directly on the calling class, using the argument name, with an "_" prefix for each argument in the calling functions' signature.</p>
+<p>Setting set_attrs to False will prevent ClassArgInit from setting these class attributes.</p>
+<p>Setting protect_attrs to False will cause the attributes to be set using the argument name, without a leading "_" character.</p>
+<pre><code class="language-python">from arg_init import ArgInit
+
+class MyApp:
+    def __init__(self, arg1=None):
+        ClassArgInit(set_attrs=True, protect_attrs=False)
+        ...
+</code></pre>
+<p>By default, ClassArgInit will set all arguments as protected class attributes of the MyApp instance. In the above example, arg1 will be available as an attribute "arg1" of the instance of MyApp.</p>
+<h3 id="support-for-kwargs">Support for kwargs</h3>
+<p>Support for kwargs in function signatures is provided via the argument <strong>use_kwargs</strong>. When this argument is set, any keword arguments would be initialised using the same resolution process as named arguments.</p>
+<pre><code class="language-python">from arg_init import FunctionArgInit
+
+def my_func(self, **kwargs):
+    args = FunctionArgInit(use_kwargs=True)
+    ...
+</code></pre>
+<h3 id="using-a-custom-prioirity-sequence">Using a Custom Prioirity Sequence</h3>
+<p>A custom priority sequence can be defined. This can be used, for example, to disable a specific resolution feature.</p>
+<pre><code class="language-python">from arg_init import FunctionArgInit, Priority
+
+def my_func(self, **kwargs):
+    priorities = list(Priority.ENV, Priority.ARG, Priority.DEFAULT)
+    args = FunctionArgInit(priorities=priorities)
+    ...
+</code></pre>
+<p>The example above disables the use of a config file during the resolution process.</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.6eac0284.min.js"></script>
+      
+    
+  </body>
+</html>
